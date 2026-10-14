@@ -106,7 +106,7 @@ class GymMember(GymCRUD):
         super().__init__()
     
     def do_save(self):
-        self.members=self.members
+        self.members=[]
         if self.members:
             self.user_id = self.members[-1]['user_id'] + 1
         else:
@@ -123,7 +123,7 @@ class GymMember(GymCRUD):
         self.members.append(member)
         
 if __name__ == "__main__":
-    
+    mod = GymMember()
     while True:
         print(
             "========GYM LOG========\n"
@@ -138,8 +138,22 @@ if __name__ == "__main__":
         select = input("번호를 입력하세요: ")
         if select == "1":
             print("1. 회원 등록 및 관리를 선택하셨습니다.\n")
-            mod = GymMember()
-            mod.do_save()
+            
+            print("===========")
+            print("1.회원 등록")
+            print("2.회원 조회")
+            print("===========")
+            select1 = input("번호를 입력하세요: ")
+            if select1 == "1":
+                mod.do_save()
+            elif select1 == "2":
+                tot_mem = mod.do_retrive()
+                print("전체 회원: ", tot_mem)
+            else:
+                pass
+            
+            
+        
         elif select == "2":
             print("2. 운동 종목 관리를 선택하셨습니다.\n")
         elif select == "3":
