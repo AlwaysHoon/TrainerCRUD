@@ -27,144 +27,115 @@
 
 '''
 
-
-class GymCRUD: #회원 관리CRUD: 등록, 조회, 수정, 삭제 ->필수
-    def __init__(self):
-        self.members= []
-    
-    def do_save(self, user_id, name, email):
-        """회원을 등록합니다.
-
-        Args:
-            user_id (str): user_id
-            name (str): 이름
-            email (str): email
-
-        Returns:
-            True  : 등록에 성공
-            False : 등록에 실패(user_id가 이미 존재)
-        """
-        for member in self.members:
-            if member['user_id'] == user_id:
-                print("이미 존재하는 회원입니다.")
-                return False
-        
-        member = {'user_id': user_id,
-                  'name': name,
-                  'email': email}
-        self.members.append(member)
-        print("회원 등록에 성공했습니다.")
-        return True
-    
-    def do_retrive(self):
-        """전체 회원 목록을 반환합니다.
-
-        Returns:
-            self.members.copy(): 전체 회원 목록
-        """
-        print("전체 회원 목록")
-        return self.members.copy()
-    
-    def do_select_one(self, user_id):
-        """회원 한명을 조회합니다.
-
-        Args:
-            user_id (str): user_id
-
-        Returns:
-            member: 조회한 회원
-            None: 조회 실패
-        """
-
-        for member in self.members:
-            if member['user_id'] == user_id:
-                print("회원 조회에 성공했습니다.")
-                return member
-        print("회원이 존재하지 않습니다.")
-        return None
-    
-    def do_delete(self, user_id):
-        """회원 정보 삭제
-
-        Args:
-            user_id (str): 
-
-        Returns:
-            True  : 삭제 성공
-            False : 삭제 실패
-        """
-        for member in self.members:
-            if member['user_id'] == user_id:
-                self.members.remove(member)
-                print("회원 삭제에 성공했습니다.")
-                return True
-        print("회원 삭제에 실패했습니다.")
-        return False
-
-class GymMember(GymCRUD):
-    def __init__(self):
-        super().__init__()
-    
-    def do_save(self):
-        self.members=[]
-        if self.members:
-            self.user_id = self.members[-1]['user_id'] + 1
-        else:
-            self.user_id = 'user01'
-        print(f"user_id: {self.user_id}")
-        
-        
-        self.name = input("이름을 입력하세요: ")
-        self.email = input("이메일을 입력하세요: ")
-        member = {
-            'user_id': self.user_id,
-            'name': self.name,
-            'email': self.email}
-        self.members.append(member)
-        
-if __name__ == "__main__":
-    mod = GymMember()
+def login_interface():
+    print("========관리자===========")
     while True:
+        login_id = input("관리자id: ").strip()
+        if login_id != "admin":
+            print("존재하지 않는 관리자입니다.")
+        else:
+            break
+        
+    while True:
+        pw = input("관리자pw: ").strip()
+        if pw != "0000":
+            print("비밀번호가 틀렸습니다.")
+        else:
+            break
+    print("========================")   
+
+def trainer_interface():
+    while True:        
         print(
-            "========GYM LOG========\n"
-            "1. 회원 등록 및 관리\n"
-            "2. 운동 종목 관리\n"
-            "3. 회원별 운동 기록 등록\n"
-            "4. 회원별 운동 기록 조회\n"
-            "5. 프로그램 종료\n"
+            "========회원 관리 모드========\n"
+            "1. 회원 등록\n"
+            "2. 전체 회원 조회\n"
+            "3. 회원 정보 수정\n"
+            "4. 회원 삭제\n"
+            "5. 처음으로\n"
+            "6. 프로그램 종료\n"
             "=======================\n"
             )
+        select_num = input("번호를 입력하세요: ").strip()
+        if select_num == "1":
+            print(
+                "1. 회원 등록을 선택하셨습니다.\n")
+            
+            print("중복된다면 회원 등록 실패")
+            print("아니라면 등록에 성공")
+            
+            print("user_id, name 등록에 성공했습니다.")
+            # 여기서 작성한 고유번호/이름/이메일을 이용하여 개인폴더 생성
+            #그리고 각 폴더에 details/diet/records/requires.json 생성  
+                
+        elif select_num == "2":
+            print("전체 회원 조회: ")
+            print("members.json의 전체 멤버를 출력")
+            # 그냥 리스트 자체를 출력할지, 틀에 맞춰 출력할지 선택
+            #detail_interface()
+        elif select_num == "3":
+            print("회원 정보 수정")
+            
+        elif select_num == "4":
+            print("회원 삭제")
         
-        select = input("번호를 입력하세요: ")
-        if select == "1":
-            print("1. 회원 등록 및 관리를 선택하셨습니다.\n")
-            
-            print("===========")
-            print("1.회원 등록")
-            print("2.회원 조회")
-            print("===========")
-            select1 = input("번호를 입력하세요: ")
-            if select1 == "1":
-                mod.do_save()
-            elif select1 == "2":
-                tot_mem = mod.do_retrive()
-                print("전체 회원: ", tot_mem)
-            else:
-                pass
-            
-            
-        
-        elif select == "2":
-            print("2. 운동 종목 관리를 선택하셨습니다.\n")
-        elif select == "3":
-            print("3. 회원별 운동 기록 등록을 선택하셨습니다.\n")
-        elif select == "4":
-            print("4. 회원별 운동 기록 조회를 선택하셨습니다.\n")
-        elif select == "5":     
+        elif select_num == "5":
+            pass
+        elif select_num == "6":
             print("프로그램을 종료합니다.\n")
             break
         else:
             print("잘못된 접근입니다.\n")
+        
+def detail_interface():
+    #members.json의 리스트를 가져왔다고 가정
+    #리스트를 고유번호, 이름, 이메일만 추출
+    #
+    while True:
+        see_more = input("(회원 이름)님을 조회하시겠습니까?(Y/N): ").strip().lower()
+        if see_more in ("y", "yes", "네", "예"):
+            
+            print(
+                "========(회원 이름)========\n"
+                "1. 상세 기록 조회\n"
+                "2. 요구사항 조회\n"
+                "3. 운동 기록 조회\n"
+                "4. 식단 조회\n"
+                "5. 처음으로\n"
+                "6. 프로그램 종료\n"
+                "=======================\n"
+                )
+            detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
+            if detail_num == "1":
+                print("상세 기록 조회")
+            elif detail_num == "2":
+                print("요구사항 조회")
+            elif detail_num == "3":
+                print("운동 기록 조회")
+            elif detail_num == "4":
+                print("식단 조회")
+                
+            elif detail_num == "5":
+                pass
+            elif detail_num == "6":
+                print("프로그램을 종료합니다.\n")
+                break
+            else:
+                print("잘못된 접근입니다.\n")
+    
+    
+    
+    
+    print("------------------------------") 
+        
+
+
+
+
+if __name__ == "__main__":
+    login_interface()
+    trainer_interface()
+    
             
             
             
