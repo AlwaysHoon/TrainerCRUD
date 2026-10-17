@@ -91,6 +91,7 @@ def detail_interface():
     #members.json의 리스트를 가져왔다고 가정
     #리스트를 고유번호, 이름, 이메일만 추출
     #
+    
     while True:
         see_more = input("(회원 이름)님을 조회하시겠습니까?(Y/N): ").strip().lower()
         if see_more in ("y", "yes", "네", "예"):
