@@ -129,6 +129,7 @@ if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__)) #C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, 'data') #C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, 'members.json') 
+    train_sys = TrainerCRUD(member_path)
     # details_path = os.path.join(DATA_DIR,'details.json')
     # records_path = os.path.join(DATA_DIR,'records.json')
     # requires_path = os.path.join(DATA_DIR,'requires.json')
@@ -139,6 +140,6 @@ if __name__ == "__main__":
         
     # print(f"data: {member_data}, type: {type(member_data)}")
     
-    train_sys = TrainerCRUD(member_path)
+    
     
     trainer_interface(train_sys)
