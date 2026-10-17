@@ -72,7 +72,7 @@ def trainer_interface():
             print("전체 회원 조회: ")
             print("members.json의 전체 멤버를 출력")
             # 그냥 리스트 자체를 출력할지, 틀에 맞춰 출력할지 선택
-            #detail_interface()
+            detail_interface()
         elif select_num == "3":
             print("회원 정보 수정")
             
@@ -93,6 +93,8 @@ def detail_interface():
     #
     
     while True:
+        print("회원 list 출력")
+        
         see_more = input("(회원 이름)님을 조회하시겠습니까?(Y/N): ").strip().lower()
         if see_more in ("y", "yes", "네", "예"):
             
@@ -106,21 +108,27 @@ def detail_interface():
                 "6. 프로그램 종료\n"
                 "=======================\n"
                 )
+            
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
             if detail_num == "1":
                 print("상세 기록 조회")
+                
             elif detail_num == "2":
                 print("요구사항 조회")
+                
             elif detail_num == "3":
                 print("운동 기록 조회")
+                
             elif detail_num == "4":
                 print("식단 조회")
                 
             elif detail_num == "5":
                 pass
+            
             elif detail_num == "6":
                 print("프로그램을 종료합니다.\n")
                 break
+            
             else:
                 print("잘못된 접근입니다.\n")
     
