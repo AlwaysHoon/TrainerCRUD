@@ -17,7 +17,7 @@ detail_interface(): 개인관리 CRUD
 1. 중복처리 기준 마련(이름, 이메일로 끝낼건지, 전화번호도 추가할건지 아니면 다른 기준이 있는지)
 2. 전체적인 구조에 조금 디테일이 필요해보임
 3. 개인관리 CRUD에 해당하는 데이터들의 관리 형식(개인별 폴더 or 주제별 파일)
-
+4. 전체 회원 조회 출력방식(정제된 데이터 OR lIST그대로)
 
 '''
 
@@ -25,12 +25,13 @@ detail_interface(): 개인관리 CRUD
 import os
 import json
 
-
+from trainer_crud import TrainerCRUD
 def login_interface():
     # 대부분의 사이트는 id/pw를 한번에 입력해서 실패하면 다시 둘다 입력하게 하는데
     # 유사하게 구현할지 카운트만 같이하고 따로 할지 고민중
     print("========관리자===========")
     login_count = 0
+    
     while True:
         login_id = input("관리자id: ").strip()
         if login_id != "admin":
@@ -71,15 +72,15 @@ def trainer_interface(members):
         
         if select_num == "1":
             print("1. 회원 등록을 선택하셨습니다.\n")
-            
+            members.do_save()
             #중복처리 필요
-            print("user_id, name 등록에 성공하셨습니다.")
             # 여기서 작성한 고유번호/이름/이메일을 이용하여 개인폴더 생성
             #그리고 각 폴더에 details/diet/records/requires.json 생성  
                 
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다. ")
-            print("members.json의 전체 멤버를 출력")
+            
+            
             # 그냥 리스트 자체를 출력할지, 틀에 맞춰 출력할지 선택
             if not search_interface(members):
                 return False
@@ -102,10 +103,10 @@ def search_interface(members):
     
     while True:
         #리스트 출력 코드 위치 정하기
-        print("회원 list 출력")
+        members.do_retrive()
         
         print(
-            "\n========회원 관리 모드========\n"
+            "\n========회원 검색 모드========\n"
             "1. 회원 검색\n"
             "2. 이전으로\n"
             "3. 프로그램 종료\n"
@@ -113,22 +114,15 @@ def search_interface(members):
             )
         search_num = input("번호를 선택하세요: ")
         if search_num == "1":
-            print("회원 검색을 시작합니다.")
-            #이부분을 detail_interface에 넣어야할지 이대로 둬야할지 고민중
-            select_member = input("조회 할 회원 이름을 입력해주세요: ")
-            count=0
-            for member in members:
-                if select_member == member['name']:
-                    count += 1
-            if count == 0:
-                print("존재하지 않는 회원입니다.")
-            elif count == 1:
-                if not detail_interface(select_member):
-                    return False
-            else: #중복처리
-                pass
-                        
+            print("1. 회원 검색을 시작합니다.")
+            detail_member = members.do_select()
             
+            if detail_member:
+                if not detail_interface(detail_member):
+                    return False
+                
+            else:
+                pass
             
         elif search_num == "2":
             print("이전 화면으로 돌아갑니다.")
@@ -142,12 +136,12 @@ def search_interface(members):
 def detail_interface(member):
     
     
-    see_more = input(f"{member}님을 조회하시겠습니까?(Y/N): ").strip().lower()
+    see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
     if see_more in ("y", "yes", "네", "예"):
         # detail_num = 0
         while True:    
             print(
-                f"\n==========={member}===========\n"
+                f"\n==========={member['name']}===========\n"
                 "1. 상세 기록 조회\n"
                 "2. 요구사항 조회\n"
                 "3. 운동 기록 조회\n"
@@ -160,7 +154,9 @@ def detail_interface(member):
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
             if detail_num == "1":
                 print("1. 상세 기록 조회를 선택하셨습니다.")
-                
+                for key, value in member.items():
+                    print(f"{key:<10}: {value:^10}")
+                #지금은 members.json의 내용들만 반환하지만 details.json을 추가함에 따라 변동될 예정
             elif detail_num == "2":
                 print("2. 요구사항 조회를 선택하셨습니다.")
                 
@@ -186,11 +182,13 @@ if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__)) #C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, 'data') #C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, 'members.json')
+    # train_sys = TrainerCRUD(member_path)
     with open(member_path, "r", encoding='utf-8') as f:
                 members = json.load(f)
     # if login_interface():
     #     trainer_interface(members)
-    trainer_interface(members)
+    train_sys = TrainerCRUD(member_path)
+    trainer_interface(train_sys)
             
             
             

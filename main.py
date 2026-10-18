@@ -1,6 +1,9 @@
 import json
 import os
 from datetime import datetime, date
+
+
+
 class TrainerCRUD():
     def __init__(self, member_path):
         self.member_path = member_path
