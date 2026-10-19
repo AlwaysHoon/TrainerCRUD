@@ -2,7 +2,7 @@ import os
 import json
 from datetime import datetime, date
 
-class TrainerCRUD():
+class TrainerCRUD:
     def __init__(self, member_path):
         self.member_path = member_path
         with open(self.member_path, "r", encoding='utf-8') as f:
@@ -10,13 +10,16 @@ class TrainerCRUD():
         
     def do_save(self):
         today = datetime.now().strftime("%y%m%d")
+        
+        # 이미 멤버가 존재할 때
         if self.members:
             ymd = self.members[-1]['user_id']
             if ymd[:6] == str(datetime.now().strftime("%y%m%d")):
                 count = int(ymd[6:]) + 1
             else:
                 count = 0
-        else:    
+        # 최초 기록
+        else:
             count = 0
             
         if count>999:
@@ -24,7 +27,7 @@ class TrainerCRUD():
             return False
         
         #이름, 이메일의 작성양식 추가 필요
-        user_id = str(today)+f'{count:03d}'
+        user_id = str(today)+f'{count:03d}' # 금일 count번째로 등록
         name = input("이름을 입력하세요: ")
         email = input("이메일을 입력하세요: ")
         
@@ -44,18 +47,17 @@ class TrainerCRUD():
         new_member = {'user_id': user_id,
                       'name': name,
                       'email': email}
-        self.members.append(new_member)
         
+        # 전체 멤버 데이터베이스에 새 멤버 등록
+        self.members.append(new_member)
         with open(self.member_path, mode='w', encoding='utf-8') as f:
             json.dump(self.members, f, ensure_ascii=False, indent=4)
             
         print(f"{user_id}: {name} 등록에 성공했습니다.")
         
         return True
-
     
     def do_retrive(self):
-        # return self.members.copy()
         print("=======전체 회원 리스트=======")
         for index, member in enumerate(self.members.copy()):
             print(f"ㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡ")
@@ -64,26 +66,8 @@ class TrainerCRUD():
         print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
         return True
     
-    def do_select_one(self, user_id):
-        for member in self.members:
-            if member['user_id'] == user_id:
-                print("회원 조회에 성공했습니다.")
-                return member
-        print("회원이 존재하지 않습니다.")
-        return None
     
-    def do_delete(self, user_id):
-
-        for member in self.members:
-            if member['user_id'] == user_id:
-                self.members.remove(member)
-                print("회원 삭제에 성공했습니다.")
-                return True
-        print("회원 삭제에 실패했습니다.")
-        return False
-    
-    #수정중
-    def do_select(self):
+    def do_select_one(self, ):
         select_member = input("조회 할 회원 이름을 입력해주세요: ")
         count=0 #동명이인 관리할때 count=1로 만들면 바로 관리가능
         detail_member=[]
@@ -98,10 +82,17 @@ class TrainerCRUD():
             return False
         
         elif count == 1:
+            # 주석처리이유: 조회하기 전에 간단한 내용을 보여주기때문에 위치 조정 필요?
+            # 선택/수정/삭제를 통합하기 위해 어떻게 써야할지
+            # 간단한 정보만 보여주기에 해도될지도
+            # print("ㅡ" * 10)
+            # for key, value in detail_member[0].items():
+            #     print(f"{key:<8}: {value:^10}")
+            # print("ㅡ" * 10)
             return detail_member[0]
         
         else:
-            print("동명이인입니다.")
+            print("동명이인이 존재합니다.")
             print("=======동명이인 리스트=======")
             for  i, m in enumerate(detail_member):
                 print(f"ㅡㅡㅡㅡㅡㅡㅡNo.{i + 1:03d}ㅡㅡㅡㅡㅡㅡㅡ")
@@ -111,6 +102,147 @@ class TrainerCRUD():
             same_num = input("조회할 번호를 선택하세요: ")
             
             return detail_member[int(same_num)-1]
+        
+    def do_modify_one(self):
+        select_member = input("수정 할 회원 이름을 입력해주세요: ")
+        count=0 
+        detail_member=[]
+        
+        for member in self.members:
+            if select_member == member['name']:
+                count += 1
+                detail_member.append(member)
+                
+        if count == 0:
+            print("존재하지 않는 회원입니다.")
+            return False
+        
+        elif count == 1:
+            print("ㅡ" * 10)
+            for key, value in detail_member[0].items():
+                print(f"{key:<8}: {value:^10}")
+            print("ㅡ" * 10)
+            
+            is_modify = input("수정하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower()
+            
+            if is_modify in ("y", "yes", "예", "네"):
+                self.detail_modify(detail_member[0])
+                print("회원 정보 수정에 성공했습니다.")
+                return True
+            else:
+                print("이전으로 돌아갑니다.")
+                return False
+        
+        else:
+            print("동명이인이 존재합니다.")
+            print("=======동명이인 리스트=======")
+            for  i, m in enumerate(detail_member):
+                print(f"ㅡㅡㅡㅡㅡㅡㅡNo.{i + 1:03d}ㅡㅡㅡㅡㅡㅡㅡ")
+                for key, value in m.items():
+                    print(f"{key:<8}: {value:^10}")
+            print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+            
+            same_num = input("수정할 번호를 선택하세요: ")
+            
+            print("ㅡ" * 10)
+            for key, value in detail_member[0].items():
+                print(f"{key:<8}: {value:^10}")
+            print("ㅡ" * 10)
+
+            is_modify = input("수정하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower()
+            if is_modify in ("y", "yes", "예", "네"):
+                self.detail_modify(detail_member[int(same_num)-1])
+                print("회원 정보 수정에 성공했습니다.")
+                return True
+            else:
+                print("이전으로 돌아갑니다.")
+                return False
+            
+    def detail_modify(self, select_member):
+        print("회원 정보 수정을 시작합니다.")
+        option = [key for key, _ in select_member.items()]
+        while True:
+            modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ")
+            if modify_key in option:
+                for member in self.members:
+                    if member == select_member:
+                        for key, value in member.items():
+                            if key == modify_key:
+                                modify_value=input(f"기존 {key}는 {value}입니다. 변경할 내용을 적어주세요.")
+                                is_modify = input(f"정말 {modify_value}로 변경하시겠습니까?(Y/N): ").strip().lower()
+                                if is_modify in ("y", "yes", "예", "네"):
+                                    member[key]=modify_value
+                                    print(f"{modify_key} 변경에 성공했습니다.")
+                                    return True
+                                else:
+                                    print("이전으로 돌아갑니다.")
+                                    return False
+            else:
+                print("잘못된 접근입니다.")
+                is_continue = input("계속하시겠습니까?(Y/N): ").strip().lower()
+                if is_continue in ("y", "yes", "예", "네"):
+                    pass
+                else:
+                    return
+    
+    def do_delete_one(self):
+        #members.json의 member를 선택해 삭제
+        #동명이인/이후의 detail까지 삭제
+        #수정도 유사하게 구성되어야함
+        select_member = input("삭제 할 회원 이름을 입력해주세요: ")
+        count=0 
+        detail_member=[]
+        
+        for member in self.members:
+            if select_member == member['name']:
+                count += 1
+                detail_member.append(member)
+                
+        if count == 0:
+            print("존재하지 않는 회원입니다.")
+            return False
+        
+        elif count == 1:
+            print("ㅡ" * 10)
+            for key, value in detail_member[0].items():
+                print(f"{key:<8}: {value:^10}")
+            print("ㅡ" * 10)
+            
+            is_delete = input("삭제하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower()
+            
+            if is_delete in ("y", "yes", "예", "네"):
+                self.members.remove(detail_member[0])
+                print("회원 삭제에 성공했습니다.")
+                return True
+            else:
+                print("이전으로 돌아갑니다.")
+                return False
+        
+        else:
+            print("동명이인이 존재합니다.")
+            print("=======동명이인 리스트=======")
+            for  i, m in enumerate(detail_member):
+                print(f"ㅡㅡㅡㅡㅡㅡㅡNo.{i + 1:03d}ㅡㅡㅡㅡㅡㅡㅡ")
+                for key, value in m.items():
+                    print(f"{key:<8}: {value:^10}")
+            print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+            
+            same_num = input("삭제할 번호를 선택하세요: ")
+            
+            print("ㅡ" * 10)
+            for key, value in detail_member[0].items():
+                print(f"{key:<8}: {value:^10}")
+            print("ㅡ" * 10)
+
+            is_delete = input("삭제하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower()
+            if is_delete in ("y", "yes", "예", "네"):
+                self.members.remove(detail_member[int(same_num)-1])
+                print("회원 삭제에 성공했습니다.")
+                return True
+            else:
+                print("이전으로 돌아갑니다.")
+                return False
+            
     
     
 if __name__ == "__main__":
@@ -123,4 +255,4 @@ if __name__ == "__main__":
     # if login_interface():
     #     trainer_interface(members)
     train_sys = TrainerCRUD(member_path)
-    trainer_interface(train_sys)
+    # trainer_interface(train_sys)
