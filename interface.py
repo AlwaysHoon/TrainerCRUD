@@ -85,13 +85,13 @@ def trainer_interface(members):
             
         elif select_num == "3":
             print("3. 회원 정보 수정을 선택하셨습니다.")
-            members.do_modify_one()
-            # members.do_select_one(select_num)
+            # members.do_modify_one()
+            members.do_select_one(select_num)
                         
         elif select_num == "4":
             print("4. 회원 삭제를 선택하셨습니다.")
-            members.do_delete_one()
-            # members.do_select_one(select_num)
+            # members.do_delete_one()
+            members.do_select_one(select_num)
             
         elif select_num == "5":
             print("프로그램을 종료합니다.\n")
@@ -104,7 +104,8 @@ def search_interface(members):
     #리스트를 고유번호, 이름, 이메일만 추출
     # 그냥 리스트 자체를 출력할지, 틀에 맞춰 출력할지 선택
     while True:
-        members.do_retrive()
+        if not members.do_retrive():
+            return True
         
         print(
             "\n=======회원 검색 모드=======\n"
@@ -114,10 +115,12 @@ def search_interface(members):
             "============================"
             )
         search_num = input("번호를 선택하세요: ")
+        
         if search_num == "1":
             print("1. 회원 검색을 시작합니다.")
-            detail_member = members.do_select_one()
-            # detail_member = members.do_select_one(search_num)
+            # detail_member = members.do_select_one()
+            detail_member = members.do_select_one(search_num)
+            
             if detail_member:
                 if not detail_interface(detail_member):
                     return False
@@ -128,15 +131,15 @@ def search_interface(members):
         elif search_num == "2":
             print("이전 화면으로 돌아갑니다.")
             return True
+        
         elif search_num == "3":
             print("프로그램을 종료합니다.")
             return False
+        
         else:
             print("잘못된 접근입니다.\n")
         
 def detail_interface(member):
-    
-    
     see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
     if see_more in ("y", "yes", "네", "예"):
         
@@ -155,9 +158,11 @@ def detail_interface(member):
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
             if detail_num == "1":
                 print("1. 상세 기록 조회를 선택하셨습니다.")
+                
                 for key, value in member.items():
                     print(f"{key:<10}: {value:^10}")
                 #지금은 members.json의 내용들만 반환하지만 details.json을 추가함에 따라 변동될 예정
+                
             elif detail_num == "2":
                 print("2. 요구사항 조회를 선택하셨습니다.")
                 
@@ -166,6 +171,7 @@ def detail_interface(member):
                 
             elif detail_num == "4":
                 print("4. 식단 조회를 선택하셨습니다.")
+                
                 
             elif detail_num == "5":
                 print("이전 화면으로 돌아갑니다.")
