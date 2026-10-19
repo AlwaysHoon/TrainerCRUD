@@ -1,27 +1,3 @@
-'''
-=================================================================
-2026.10.17
-코딩을 하려고 보니까 회원리스트를 먼저 내보내면 선택화면이 가려질 우려가 있어서 뒤로 옮기고
-"전체 멤버 조회" -> "회원 검색" -> "개별 데이터 조회" 시스템으로 구성
-관계도도 TrainerCRUD2.png로 수정
-
-이거에 맞게 login_interface(), trainer_interface(), search_interface(), detail_interface() 작성
-login_interface(): 로그인 화면
-trainer_interface(): 회원관리CRUD
-search_interface(): 검색 화면
-detail_interface(): 개인관리 CRUD
-
-일단 내용은 텍스트로 대체
-
-주요 의논점
-1. 중복처리 기준 마련(이름, 이메일로 끝낼건지, 전화번호도 추가할건지 아니면 다른 기준이 있는지)
-2. 전체적인 구조에 조금 디테일이 필요해보임
-3. 개인관리 CRUD에 해당하는 데이터들의 관리 형식(개인별 폴더 or 주제별 파일)
-4. 전체 회원 조회 출력방식(정제된 데이터 OR lIST그대로)
-
-'''
-
-
 import os
 import json
 
@@ -30,31 +6,22 @@ from trainer_crud import TrainerCRUD
 def login_interface():
     # 대부분의 사이트는 id/pw를 한번에 입력해서 실패하면 다시 둘다 입력하게 하는데
     # 유사하게 구현할지 카운트만 같이하고 따로 할지 고민중
-    print("========관리자===========")
+    print("========관리자 로그인========")
     login_count = 0
     
     while True:
         login_id = input("관리자id: ").strip()
-        if login_id != "admin":
+        login_pw = input("관리자pw: ").strip()
+        if login_id != "admin" or login_pw != "0000":
             login_count += 1
             print(f"존재하지 않는 관리자입니다.({login_count}/5회 틀림)")
             if login_count >= 5:
-                print("아이디 입력 횟수를 초과하였습니다.")
+                print("아이디 입력 횟수를 초과하였습니다.\n")
                 return
         else:
-            break
+            print("로그인에 성공했습니다.")
+            return True
         
-    while True:
-        pw = input("관리자pw: ").strip()
-        if pw != "0000":
-            login_count += 1
-            print(f"비밀번호가 틀렸습니다.({login_count}/5회 틀림)")
-            
-            if login_count >= 5:
-                print("비밀번호 입력 횟수를 초과하였습니다.")
-                return
-        else:
-            break
     print("========================")   
 
 def trainer_interface(members):
@@ -192,10 +159,10 @@ if __name__ == "__main__":
     # train_sys = TrainerCRUD(member_path)
     with open(member_path, "r", encoding='utf-8') as f:
                 members = json.load(f)
-    # if login_interface():
+    if login_interface():
     #     trainer_interface(members)
-    train_sys = TrainerCRUD(member_path)
-    trainer_interface(train_sys)
+        train_sys = TrainerCRUD(member_path)
+        trainer_interface(train_sys)
             
             
             
@@ -231,5 +198,26 @@ if __name__ == "__main__":
 -외부 API 및 크롤링: 회원 인바디에 따른 섭취 음식 칼로리 계산(식품안전나라에서 '식품 영양성분 데이터베이스'를 오픈API 형태로 무상 제공)
 
 '''
+'''
+=================================================================
+2026.10.17
+코딩을 하려고 보니까 회원리스트를 먼저 내보내면 선택화면이 가려질 우려가 있어서 뒤로 옮기고
+"전체 멤버 조회" -> "회원 검색" -> "개별 데이터 조회" 시스템으로 구성
+관계도도 TrainerCRUD2.png로 수정
 
+이거에 맞게 login_interface(), trainer_interface(), search_interface(), detail_interface() 작성
+login_interface(): 로그인 화면
+trainer_interface(): 회원관리CRUD
+search_interface(): 검색 화면
+detail_interface(): 개인관리 CRUD
+
+일단 내용은 텍스트로 대체
+
+주요 의논점
+1. 중복처리 기준 마련(이름, 이메일로 끝낼건지, 전화번호도 추가할건지 아니면 다른 기준이 있는지)
+2. 전체적인 구조에 조금 디테일이 필요해보임
+3. 개인관리 CRUD에 해당하는 데이터들의 관리 형식(개인별 폴더 or 주제별 파일)
+4. 전체 회원 조회 출력방식(정제된 데이터 OR lIST그대로)
+
+'''
 #if elif 로 번호를 쓴 것들 match-case로 바꿔도됨

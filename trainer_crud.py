@@ -69,9 +69,14 @@ class TrainerCRUD:
             
             ## 2줄보기
             print(f"{"=======전체 회원 리스트=======":^41}")
-            for index, member in enumerate(self.members.copy()):
+            
+            for index, member in enumerate(self.members):
                 if (index % 2) == 0:
-                    a=[(key,value) for key, value in member.items()]    
+                    a=[(key,value) for key, value in member.items()]
+                    if index == (len(self.members)-1):
+                        print(f'+-ㅡㅡㅡㅡNo.{index}ㅡㅡㅡㅡ-+-ㅡㅡㅡㅡNo.{index+1}ㅡㅡㅡㅡ-+')
+                        for i in range(len(a)):
+                            print(f"| {a[i][0]:<8}: {a[i][1]:^10} | {" ":<8}: {" ":^10} |")    
                 else:
                     b=[(key,value) for key, value in member.items()]
                     print(f'+-ㅡㅡㅡㅡNo.{index}ㅡㅡㅡㅡ-+-ㅡㅡㅡㅡNo.{index+1}ㅡㅡㅡㅡ-+')
