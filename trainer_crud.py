@@ -59,12 +59,25 @@ class TrainerCRUD:
     
     def do_retrive(self):
         if self.members:
-            print("=======전체 회원 리스트=======")
+            # #1줄보기
+            # print("=======전체 회원 리스트=======")
+            # for index, member in enumerate(self.members.copy()):
+            #     print(f"ㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡ")
+            #     for key, value in member.items():
+            #         print(f"{key:<8}: {value:^10}")
+            # print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+            
+            ## 2줄보기
+            print(f"{"=======전체 회원 리스트=======":^41}")
             for index, member in enumerate(self.members.copy()):
-                print(f"ㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡ")
-                for key, value in member.items():
-                    print(f"{key:<8}: {value:^10}")
-            print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+                if (index % 2) == 0:
+                    a=[(key,value) for key, value in member.items()]    
+                else:
+                    b=[(key,value) for key, value in member.items()]
+                    print(f'+-ㅡㅡㅡㅡNo.{index}ㅡㅡㅡㅡ-+-ㅡㅡㅡㅡNo.{index+1}ㅡㅡㅡㅡ-+')
+                    for i in range(len(a)):
+                        print(f"| {a[i][0]:<8}: {a[i][1]:^10} | {b[i][0]:<8}: {b[i][1]:^10} |")
+            print('+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
             return True
         else:
             print("등록된 회원이 없습니다.")
