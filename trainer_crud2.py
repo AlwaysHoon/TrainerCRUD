@@ -65,7 +65,7 @@ class TrainerCRUD:
         print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
         return True
     
-    def do_select_one1(self, select_num="1"):
+    def do_select_one(self, select_num="1"):
         word = {"1":"조회", "3":"수정", "4":"삭제"}[select_num]
         select_member = input(f"{word} 할 회원 이름을 입력해주세요: ")
         count=0 #동명이인 관리할때 count=1로 만들면 바로 관리가능
