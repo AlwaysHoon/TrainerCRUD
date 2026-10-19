@@ -32,7 +32,8 @@ def trainer_interface(members):
             "2. 전체 회원 조회\n"
             "3. 회원 정보 수정\n"
             "4. 회원 삭제\n"
-            "5. 프로그램 종료\n"
+            "5. 부가 서비스 관리\n"
+            "6. 프로그램 종료\n"
             "============================"
             )
         select_num = input("번호를 입력하세요: ").strip()
@@ -59,8 +60,10 @@ def trainer_interface(members):
             print("4. 회원 삭제를 선택하셨습니다.")
             # members.do_delete_one()
             members.do_select_one(select_num)
-            
         elif select_num == "5":
+            print("5. 부가 서비스 관리를 선택하셨습니다.")
+            
+        elif select_num == "6":
             print("프로그램을 종료합니다.\n")
             break
         else:
@@ -114,37 +117,38 @@ def detail_interface(member):
             print(
                 f"\n==========={member['name']}===========\n"
                 "1. 상세 기록 조회\n"
-                "2. 요구사항 조회\n"
-                "3. 운동 기록 조회\n"
-                "4. 식단 조회\n"
-                "5. 이전으로\n"
-                "6. 프로그램 종료\n"
+                "2. 운동 종목 관리\n"
+                "3. 운동 기록 관리\n"
+                "4. 식단 관리\n"
+                "5. \n"
+                "6. 이전으로\n"
+                "7. 프로그램 종료\n"
                 "==========================\n"
                 )
             
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
             if detail_num == "1":
-                print("1. 상세 기록 조회를 선택하셨습니다.")
+                print("\n1. 상세 기록 조회를 선택하셨습니다.")
                 
                 for key, value in member.items():
                     print(f"{key:<10}: {value:^10}")
                 #지금은 members.json의 내용들만 반환하지만 details.json을 추가함에 따라 변동될 예정
                 
             elif detail_num == "2":
-                print("2. 요구사항 조회를 선택하셨습니다.")
+                print("\n2. 운동 종목 관리를 선택하셨습니다.")
                 
             elif detail_num == "3":
-                print("3. 운동 기록 조회를 선택하셨습니다.")
+                print("\n3. 운동 기록 관리를 선택하셨습니다.")
                 
             elif detail_num == "4":
-                print("4. 식단 조회를 선택하셨습니다.")
+                print("\n4. 식단 관리를 선택하셨습니다.")
                 
-                
-            elif detail_num == "5":
+            
+            elif detail_num == "6":
                 print("이전 화면으로 돌아갑니다.")
                 return True
             
-            elif detail_num == "6":
+            elif detail_num == "7":
                 print("프로그램을 종료합니다.\n")
                 return False
             
@@ -159,10 +163,10 @@ if __name__ == "__main__":
     # train_sys = TrainerCRUD(member_path)
     with open(member_path, "r", encoding='utf-8') as f:
                 members = json.load(f)
-    if login_interface():
+    # if login_interface():
     #     trainer_interface(members)
-        train_sys = TrainerCRUD(member_path)
-        trainer_interface(train_sys)
+    train_sys = TrainerCRUD(member_path)
+    trainer_interface(train_sys)
             
             
             
