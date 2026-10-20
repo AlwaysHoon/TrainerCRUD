@@ -3,10 +3,10 @@ import json
 
 from trainer_crud import TrainerCRUD
 from machine_list import MachineList
+
 def login_interface():
-    # 대부분의 사이트는 id/pw를 한번에 입력해서 실패하면 다시 둘다 입력하게 하는데
-    # 유사하게 구현할지 카운트만 같이하고 따로 할지 고민중
     print("========관리자 로그인========")
+    line1 = len("========관리자 로그인========")
     login_count = 0
     
     while True:
@@ -15,27 +15,28 @@ def login_interface():
         if login_id != "admin" or login_pw != "0000":
             login_count += 1
             print(f"존재하지 않는 관리자입니다.({login_count}/5회 틀림)")
+            
             if login_count >= 5:
                 print("아이디 입력 횟수를 초과하였습니다.\n")
+                print("=" * line1)
                 return
         else:
             print("로그인에 성공했습니다.")
+            print("=" * line1)
             return True
-        
-    print("========================")   
 
 def admin_interface(members, machines):
     while True:        
         print(
-            "\n=========관리자 모드=========\n"
-            "1. 회원 관리\n"
-            "2. 운동 종목 관리\n"
-            "3. 부가 서비스 관리\n"
-            "4. 프로그램 종료\n"
-            "============================="
+            "\n+=========관리자 모드=========+\n"
+            " 1. 회원 관리\n"
+            " 2. 운동 종목 관리\n"
+            " 3. 부가 서비스 관리\n"
+            " 0. 프로그램 종료\n"
+            "+=============================+"
             )
         select_num = input("번호를 입력하세요: ").strip()
-        print(" ")
+        
         if select_num == "1":
             print("1. 회원 관리를 선택하셨습니다. ")
             if not trainer_interface(members):
@@ -45,14 +46,13 @@ def admin_interface(members, machines):
             print("2. 운동 종목 관리를 선택하셨습니다.\n")
             if not manage_machine(machines):
                 return
-                
             
         elif select_num == "3":
             print("3.부가 서비스 관리를 선택하셨습니다.")
             
                         
-        elif select_num == "4":
-            print("4. 프로그램을 종료합니다.")
+        elif select_num == "0":
+            print("프로그램을 종료합니다.")
             return
             
         
@@ -60,12 +60,12 @@ def trainer_interface(members):
     while True:        
         print(
             "\n=========관리자 모드=========\n"
-            "1. 회원 등록\n"
-            "2. 전체 회원 조회\n"
-            "3. 회원 정보 수정\n"
-            "4. 회원 삭제\n"
-            "5. 이전으로\n"
-            "6. 프로그램 종료\n"
+            " 1. 회원 등록\n"
+            " 2. 전체 회원 조회\n"
+            " 3. 회원 정보 수정\n"
+            " 4. 회원 삭제\n"
+            " 9. 이전으로\n"
+            " 0. 프로그램 종료\n"
             "============================="
             )
         select_num = input("번호를 입력하세요: ").strip()
@@ -76,49 +76,43 @@ def trainer_interface(members):
             members.do_save()  
                 
         elif select_num == "2":
-            print("2. 전체 회원 조회를 선택하셨습니다. ")
+            print("2. 전체 회원 조회를 선택하셨습니다.\n")
             if not search_interface(members):
                 return False
             
         elif select_num == "3":
-            print("3. 회원 정보 수정을 선택하셨습니다.")
-            # members.do_modify_one()
+            print("3. 회원 정보 수정을 선택하셨습니다.\n")
             members.do_select_one(select_num)
                         
         elif select_num == "4":
-            print("4. 회원 삭제를 선택하셨습니다.")
-            # members.do_delete_one()
+            print("4. 회원 삭제를 선택하셨습니다.\n")
             members.do_select_one(select_num)
             
-        elif select_num == "5":
+        elif select_num == "9":
             print("이전으로 돌아갑니다.\n")
             return True
-        elif select_num == "6":
+        elif select_num == "0":
             print("프로그램을 종료합니다.\n")
             return False
         else:
             print("잘못된 접근입니다.\n")
         
 def search_interface(members):
-    #members.json의 리스트를 가져왔다고 가정
-    #리스트를 고유번호, 이름, 이메일만 추출
-    # 그냥 리스트 자체를 출력할지, 틀에 맞춰 출력할지 선택
     while True:
         if not members.do_retrive():
             return True
         
         print(
             "\n=======회원 검색 모드=======\n"
-            "1. 회원 검색\n"
-            "2. 이전으로\n"
-            "3. 프로그램 종료\n"
+            " 1. 회원 검색\n"
+            " 9. 이전으로\n"
+            " 0. 프로그램 종료\n"
             "============================"
             )
-        search_num = input("번호를 선택하세요: ")
+        search_num = input("번호를 선택하세요: ").strip()
         
         if search_num == "1":
             print("1. 회원 검색을 시작합니다.")
-            # detail_member = members.do_select_one()
             detail_member = members.do_select_one(search_num)
             
             if detail_member:
@@ -128,11 +122,11 @@ def search_interface(members):
             else:
                 pass
             
-        elif search_num == "2":
+        elif search_num == "9":
             print("이전 화면으로 돌아갑니다.")
             return True
         
-        elif search_num == "3":
+        elif search_num == "0":
             print("프로그램을 종료합니다.")
             return False
         
@@ -145,15 +139,15 @@ def detail_interface(member):
         
         while True:    
             print(
-                f"\n==========={member['name']}===========\n"
-                "1. 상세 기록 조회\n"
-                "2. 운동 기록 관리\n"
-                "3. 식단 관리\n"
-                "4. \n"
-                "5. \n"
-                "6. 이전으로\n"
-                "7. 프로그램 종료\n"
-                "==========================\n"
+                f"\n===========[ {member['name']} ]===========\n"
+                " 1. 상세 기록 조회\n"
+                " 2. 운동 기록 관리\n"
+                " 3. 식단 관리\n"
+                " 4. \n"
+                " 5. \n"
+                " 9. 이전으로\n"
+                " 0. 프로그램 종료\n"
+                "==============================\n"
                 )
             
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
@@ -163,20 +157,19 @@ def detail_interface(member):
                 for key, value in member.items():
                     print(f"{key:<10}: {value:^10}")
                 #지금은 members.json의 내용들만 반환하지만 details.json을 추가함에 따라 변동될 예정
-                
             
             elif detail_num == "2":
-                print("\n3. 운동 기록 관리를 선택하셨습니다.")
+                print("\n2. 운동 기록 관리를 선택하셨습니다.")
                 
             elif detail_num == "3":
-                print("\n4. 식단 관리를 선택하셨습니다.")
+                print("\n3. 식단 관리를 선택하셨습니다.")
                 
             
-            elif detail_num == "6":
-                print("이전 화면으로 돌아갑니다.")
+            elif detail_num == "9":
+                print("이전 화면으로 돌아갑니다.\n")
                 return True
             
-            elif detail_num == "7":
+            elif detail_num == "0":
                 print("프로그램을 종료합니다.\n")
                 return False
             
@@ -187,30 +180,35 @@ def manage_machine(machines):
     while True:
         print(
             "\n=======운동 관리 모드=======\n"
-            "1. 운동 등록\n"
-            "2. 전체 운동 종목 조회\n"
-            "3. 운동 종목 수정\n"
-            "4. 운동 종목 삭제\n"
-            "5. 이전으로\n"
-            "6. 프로그램 종료\n"
+            " 1. 운동 종목 등록\n"
+            " 2. 전체 운동 종목 조회\n"
+            " 3. 운동 종목 수정\n"
+            " 4. 운동 종목 삭제\n"
+            " 9. 이전으로\n"
+            " 0. 프로그램 종료\n"
             "========================="
             )
-        select_num = input("번호 입력: ")
+        select_num = input("번호 입력: ").strip()
         if select_num == "1":
-            print("1. 운동 등록을 선택했습니다.\n")
+            print("1. 운동 종목 등록을 선택하셨습니다.\n")
             machines.do_save()
             
         elif select_num == "2":
             print("2. 전체 운동 종목을 조회합니다.")
             machines.do_retrive()
             
-        elif select_num == "3" or select_num == "4":
+        elif select_num == "3":
+            print("운동 종목 수정을 선택하셨습니다.")
             machines.do_select_one(select_num)
-        
-        elif select_num == "5":
+            
+        elif select_num == "4":
+            print("운동 종목 삭제를 선택하셨습니다.")
+            machines.do_select_one(select_num)
+            
+        elif select_num == "9":
             print("이전으로 돌아갑니다.")
             return True
-        elif select_num == "6":
+        elif select_num == "0":
             print("프로그램을 종료합니다.")
             return False
 

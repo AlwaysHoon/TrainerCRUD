@@ -2,6 +2,7 @@ import os
 import json
 from datetime import datetime
 
+from utils import align
 class TrainerCRUD:
     def __init__(self, member_path):
         self.member_path = member_path
@@ -9,15 +10,14 @@ class TrainerCRUD:
             self.members = json.load(f)  # load members.json
         
     def do_save(self):
-        # today = datetime.now().strftime("%y%m%d")
-        today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
-        
-        #이름, 이메일의 작성양식 추가 필요
-        user_id = input("아이디를 입력하세요: ")
-        name = input("이름을 입력하세요: ")
-        email = input("이메일을 입력하세요: ")
+        #이름(한글or영어), 이메일(@필수, gmail, naver만 받을건지)의 작성양식 추가 필요
+        user_id = input("아이디를 입력하세요: ").strip() #영어, 숫자 합쳐서 10자이내
+        name = input("이름을 입력하세요: ").strip()
+        email = input("이메일을 입력하세요: ").strip()
         
         #동명이인의 경우 이름과 이메일이 모두 같을 때만 중복 처리
+        #user_id와 email은 세상에 단 하나밖에 없다는 가정
+        #분할시켜서 각 입력란에 배치해도됨 추후 논의(선택사항)
         for member in self.members:
             if (member['user_id'] == user_id):
                 print("이미 존재하는 멤버입니다.")
@@ -30,7 +30,9 @@ class TrainerCRUD:
             elif (member['name'] == name) and (member['email'] == email):
                 print("이미 존재하는 이름입니다.")
                 return False
-            
+        
+        #최초 등록일, 최근 수정일
+        today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
         save_time = str(today)
         modify_time = str(today)
         
@@ -40,33 +42,34 @@ class TrainerCRUD:
                       'save_time': save_time,
                       'modify_time': modify_time}
         
-        # 전체 멤버 데이터베이스에 새 멤버 등록
+        # 전체 멤버 데이터베이스(members.json)에 새 멤버 등록
         self.members.append(new_member)
         with open(self.member_path, mode='w', encoding='utf-8') as f:
             json.dump(self.members, f, ensure_ascii=False, indent=4)
             
         print(f"{user_id}: {name} 등록에 성공했습니다.")
-        
         return True
     
     def do_retrive(self):
         if self.members:
-            ## 2줄보기
             print(f"{"=======전체 회원 리스트=======":^77}")
             for index, member in enumerate(self.members):
                 if (index % 2) == 0:
-                    left=[(key,value) for key, value in member.items()]
+                    l=[(key,value) for key, value in member.items()]
                     if index == (len(self.members)-1):
-                        print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+2}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
-                        for i in range(len(left)):
-                            print(f"| {left[i][0]:<13}: {left[i][1]:^25} | {" ":<13}: {" ":^25} |")    
+                        print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+2:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+                        for i in range(len(l)):
+                            l_key, l_value = l[i][0], l[i][1]
+                            print(f"| {l_key:<{15-align(l_key)}}: {l_value:^{25-align(l_value)}} | {" ":<13}: {" ":^25} |")    
                 else:
-                    right=[(key,value) for key, value in member.items()]
-                    print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
-                    for i in range(len(left)):
-                        print(f"| {left[i][0]:<13}: {left[i][1]:^25} | {right[i][0]:<13}: {right[i][1]:^25} |")
-            print('+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+                    r=[(key,value) for key, value in member.items()]
+                    print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+                    for i in range(len(l)):
+                        l_key, l_value, r_key, r_value = l[i][0], l[i][1], r[i][0], r[i][1]
+                        print(f"| {l_key:<{15-align(l_key)}}: {l_value:^{25-align(l_value)}} | {r_key:<{15-align(r_key)}}: {r_value:^{25-align(r_value)}} |")
+            print('+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
             return True
+        
         else:
             print("등록된 회원이 없습니다.")
             return False
@@ -74,7 +77,7 @@ class TrainerCRUD:
     def do_select_one(self, select_num="1"):
         if self.members:
             word = {"1":"조회", "3":"수정", "4":"삭제"}[select_num]
-            select_member = input(f"{word} 할 회원 이름을 입력해주세요: ")
+            select_member = input(f"{word} 할 회원 이름을 입력해주세요: ").strip()
             count=0 #동명이인 관리할때 count=1로 만들면 바로 관리가능
             detail_member=[]
             
@@ -125,15 +128,18 @@ class TrainerCRUD:
                         return False
                     
             else:
-                print("동명이인이 존재합니다.")
-                print("=======동명이인 리스트=======")
+                print("동명이인이 존재합니다.\n")
+                
+                print(f"{"=======동명이인 리스트=======":^40}")
                 for  i, m in enumerate(detail_member):
                     print(f"ㅡㅡㅡㅡㅡㅡㅡNo.{i + 1:03d}ㅡㅡㅡㅡㅡㅡㅡ")
                     for key, value in m.items():
-                        print(f"{key:<10}: {value:^10}")
+                        print(f"| {key:<10}: {value:^10}")
                 print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
-                same_num = input("조회할 번호를 선택하세요: ")
+                
+                same_num = input(f"조회할 번호를 선택하세요(1~{len(detail_member)}): ").strip()
                 idx = int(same_num)-1
+                
                 print("ㅡ" * 10)
                 for key, value in detail_member[idx].items():
                     print(f"{key:<10}: {value:^10}")
@@ -175,7 +181,7 @@ class TrainerCRUD:
     def modify_member(self, select_member, check_member):
         print("회원 정보 수정을 시작합니다.\n")
         while True:        
-            modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ")
+            modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ").strip()
             if modify_key in select_member:
                 for member in self.members:
                     if member == select_member:

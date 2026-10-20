@@ -2,6 +2,8 @@ import os
 import json
 from datetime import datetime
 
+from utils import align
+
 class MachineList2:
     def __init__(self):
         self.machine = []
@@ -27,14 +29,14 @@ class MachineList:
         body_list=[]
         #machine id?
         # machine_id = input("운동id를 입력하세요: ")
-        machine_name = input("운동 종목을 입력하세요: ")
+        machine_name = input("운동 종목을 입력하세요: ").strip()
         for machine in self.machines:
             if (machine['machine'] == machine_name):
                 print("이미 존재하는 운동 종목입니다.")
                 return False
         
         while True :
-            body = input("운동 부위를 입력하세요: ")
+            body = input("운동 부위를 입력하세요: ").strip()
             body_list.append(body)
             go = input("운동 부위를 계속 입력하시겠습니까?(Y/N): ").strip().lower()
             if not go in ("y", "yes", "네", "예"):
@@ -59,15 +61,14 @@ class MachineList:
     
     def do_retrive(self):
         if self.machines:
-            
-            print("=======전체 운동 리스트=======")
+            print(f"{"=======전체 운동 리스트=======":^60}")
             for index, machine in enumerate(self.machines.copy()):
                 print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                 for key, value in machine.items():
                     if type(value) == type([]):
-                        print(f"| {key:<13}: {str(value)[1:-1]:^45} |")
+                        print(f"| {key:<{13-align(key)}}: {str(value)[1:-1]:^{45-align(str(value)[1:-1])}} |")
                     else:
-                        print(f"| {key:<13}: {value:^45} |")
+                        print(f"| {key:<{13-align(key)}}: {value:^{45-align(value)}} |")
             print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
             return True
         
@@ -80,8 +81,7 @@ class MachineList:
     def do_select_one(self, select_num="1"):
         if self.machines:
             word = {"1":"조회", "3":"수정", "4":"삭제"}[select_num]
-            print(f"{select_num}. 운동 종목 {word}를 선택했습니다.")
-            select_machine = input(f"{word} 할 운동 이름을 입력해주세요: ")
+            select_machine = input(f"{word} 할 운동 이름을 입력해주세요: ").strip()
             is_machine=False #중복운동 관리할때 count=1로 만들면 바로 관리가능
             detail_machine=None
             
@@ -141,16 +141,17 @@ class MachineList:
         print("운동 정보 수정을 시작합니다.\n")
         # option = [key for key, _ in select_machine.items()]
         while True:
-            modify_key = input("수정할 정보를 선택해주세요?[machine, body_list, ...]: ")
+            modify_key = input("수정할 정보를 선택해주세요?[machine, body_list, ...]: ").strip()
             if modify_key in select_machine:
                 for machine in self.machines:
                     if machine == select_machine:
                         while True:
-                            modify_value=input(f"기존 {modify_key}는 {machine[modify_key]}입니다. 변경할 내용을 적어주세요: ")
+                            modify_value=input(f"기존 {modify_key}는 {machine[modify_key]}입니다. 변경할 내용을 적어주세요: ").strip()
                             if modify_value in [machine[modify_key] for machine in self.machines]:
                                 print(f"이미 존재하는 {modify_key}입니다.")
                             else:
                                 break
+                            
                         is_modify = input(f"정말 {modify_value}로 변경하시겠습니까?(Y/N): ").strip().lower()
                         if is_modify in ("y", "yes", "예", "네"):
                         
@@ -183,7 +184,7 @@ if __name__ == "__main__":
     machine_list = MachineList(machine_path)
     # machine_list.save_machine()
     while True:
-        select_num = input("번호 입력: ")
+        select_num = input("번호 입력: ").strip()
         if select_num == "1":
             machine_list.do_save()
         elif select_num == "2":
