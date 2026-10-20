@@ -91,9 +91,11 @@ def trainer_interface(members):
         elif select_num == "9":
             print("이전으로 돌아갑니다.\n")
             return True
+        
         elif select_num == "0":
             print("프로그램을 종료합니다.\n")
             return False
+        
         else:
             print("잘못된 접근입니다.\n")
         
@@ -160,10 +162,11 @@ def detail_interface(member):
             
             elif detail_num == "2":
                 print("\n2. 운동 기록 관리를 선택하셨습니다.")
+                #record
                 
             elif detail_num == "3":
                 print("\n3. 식단 관리를 선택하셨습니다.")
-                
+                #diet
             
             elif detail_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
@@ -208,6 +211,7 @@ def manage_machine(machines):
         elif select_num == "9":
             print("이전으로 돌아갑니다.")
             return True
+        
         elif select_num == "0":
             print("프로그램을 종료합니다.")
             return False
