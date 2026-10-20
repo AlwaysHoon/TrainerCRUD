@@ -31,7 +31,6 @@ def admin_interface(members, machines):
             "\n+=========관리자 모드=========+\n"
             " 1. 회원 관리\n"
             " 2. 운동 종목 관리\n"
-            " 3. 부가 서비스 관리\n"
             " 0. 프로그램 종료\n"
             "+=============================+"
             )
@@ -47,9 +46,7 @@ def admin_interface(members, machines):
             if not manage_machine(machines):
                 return
             
-        elif select_num == "3":
-            print("3.부가 서비스 관리를 선택하셨습니다.")
-            
+        
                         
         elif select_num == "0":
             print("프로그램을 종료합니다.")
@@ -145,7 +142,7 @@ def detail_interface(member):
                 " 1. 상세 기록 조회\n"
                 " 2. 운동 기록 관리\n"
                 " 3. 식단 관리\n"
-                " 4. \n"
+                " 4. 부가 서비스 관리\n"
                 " 5. \n"
                 " 9. 이전으로\n"
                 " 0. 프로그램 종료\n"
@@ -167,7 +164,9 @@ def detail_interface(member):
             elif detail_num == "3":
                 print("\n3. 식단 관리를 선택하셨습니다.")
                 #diet
-            
+            elif detail_num == "4":
+                print("\n4. 부가 서비스 관리를 선택하셨습니다.")
+                
             elif detail_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
                 return True

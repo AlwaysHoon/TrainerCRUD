@@ -57,13 +57,13 @@ class TrainerCRUD:
                 if (index % 2) == 0:
                     l=[(key,value) for key, value in member.items()]
                     if index == (len(self.members)-1):
-                        print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+2:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+                        print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
                         for i in range(len(l)):
                             l_key, l_value = l[i][0], l[i][1]
                             print(f"| {l_key:<{15-align(l_key)}}: {l_value:^{25-align(l_value)}} | {" ":<13}: {" ":^25} |")    
                 else:
                     r=[(key,value) for key, value in member.items()]
-                    print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+                    print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
                     for i in range(len(l)):
                         l_key, l_value, r_key, r_value = l[i][0], l[i][1], r[i][0], r[i][1]
                         print(f"| {l_key:<{15-align(l_key)}}: {l_value:^{25-align(l_value)}} | {r_key:<{15-align(r_key)}}: {r_value:^{25-align(r_value)}} |")

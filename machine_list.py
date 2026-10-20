@@ -9,16 +9,58 @@ class MachineList:
     def __init__(self, machine_path):
         self.machine_path = machine_path
         with open(self.machine_path, "r", encoding='utf-8') as f:
-            self.machines = json.load(f)  # load machines.json
+            self.body_list = json.load(f)  # load machines.json
             
+            
+            
+    # 운동 부위를 메인, 서브로 운동 종목
     def do_save(self):
+            machine_list = []
+            #machine id?
+            # machine_id = input("운동id를 입력하세요: ")
+            muscle = input("운동 부위을 입력하세요: ").strip()
+            
+            #운동 종목 이름만 중복처리
+            for body in self.body_list:
+                if body['muscle'] == muscle:
+                    print("이미 존재하는 운동 종목입니다.")
+                    return False
+            
+            #운동부위 연속입력
+            while True :
+                machine = input("운동 부위를 입력하세요: ").strip()
+                machine_list.append(machine)
+                go = input("운동 부위를 계속 입력하시겠습니까?(Y/N): ").strip().lower()
+                if not go in ("y", "yes", "네", "예"):
+                    break
+            
+            #최초 등록일, 최근 수정일
+            today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
+            save_time = str(today)
+            modify_time = str(today)
+            
+            new_machine = {
+                           'muscle': muscle,
+                           'machine': machine_list,
+                           'save_time': save_time,
+                          'modify_time': modify_time}
+            
+            # 전체 멤버 데이터베이스에 새 멤버 등록
+            self.body_list.append(new_machine)
+            with open(self.machine_path, mode='w', encoding='utf-8') as f:
+                json.dump(self.body_list, f, ensure_ascii=False, indent=4)
+                
+            print(f"{muscle}: {machine_list} 등록에 성공했습니다.")
+            return True
+        
+    def do_save2(self):
         body_list = []
         #machine id?
         # machine_id = input("운동id를 입력하세요: ")
         machine_name = input("운동 종목을 입력하세요: ").strip()
         
         #운동 종목 이름만 중복처리
-        for machine in self.machines:
+        for machine in self.body_list:
             if machine['machine'] == machine_name:
                 print("이미 존재하는 운동 종목입니다.")
                 return False
@@ -42,17 +84,17 @@ class MachineList:
                       'modify_time': modify_time}
         
         # 전체 멤버 데이터베이스에 새 멤버 등록
-        self.machines.append(new_machine)
+        self.body_list.append(new_machine)
         with open(self.machine_path, mode='w', encoding='utf-8') as f:
-            json.dump(self.machines, f, ensure_ascii=False, indent=4)
+            json.dump(self.body_list, f, ensure_ascii=False, indent=4)
             
         print(f"{machine_name}: {body_list} 등록에 성공했습니다.")
         return True
     
     def do_retrive(self):
-        if self.machines:
+        if self.body_list:
             print(f"{"=======전체 운동 리스트=======":^60}")
-            for index, machine in enumerate(self.machines.copy()):
+            for index, machine in enumerate(self.body_list.copy()):
                 print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                 for key, value in machine.items():
                     #운동 부위는 리스트여서 따로 처리
@@ -68,13 +110,13 @@ class MachineList:
             return False
             
     def do_select_one(self, select_num="1"):
-        if self.machines:
+        if self.body_list:
             word = {"1":"조회", "3":"수정", "4":"삭제"}[select_num]
             select_machine = input(f"{word} 할 운동 이름을 입력해주세요: ").strip()
             is_machine = False # 중복이 없기에 T/F
             detail_machine = None
             
-            for machine in self.machines:
+            for machine in self.body_list:
                 if select_machine == machine['machine']:
                     is_machine = True
                     detail_machine = machine
@@ -97,7 +139,7 @@ class MachineList:
                         self.modify_machine(detail_machine)
                         
                         with open(self.machine_path, mode='w', encoding='utf-8') as f:
-                            json.dump(self.machines, f, ensure_ascii=False, indent=4)
+                            json.dump(self.body_list, f, ensure_ascii=False, indent=4)
                         return True
                     
                     else:
@@ -108,10 +150,10 @@ class MachineList:
                     is_delete = input("삭제하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower()
                                 
                     if is_delete in ("y", "yes", "예", "네"):
-                        self.machines.remove(detail_machine)
+                        self.body_list.remove(detail_machine)
                         
                         with open(self.machine_path, mode='w', encoding='utf-8') as f:
-                            json.dump(self.machines, f, ensure_ascii=False, indent=4)
+                            json.dump(self.body_list, f, ensure_ascii=False, indent=4)
                         print("운동 삭제에 성공했습니다.")
                         return True
                     
@@ -131,11 +173,11 @@ class MachineList:
         while True:
             modify_key = input("수정할 정보를 선택해주세요?[machine, body_list, ...]: ").strip()
             if modify_key in select_machine:
-                for machine in self.machines:
+                for machine in self.body_list:
                     if machine == select_machine:
                         while True:
                             modify_value = input(f"기존 {modify_key}는 {machine[modify_key]}입니다. 변경할 내용을 적어주세요: ").strip()
-                            if modify_value in [machine[modify_key] for machine in self.machines]:
+                            if modify_value in [machine[modify_key] for machine in self.body_list]:
                                 print(f"이미 존재하는 {modify_key}입니다.")
                             else:
                                 break
