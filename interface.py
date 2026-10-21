@@ -56,7 +56,7 @@ def admin_interface(members, machines):
 def trainer_interface(members):        
     while True:        
         print(
-            "\n=========관리자 모드=========\n"
+            "\n========회원 관리 모드========\n"
             " 1. 회원 등록\n"
             " 2. 전체 회원 조회\n"
             " 3. 회원 정보 수정\n"

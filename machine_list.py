@@ -27,7 +27,11 @@ class MachineList:
         #운동부위 연속입력
         while True :
             machine = input("운동 종목을 입력하세요: ").strip()
-            machine_list.append(machine)
+            if machine in machine_list:
+                print("중복내용입니다.")
+            else:    
+                machine_list.append(machine)
+                
             go = input("운동 종목을 계속 입력하시겠습니까?(Y/N): ").strip().lower()
             if not go in ("y", "yes", "네", "예"):
                 break
