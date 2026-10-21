@@ -232,6 +232,13 @@ if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__)) #C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, 'data') #C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, 'members.json')
+    
+    os.makedirs(DATA_DIR, exist_ok=True)
+    
+    if not os.path.exists(member_path):
+        with open(member_path, "w", encoding='utf-8') as f:
+            json.dump([],f, ensure_ascii=False, indent=4)
+    
     # train_sys = TrainerCRUD(member_path)
     with open(member_path, "r", encoding='utf-8') as f:
                 members = json.load(f)

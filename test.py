@@ -14,9 +14,12 @@ if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__)) #C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, 'data') #C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, 'members.json')
+    muscle_path = os.path.join(DATA_DIR, 'machines.json')
     # train_sys = TrainerCRUD(member_path)
     with open(member_path, "r", encoding='utf-8') as f:
                 members = json.load(f)
+    with open(muscle_path, "r", encoding='utf-8') as f:
+                muscles = json.load(f)
     # # if login_interface():
     # #     trainer_interface(members)
     # train_sys = TrainerCRUD(member_path)
@@ -34,23 +37,25 @@ if __name__ == "__main__":
     def align(word):
         count= sum(1 for i in word if unicodedata.east_asian_width(i) in 'WF')
         return count
-    print(f"{"=======전체 회원 리스트=======":^77}")
-    for index, member in enumerate(members):
-        if (index % 2) == 0:
-            left=[(key,value) for key, value in member.items()]
-            if index == (len(members)-1):
-                print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+2:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
-                for i in range(len(left)):
+    # print(f"{"=======전체 회원 리스트=======":^77}")
+    # for index, member in enumerate(members):
+    #     if (index % 2) == 0:
+    #         left=[(key,value) for key, value in member.items()]
+    #         if index == (len(members)-1):
+    #             print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+2:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+    #             for i in range(len(left)):
                     
-                    print(f"| {left[i][0]:<{15-align(left[i][0])}}: {left[i][1]:^{25-align(left[i][0])}} | {" ":<13}: {" ":^25} |")    
-        else:
-            right=[(key,value) for key, value in member.items()]
-            print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
-            for i in range(len(left)):
+    #                 print(f"| {left[i][0]:<{15-align(left[i][0])}}: {left[i][1]:^{25-align(left[i][0])}} | {" ":<13}: {" ":^25} |")    
+    #     else:
+    #         right=[(key,value) for key, value in member.items()]
+    #         print(f'+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index+1:3d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+    #         for i in range(len(left)):
                 
-                print(f"| {left[i][0]:<{15-align(left[i][0])}}: {left[i][1]:^{25-align(left[i][1])}} | {right[i][0]:<{15-align(right[i][0])}}: {right[i][1]:^{25-align(right[i][1])}} |")
-    print('+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
-    
+    #             print(f"| {left[i][0]:<{15-align(left[i][0])}}: {left[i][1]:^{25-align(left[i][1])}} | {right[i][0]:<{15-align(right[i][0])}}: {right[i][1]:^{25-align(right[i][1])}} |")
+    # print('+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+')
+    for muscle in muscles:
+        for i,v in enumerate(muscle['body_list']):
+            print(i, v)
 
     
     

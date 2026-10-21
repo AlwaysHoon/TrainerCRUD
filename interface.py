@@ -177,6 +177,8 @@ def detail_interface(member):
             
             else:
                 print("잘못된 접근입니다.\n")
+    else:
+        return True
 
 def manage_machine(machines):
     while True:
@@ -201,11 +203,13 @@ def manage_machine(machines):
             
         elif select_num == "3":
             print("운동 종목 수정을 선택하셨습니다.")
-            machines.do_select_one(select_num)
+            if not machines.do_select_one(select_num):
+                return False
             
         elif select_num == "4":
             print("운동 종목 삭제를 선택하셨습니다.")
-            machines.do_select_one(select_num)
+            if not machines.do_select_one(select_num):
+                return False
             
         elif select_num == "9":
             print("이전으로 돌아갑니다.")
@@ -219,10 +223,19 @@ if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__)) #C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, 'data') #C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, 'members.json')
-    machine_path = os.path.join(DATA_DIR, 'machines.json')
+    machine_path = os.path.join(DATA_DIR, 'muscle.json')
+    
+    os.makedirs(DATA_DIR, exist_ok=True)
+    
+    if not os.path.exists(member_path):
+        with open(member_path, "w", encoding='utf-8') as f:
+            json.dump([],f, ensure_ascii=False, indent=4)
+            
+    if not os.path.exists(machine_path):
+        with open(machine_path, "w", encoding='utf-8') as f:
+            json.dump([],f, ensure_ascii=False, indent=4)
     # train_sys = TrainerCRUD(member_path)
-    with open(member_path, "r", encoding='utf-8') as f:
-                members = json.load(f)
+    
     # if login_interface():
     #     trainer_interface(members)
     train_sys = TrainerCRUD(member_path)
