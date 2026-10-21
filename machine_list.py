@@ -13,43 +13,43 @@ class MachineList:
             
     # 운동 부위를 메인, 서브로 운동 종목
     def do_save(self):
-            machine_list = []
-            #machine id?
-            # machine_id = input("운동id를 입력하세요: ")
-            muscle = input("운동 부위을 입력하세요: ").strip()
+        machine_list = []
+        #machine id?
+        # machine_id = input("운동id를 입력하세요: ")
+        muscle = input("운동 부위을 입력하세요: ").strip()
+        
+        #운동 종목 이름만 중복처리
+        for body in self.body_list:
+            if body['muscle'] == muscle:
+                print("이미 존재하는 운동 부위입니다.")
+                return False
+        
+        #운동부위 연속입력
+        while True :
+            machine = input("운동 종목을 입력하세요: ").strip()
+            machine_list.append(machine)
+            go = input("운동 종목을 계속 입력하시겠습니까?(Y/N): ").strip().lower()
+            if not go in ("y", "yes", "네", "예"):
+                break
+        
+        #최초 등록일, 최근 수정일
+        today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
+        save_time = str(today)
+        modify_time = str(today)
+        
+        new_machine = {
+                        'muscle': muscle,
+                        'machines': machine_list,
+                        'save_time': save_time,
+                        'modify_time': modify_time}
+        
+        # 전체 멤버 데이터베이스에 새 멤버 등록
+        self.body_list.append(new_machine)
+        with open(self.machine_path, mode='w', encoding='utf-8') as f:
+            json.dump(self.body_list, f, ensure_ascii=False, indent=4)
             
-            #운동 종목 이름만 중복처리
-            for body in self.body_list:
-                if body['muscle'] == muscle:
-                    print("이미 존재하는 운동 부위입니다.")
-                    return False
-            
-            #운동부위 연속입력
-            while True :
-                machine = input("운동 종목을 입력하세요: ").strip()
-                machine_list.append(machine)
-                go = input("운동 종목을 계속 입력하시겠습니까?(Y/N): ").strip().lower()
-                if not go in ("y", "yes", "네", "예"):
-                    break
-            
-            #최초 등록일, 최근 수정일
-            today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
-            save_time = str(today)
-            modify_time = str(today)
-            
-            new_machine = {
-                           'muscle': muscle,
-                           'machines': machine_list,
-                           'save_time': save_time,
-                          'modify_time': modify_time}
-            
-            # 전체 멤버 데이터베이스에 새 멤버 등록
-            self.body_list.append(new_machine)
-            with open(self.machine_path, mode='w', encoding='utf-8') as f:
-                json.dump(self.body_list, f, ensure_ascii=False, indent=4)
-                
-            print(f"{muscle}: {machine_list} 등록에 성공했습니다.")
-            return True
+        print(f"{muscle}: {machine_list} 등록에 성공했습니다.")
+        return True
     
     def do_retrive(self):
         if self.body_list:
@@ -221,7 +221,7 @@ class MachineList:
                             
                             elif choose_mod == "0":
                                 print("프로그램을 종료합니다.")
-                                return False
+                                return
                             
                             else:
                                 print("잘못된 접근입니다.")
@@ -240,8 +240,11 @@ class MachineList:
                         else:
                             return 
         
-    def sort_body_list(self):
+    def sort_machine_list(self):
         pass
+    
+    
+    
     
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__)) #C:\Users\jihun\Archive\aicon\mini_project
