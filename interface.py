@@ -4,7 +4,10 @@ import json
 from trainer_crud import TrainerCRUD
 from machine_list import MachineList
 from utils import align
-from extra_service import ExtraServiceCRUD, extra_interface
+
+# from extra_service import ExtraServiceCRUD, extra_interface
+from extra_service import ExtraServiceCRUD
+
 
 def login_interface():
     print("========관리자 로그인========")
@@ -51,8 +54,9 @@ def admin_interface(members, machines, extra):
                 return
         elif select_num == "3":
             print("3. 부가 서비스 관리를 선택하셨습니다.")
-            extra_interface(extra)
-            
+            if not extra_interface(extra):
+                return
+
         elif select_num == "0":
             print("프로그램을 종료합니다.")
             return
@@ -178,7 +182,7 @@ def detail_interface(member):
             elif detail_num == "3":
                 print("\n3. 식단 관리를 선택하셨습니다.")
                 # diet
-            
+
             elif detail_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
                 return True
@@ -236,6 +240,57 @@ def manage_machine(machines):
             print("잘못된 접근입니다.\n")
 
 
+def extra_interface(extra):
+    while True:
+        print(
+            "\n=======부가 서비스 관리=======\n"
+            "1. 락커 배정\n"
+            "2. 락커 배정 현황 조회\n"
+            "3. 락커 변경\n"
+            "4. 락커 해제\n"
+            "5. 운동복 이용 여부 등록\n"
+            "6. 운동복 이용 현황 조회\n"
+            "9. 이전으로\n"
+            "0. 프로그램 종료\n"
+            "=============================="
+        )
+        select_num = input("번호를 입력하세요: ").strip()
+        print(" ")
+
+        if select_num == "1":
+            extra.do_assign_locker()
+
+        elif select_num == "2":
+            extra.do_retrieve_lockers()
+            
+        elif select_num == "3":
+            extra.do_change_locker()
+            
+        elif select_num == "4":
+            extra.do_release_locker()
+            
+        elif select_num == "5":
+            extra.do_register_uniform()
+            
+        elif select_num == "6":
+            print("1. 전체 회원 조회\n2. 특정 회원 조회")
+            sub = input("번호를 입력하세요: ").strip()
+            if sub == "1":
+                extra.do_retrieve_uniform_all()
+            elif sub == "2":
+                extra.do_retrieve_uniform_one()
+            else:
+                print("잘못된 접근입니다.")
+        elif select_num == "9":
+            print("이전 화면으로 돌아갑니다.")
+            return True
+        elif select_num == "0":
+            print("프로그램을 종료합니다.")
+            return False
+        else:
+            print("잘못된 접근입니다.\n")
+
+
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(
         os.path.abspath(__file__)
@@ -261,12 +316,12 @@ if __name__ == "__main__":
     #     trainer_interface(members)
     train_sys = TrainerCRUD(member_path)
     machine_sys = MachineList(machine_path)
-    
-    extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, 'members'), train_sys)
+
+    extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
     train_sys.extra = extra_sys  # 회원 삭제 시 락커/운동복 정리
-        
+
     admin_interface(train_sys, machine_sys, extra_sys)
-    
+
     # trainer_interface(train_sys, extra_sys)
 
 """

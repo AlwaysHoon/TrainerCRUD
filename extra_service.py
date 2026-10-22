@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime
+from utils import *
 
 LOCKER_COUNT = 30  # 전체 락커 수 (팀과 합의 후 변경)
 TIME_FORMAT = "%y/%m/%d %H:%M:%S"
@@ -107,13 +108,16 @@ class ExtraServiceCRUD:
     def do_retrieve_lockers(self):
         used = self.locker_map()
         print(f"{'=======락커 배정 현황=======':^40}")
+        print("ㅡ" * 30)
         print(f"{'번호':<6}{'상태':<8}{'회원 아이디':<14}{'이름':<10}{'배정일시'}")
+        print("ㅡ" * 30)
         for no in range(1, LOCKER_COUNT + 1):
             if no in used:
                 member, data = used[no]
                 print(f"{no:<8}{'사용중':<8}{member['user_id']:<16}{member['name']:<10}{data['assign_time']}")
             else:
                 print(f"{no:<8}{'비어있음':<8}")
+        print("ㅡ" * 30)
         print(f"사용 {len(used)} / 전체 {LOCKER_COUNT} (빈 락커 {LOCKER_COUNT - len(used)})")
         return True
 
@@ -196,13 +200,16 @@ class ExtraServiceCRUD:
             print("등록된 회원이 없습니다.")
             return False
         print(f"{'=======운동복 이용 현황=======':^40}")
+        print("ㅡ" * 20)
         print(f"{'회원 아이디':<14}{'이름':<10}{'운동복'}")
         use_count = 0
+        print("ㅡ" * 20)
         for member in members:
             use = self.read_data(member["user_id"])["use_uniform"]
             if use:
                 use_count += 1
-            print(f"{member['user_id']:<16}{member['name']:<10}{self.uniform_text(use)}")
+            print(f"{member['user_id']:<{19-align(member['user_id'])}}{member['name']:<{12-align(member['name'])}}{self.uniform_text(use)}")
+        print("ㅡ" * 20)
         print(f"이용 {use_count}명 / 전체 {len(members)}명")
         return True
 
