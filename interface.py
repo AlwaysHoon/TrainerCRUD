@@ -34,6 +34,7 @@ def admin_interface(members, machines, extra):
             "\n+=========관리자 모드=========+\n"
             " 1. 회원 관리\n"
             " 2. 운동 종목 관리\n"
+            " 3. 부가 서비스 관리\n"
             " 0. 프로그램 종료\n"
             "+=============================+"
         )
@@ -48,7 +49,10 @@ def admin_interface(members, machines, extra):
             print("2. 운동 종목 관리를 선택하셨습니다.\n")
             if not manage_machine(machines):
                 return
-
+        elif select_num == "3":
+            print("3. 부가 서비스 관리를 선택하셨습니다.")
+            extra_interface(extra)
+            
         elif select_num == "0":
             print("프로그램을 종료합니다.")
             return
@@ -56,7 +60,7 @@ def admin_interface(members, machines, extra):
             print("잘못된 접근입니다.\n")
 
 
-def trainer_interface(members, extra):
+def trainer_interface(members):
     while True:
         print(
             "\n========회원 관리 모드========\n"
@@ -77,7 +81,7 @@ def trainer_interface(members, extra):
 
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다.\n")
-            if not search_interface(members, extra):
+            if not search_interface(members):
                 return False
 
         elif select_num == "3":
@@ -100,7 +104,7 @@ def trainer_interface(members, extra):
             print("잘못된 접근입니다.\n")
 
 
-def search_interface(members, extra):
+def search_interface(members):
     while True:
         if not members.do_retrive():
             return True
@@ -119,7 +123,7 @@ def search_interface(members, extra):
             detail_member = members.do_select_one(search_num)
 
             if detail_member:
-                if not detail_interface(detail_member, extra):
+                if not detail_interface(detail_member):
                     return False
 
             else:
@@ -137,7 +141,7 @@ def search_interface(members, extra):
             print("잘못된 접근입니다.\n")
 
 
-def detail_interface(member, extra):
+def detail_interface(member):
     see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
     if see_more in ("y", "yes", "네", "예"):
         while True:
@@ -174,9 +178,7 @@ def detail_interface(member, extra):
             elif detail_num == "3":
                 print("\n3. 식단 관리를 선택하셨습니다.")
                 # diet
-            elif detail_num == "4":
-                print("\n4. 부가 서비스 관리를 선택하셨습니다.")
-                extra_interface(extra)
+            
             elif detail_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
                 return True
