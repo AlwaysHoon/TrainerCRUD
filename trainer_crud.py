@@ -12,7 +12,7 @@ class TrainerCRUD:
             self.members = json.load(f)  # load members.json
 
     def do_save(self):
-        # 이름(한글or영어), 이메일(@필수, gmail, naver만 받을건지)의 작성양식 추가 필요
+        # 이름(한글or영어) 양식 의논
         # 동명이인의 경우 이름과 이메일이 모두 같을 때만 중복 처리
         # user_id와 email은 세상에 단 하나밖에 없다는 가정
         # 분할시켜서 각 입력란에 배치해도됨 추후 논의(선택사항)

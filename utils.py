@@ -28,15 +28,6 @@ def wrap(machines, width=45):
     if current:
         lines.append(current)
     return lines
-    
-# machines = ['가가', '나나', '다다', '라라', '가나다가나다', '가나다라마바사아', '가가가가' ]
-
-# for i in wrap(machines):
-#     print(i, len(i))
-
-# machines2  = ['Arnold Press', 'Behind Overhead Press', 'Cable Rever Fly', 'Face Pull', 'Front Raise' ]
-# for i in wrap(machines2):
-#     print(i, len(i))
 
 def validate_email(email):
         if not isinstance(email, str):

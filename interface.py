@@ -4,7 +4,7 @@ import json
 from trainer_crud import TrainerCRUD
 from machine_list import MachineList
 from utils import align
-
+from extra_service import ExtraServiceCRUD, extra_interface
 
 def login_interface():
     print("========관리자 로그인========")
@@ -28,7 +28,7 @@ def login_interface():
             return True
 
 
-def admin_interface(members, machines):
+def admin_interface(members, machines, extra):
     while True:
         print(
             "\n+=========관리자 모드=========+\n"
@@ -41,7 +41,7 @@ def admin_interface(members, machines):
 
         if select_num == "1":
             print("1. 회원 관리를 선택하셨습니다. ")
-            if not trainer_interface(members):
+            if not trainer_interface(members, extra):
                 return
 
         elif select_num == "2":
@@ -56,7 +56,7 @@ def admin_interface(members, machines):
             print("잘못된 접근입니다.\n")
 
 
-def trainer_interface(members):
+def trainer_interface(members, extra):
     while True:
         print(
             "\n========회원 관리 모드========\n"
@@ -77,7 +77,7 @@ def trainer_interface(members):
 
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다.\n")
-            if not search_interface(members):
+            if not search_interface(members, extra):
                 return False
 
         elif select_num == "3":
@@ -100,7 +100,7 @@ def trainer_interface(members):
             print("잘못된 접근입니다.\n")
 
 
-def search_interface(members):
+def search_interface(members, extra):
     while True:
         if not members.do_retrive():
             return True
@@ -119,7 +119,7 @@ def search_interface(members):
             detail_member = members.do_select_one(search_num)
 
             if detail_member:
-                if not detail_interface(detail_member):
+                if not detail_interface(detail_member, extra):
                     return False
 
             else:
@@ -137,7 +137,7 @@ def search_interface(members):
             print("잘못된 접근입니다.\n")
 
 
-def detail_interface(member):
+def detail_interface(member, extra):
     see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
     if see_more in ("y", "yes", "네", "예"):
         while True:
@@ -176,7 +176,7 @@ def detail_interface(member):
                 # diet
             elif detail_num == "4":
                 print("\n4. 부가 서비스 관리를 선택하셨습니다.")
-
+                extra_interface(extra)
             elif detail_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
                 return True
@@ -259,8 +259,13 @@ if __name__ == "__main__":
     #     trainer_interface(members)
     train_sys = TrainerCRUD(member_path)
     machine_sys = MachineList(machine_path)
-    admin_interface(train_sys, machine_sys)
-
+    
+    extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, 'members'), train_sys)
+    train_sys.extra = extra_sys  # 회원 삭제 시 락커/운동복 정리
+        
+    admin_interface(train_sys, machine_sys, extra_sys)
+    
+    # trainer_interface(train_sys, extra_sys)
 
 """
 ===============================================================================
