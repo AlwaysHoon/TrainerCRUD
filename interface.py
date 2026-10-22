@@ -125,13 +125,8 @@ def search_interface(members):
         if search_num == "1":
             print("1. 회원 검색을 시작합니다.")
             detail_member = members.do_select_one(search_num)
-
-            if detail_member:
-                if not detail_interface(detail_member):
-                    return False
-
-            else:
-                pass
+            if detail_member and (not detail_interface(detail_member)):
+                return False
 
         elif search_num == "9":
             print("이전 화면으로 돌아갑니다.")
@@ -159,13 +154,7 @@ def detail_interface(member):
                 " 9. 이전으로\n"
                 " 0. 프로그램 종료"
             )
-            print(
-                "="
-                * (
-                    len(f"\n===========[ {member['name']} ]===========\n")
-                    - align(f"{member['name']}")
-                )
-            )
+            print("=" * (len(f"\n===========[ {member['name']} ]===========\n")- align(f"{member['name']}")))
 
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
             if detail_num == "1":
@@ -292,12 +281,8 @@ def extra_interface(extra):
 
 
 if __name__ == "__main__":
-    BASE_DIR = os.path.dirname(
-        os.path.abspath(__file__)
-    )  # C:\Users\jihun\Archive\aicon\mini_project
-    DATA_DIR = os.path.join(
-        BASE_DIR, "data"
-    )  # C:\Users\jihun\Archive\aicon\mini_project\data
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # C:\Users\jihun\Archive\aicon\mini_project
+    DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, "members.json")
     machine_path = os.path.join(DATA_DIR, "muscles.json")
 

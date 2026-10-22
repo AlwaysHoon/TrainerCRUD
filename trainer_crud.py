@@ -71,32 +71,17 @@ class TrainerCRUD:
                 if (index % 2) == 0:
                     l = [(key, value) for key, value in member.items()]
                     if index == (len(self.members) - 1):
-                        print(
-                            f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+"
-                        )
+                        print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                         for i in range(len(l)):
                             l_key, l_value = l[i][0], l[i][1]
-                            print(
-                                f"| {l_key:<{15 - align(l_key)}}: {l_value:^{25 - align(l_value)}} | {' ':<15}: {' ':^25} |"
-                            )
+                            print(f"| {l_key:<{15 - align(l_key)}}: {l_value:^{25 - align(l_value)}} | {' ':<15}: {' ':^25} |")
                 else:
                     r = [(key, value) for key, value in member.items()]
-                    print(
-                        f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+"
-                    )
+                    print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                     for i in range(len(l)):
-                        l_key, l_value, r_key, r_value = (
-                            l[i][0],
-                            l[i][1],
-                            r[i][0],
-                            r[i][1],
-                        )
-                        print(
-                            f"| {l_key:<{15 - align(l_key)}}: {l_value:^{25 - align(l_value)}} | {r_key:<{15 - align(r_key)}}: {r_value:^{25 - align(r_value)}} |"
-                        )
-            print(
-                "+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+"
-            )
+                        l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
+                        print(f"| {l_key:<{15 - align(l_key)}}: {l_value:^{25 - align(l_value)}} | {r_key:<{15 - align(r_key)}}: {r_value:^{25 - align(r_value)}} |")
+            print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
             return True
 
         else:
@@ -147,9 +132,7 @@ class TrainerCRUD:
                         return False
 
                 elif select_num == "4":  # 정보삭제"4"
-                    is_delete = (
-                        input("삭제하실 정보가 맞습니까?(Y/N): ").strip().lower()
-                    )
+                    is_delete = (input("삭제하실 정보가 맞습니까?(Y/N): ").strip().lower())
 
                     if is_delete in ("y", "yes", "예", "네"):
                         self.members.remove(detail_member[0])
@@ -174,14 +157,10 @@ class TrainerCRUD:
                 print("+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ+")
 
                 while True:
-                    same_num = input(
-                        f"조회할 번호를 선택하세요(1~{len(detail_member)}, 9:이전으로): "
-                    ).strip()
+                    same_num = input(f"조회할 번호를 선택하세요(1~{len(detail_member)}, 9:이전으로): ").strip()
 
                     if same_num.isdigit():
-                        if (int(same_num) >= 1) and (
-                            int(same_num) <= len(detail_member)
-                        ):
+                        if (int(same_num) >= 1) and (int(same_num) <= len(detail_member)):
                             break
                         if same_num == "9":
                             print("이전으로 돌아갑니다.")
@@ -203,31 +182,20 @@ class TrainerCRUD:
                     return detail_member[idx]
 
                 elif select_num == "3":  # 정보수정"3"
-                    is_modify = (
-                        input("수정하실 정보가 다음 정보가 맞습니까?(Y/N): ")
-                        .strip()
-                        .lower()
-                    )
+                    is_modify = (input("수정하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower())
                     if is_modify in ("y", "yes", "예", "네"):
-                        check_member = [
-                            v for i, v in enumerate(detail_member) if i != idx
-                        ]
+                        check_member = [v for i, v in enumerate(detail_member) if i != idx]
                         self.modify_member(detail_member[idx], check_member)
-
+                        
                         with open(self.member_path, mode="w", encoding="utf-8") as f:
                             json.dump(self.members, f, ensure_ascii=False, indent=4)
-
                         return True
                     else:
                         print("이전으로 돌아갑니다.")
                         return False
 
                 elif select_num == "4":  # 정보삭제"4"
-                    is_delete = (
-                        input("삭제하실 정보가 다음 정보가 맞습니까?(Y/N): ")
-                        .strip()
-                        .lower()
-                    )
+                    is_delete = (input("삭제하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower())
                     if is_delete in ("y", "yes", "예", "네"):
                         self.members.remove(detail_member[int(same_num) - 1])
 
@@ -246,22 +214,15 @@ class TrainerCRUD:
     def modify_member(self, select_member, check_member):
         print("\n회원 정보 수정을 시작합니다.\n")
         while True:
-            modify_key = input(
-                "수정할 정보를 선택해주세요?[name, email, ...]: "
-            ).strip()
+            modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ").strip()
             if modify_key in select_member:
                 for member in self.members:
                     if member == select_member:
                         while True:
-                            modify_value = input(
-                                f"기존 {modify_key}는 {select_member[modify_key]}입니다. 변경할 내용을 적어주세요: "
-                            )
+                            modify_value = input(f"기존 {modify_key}는 {select_member[modify_key]}입니다. 변경할 내용을 적어주세요: ")
 
                             # 중복처리
-                            if (modify_key != "name") and (
-                                modify_value
-                                in [member[modify_key] for member in self.members]
-                            ):
+                            if (modify_key != "name") and (modify_value in [member[modify_key] for member in self.members]):
                                 print(f"이미 존재하는 {modify_key}입니다.")
 
                             elif modify_key == "name":  # 동명이인은 이메일로 비교
@@ -271,16 +232,10 @@ class TrainerCRUD:
                             else:
                                 break
 
-                        is_modify = (
-                            input(f"정말 {modify_value}로 변경하시겠습니까?(Y/N): ")
-                            .strip()
-                            .lower()
-                        )
+                        is_modify = (input(f"정말 {modify_value}로 변경하시겠습니까?(Y/N): ").strip().lower())
                         if is_modify in ("y", "yes", "예", "네"):
                             member[modify_key] = modify_value
-                            member["modify_time"] = datetime.now().strftime(
-                                "%y/%m/%d %H:%M:%S"
-                            )
+                            member["modify_time"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
                             print(f"{modify_key} 변경에 성공했습니다.")
                             return True
 
@@ -298,12 +253,8 @@ class TrainerCRUD:
 
 
 if __name__ == "__main__":
-    BASE_DIR = os.path.dirname(
-        os.path.abspath(__file__)
-    )  # C:\Users\jihun\Archive\aicon\mini_project
-    DATA_DIR = os.path.join(
-        BASE_DIR, "data"
-    )  # C:\Users\jihun\Archive\aicon\mini_project\data
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # C:\Users\jihun\Archive\aicon\mini_project
+    DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, "members.json")
 
     os.makedirs(DATA_DIR, exist_ok=True)
