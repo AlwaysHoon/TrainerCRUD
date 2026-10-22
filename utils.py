@@ -3,7 +3,7 @@ for interface
 '''
 
 import unicodedata
-
+import re
 
 def align(word):
     count = sum(1 for i in word if unicodedata.east_asian_width(i) in 'WF')
@@ -37,3 +37,9 @@ def wrap(machines, width=45):
 # machines2  = ['Arnold Press', 'Behind Overhead Press', 'Cable Rever Fly', 'Face Pull', 'Front Raise' ]
 # for i in wrap(machines2):
 #     print(i, len(i))
+
+def validate_email(email):
+        if not isinstance(email, str):
+            return False
+        pattern = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+        return re.fullmatch(pattern, email) is not None

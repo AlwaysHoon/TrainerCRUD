@@ -3,19 +3,21 @@ import json
 
 from trainer_crud import TrainerCRUD
 from machine_list import MachineList
+from utils import align
+
 
 def login_interface():
     print("========관리자 로그인========")
     line1 = len("========관리자 로그인========")
     login_count = 0
-    
+
     while True:
         login_id = input("관리자id: ").strip()
         login_pw = input("관리자pw: ").strip()
         if login_id != "admin" or login_pw != "0000":
             login_count += 1
             print(f"존재하지 않는 관리자입니다.({login_count}/5회 틀림)")
-            
+
             if login_count >= 5:
                 print("아이디 입력 횟수를 초과하였습니다.\n")
                 print("=" * line1)
@@ -25,36 +27,37 @@ def login_interface():
             print("=" * line1)
             return True
 
+
 def admin_interface(members, machines):
-    while True:        
+    while True:
         print(
             "\n+=========관리자 모드=========+\n"
             " 1. 회원 관리\n"
             " 2. 운동 종목 관리\n"
             " 0. 프로그램 종료\n"
             "+=============================+"
-            )
+        )
         select_num = input("번호를 입력하세요: ").strip()
-        
+
         if select_num == "1":
             print("1. 회원 관리를 선택하셨습니다. ")
             if not trainer_interface(members):
                 return
-                
+
         elif select_num == "2":
             print("2. 운동 종목 관리를 선택하셨습니다.\n")
             if not manage_machine(machines):
                 return
-            
-        
-                        
+
         elif select_num == "0":
             print("프로그램을 종료합니다.")
             return
-            
-        
-def trainer_interface(members):        
-    while True:        
+        else:
+            print("잘못된 접근입니다.\n")
+
+
+def trainer_interface(members):
+    while True:
         print(
             "\n========회원 관리 모드========\n"
             " 1. 회원 등록\n"
@@ -64,79 +67,80 @@ def trainer_interface(members):
             " 9. 이전으로\n"
             " 0. 프로그램 종료\n"
             "============================="
-            )
+        )
         select_num = input("번호를 입력하세요: ").strip()
         print(" ")
-        
+
         if select_num == "1":
             print("1. 회원 등록을 선택하셨습니다.\n")
-            members.do_save()  
-                
+            members.do_save()
+
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다.\n")
             if not search_interface(members):
                 return False
-            
+
         elif select_num == "3":
             print("3. 회원 정보 수정을 선택하셨습니다.\n")
             members.do_select_one(select_num)
-                        
+
         elif select_num == "4":
             print("4. 회원 삭제를 선택하셨습니다.\n")
             members.do_select_one(select_num)
-            
+
         elif select_num == "9":
             print("이전으로 돌아갑니다.\n")
             return True
-        
+
         elif select_num == "0":
             print("프로그램을 종료합니다.\n")
             return False
-        
+
         else:
             print("잘못된 접근입니다.\n")
-        
+
+
 def search_interface(members):
     while True:
         if not members.do_retrive():
             return True
-        
+
         print(
             "\n=======회원 검색 모드=======\n"
             " 1. 회원 검색\n"
             " 9. 이전으로\n"
             " 0. 프로그램 종료\n"
             "============================"
-            )
+        )
         search_num = input("번호를 선택하세요: ").strip()
-        
+
         if search_num == "1":
             print("1. 회원 검색을 시작합니다.")
             detail_member = members.do_select_one(search_num)
-            
+
             if detail_member:
                 if not detail_interface(detail_member):
                     return False
-                
+
             else:
                 pass
-            
+
         elif search_num == "9":
             print("이전 화면으로 돌아갑니다.")
             return True
-        
+
         elif search_num == "0":
             print("프로그램을 종료합니다.")
             return False
-        
+
         else:
             print("잘못된 접근입니다.\n")
-        
+
+
 def detail_interface(member):
     see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
     if see_more in ("y", "yes", "네", "예"):
-        
-        while True:    
+        while True:
             print(
                 f"\n===========[ {member['name']} ]===========\n"
                 " 1. 상세 기록 조회\n"
@@ -145,40 +149,47 @@ def detail_interface(member):
                 " 4. 부가 서비스 관리\n"
                 " 5. \n"
                 " 9. 이전으로\n"
-                " 0. 프로그램 종료\n"
-                "==============================\n"
+                " 0. 프로그램 종료"
+            )
+            print(
+                "="
+                * (
+                    len(f"\n===========[ {member['name']} ]===========\n")
+                    - align(f"{member['name']}")
                 )
-            
+            )
+
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
             if detail_num == "1":
                 print("\n1. 상세 기록 조회를 선택하셨습니다.")
-                
+
                 for key, value in member.items():
-                    print(f"{key:<10}: {value:^10}")
-                #지금은 members.json의 내용들만 반환하지만 details.json을 추가함에 따라 변동될 예정
-            
+                    print(f"{key:<15}: {value:^25}")
+                # 지금은 members.json의 내용들만 반환하지만 details.json을 추가함에 따라 변동될 예정
+
             elif detail_num == "2":
                 print("\n2. 운동 기록 관리를 선택하셨습니다.")
-                #record
-                
+                # record
+
             elif detail_num == "3":
                 print("\n3. 식단 관리를 선택하셨습니다.")
-                #diet
+                # diet
             elif detail_num == "4":
                 print("\n4. 부가 서비스 관리를 선택하셨습니다.")
-                
+
             elif detail_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
                 return True
-            
+
             elif detail_num == "0":
                 print("프로그램을 종료합니다.\n")
                 return False
-            
+
             else:
                 print("잘못된 접근입니다.\n")
     else:
         return True
+
 
 def manage_machine(machines):
     while True:
@@ -189,62 +200,69 @@ def manage_machine(machines):
             " 3. 운동 종목 수정\n"
             " 4. 운동 종목 삭제\n"
             " 9. 이전으로\n"
-            " 0. 프로그램 종료\n"
-            "========================="
-            )
+            " 0. 프로그램 종료"
+        )
+        print("=" * 28)
         select_num = input("번호 입력: ").strip()
         if select_num == "1":
             print("1. 운동 종목 등록을 선택하셨습니다.\n")
             machines.do_save()
-            
+
         elif select_num == "2":
             print("2. 전체 운동 종목을 조회합니다.")
             machines.do_retrive()
-            
+
         elif select_num == "3":
             print("운동 종목 수정을 선택하셨습니다.")
             if not machines.do_select_one(select_num):
                 return False
-            
+
         elif select_num == "4":
             print("운동 종목 삭제를 선택하셨습니다.")
             if not machines.do_select_one(select_num):
                 return False
-            
+
         elif select_num == "9":
             print("이전으로 돌아갑니다.")
             return True
-        
+
         elif select_num == "0":
             print("프로그램을 종료합니다.")
             return False
 
+        else:
+            print("잘못된 접근입니다.\n")
+
+
 if __name__ == "__main__":
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__)) #C:\Users\jihun\Archive\aicon\mini_project
-    DATA_DIR = os.path.join(BASE_DIR, 'data') #C:\Users\jihun\Archive\aicon\mini_project\data
-    member_path = os.path.join(DATA_DIR, 'members.json')
-    machine_path = os.path.join(DATA_DIR, 'muscle.json')
-    
+    BASE_DIR = os.path.dirname(
+        os.path.abspath(__file__)
+    )  # C:\Users\jihun\Archive\aicon\mini_project
+    DATA_DIR = os.path.join(
+        BASE_DIR, "data"
+    )  # C:\Users\jihun\Archive\aicon\mini_project\data
+    member_path = os.path.join(DATA_DIR, "members.json")
+    machine_path = os.path.join(DATA_DIR, "muscles.json")
+
     os.makedirs(DATA_DIR, exist_ok=True)
-    
+
     if not os.path.exists(member_path):
-        with open(member_path, "w", encoding='utf-8') as f:
-            json.dump([],f, ensure_ascii=False, indent=4)
-            
+        with open(member_path, "w", encoding="utf-8") as f:
+            json.dump([], f, ensure_ascii=False, indent=4)
+
     if not os.path.exists(machine_path):
-        with open(machine_path, "w", encoding='utf-8') as f:
-            json.dump([],f, ensure_ascii=False, indent=4)
+        with open(machine_path, "w", encoding="utf-8") as f:
+            json.dump([], f, ensure_ascii=False, indent=4)
     # train_sys = TrainerCRUD(member_path)
-    
+
     # if login_interface():
     #     trainer_interface(members)
     train_sys = TrainerCRUD(member_path)
     machine_sys = MachineList(machine_path)
     admin_interface(train_sys, machine_sys)
-            
-            
-            
-'''
+
+
+"""
 ===============================================================================
 ~2026.10.16
 트레이너 앱
@@ -275,8 +293,8 @@ if __name__ == "__main__":
 
 -외부 API 및 크롤링: 회원 인바디에 따른 섭취 음식 칼로리 계산(식품안전나라에서 '식품 영양성분 데이터베이스'를 오픈API 형태로 무상 제공)
 
-'''
-'''
+"""
+"""
 =================================================================
 2026.10.17
 코딩을 하려고 보니까 회원리스트를 먼저 내보내면 선택화면이 가려질 우려가 있어서 뒤로 옮기고
@@ -297,5 +315,5 @@ detail_interface(): 개인관리 CRUD
 3. 개인관리 CRUD에 해당하는 데이터들의 관리 형식(개인별 폴더 or 주제별 파일)
 4. 전체 회원 조회 출력방식(정제된 데이터 OR lIST그대로)
 
-'''
-#if elif 로 번호를 쓴 것들 match-case로 바꿔도됨
+"""
+# if elif 로 번호를 쓴 것들 match-case로 바꿔도됨

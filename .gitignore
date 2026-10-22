@@ -38,3 +38,7 @@ Thumbs.db
 # #cnn
 # cnn/datasets/
 # cnn/checkpoints/
+
+#banned
+banned/
+test.py
