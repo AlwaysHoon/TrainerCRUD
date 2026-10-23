@@ -88,6 +88,10 @@ class TrainerCRUD:
             print("등록된 회원이 없습니다.")
             return False
 
+    
+    # 회원 삭제 시 부가서비스, 식단, 운동기록의 삭제도 필요함
+    # 세 json이 담긴 폴더를 통째로 삭제 추가 필요
+    #이름으로 조회만 있어서 user_id로 조회도 해야함
     def do_select_one(self, select_num="1"):
         if self.members:
             # 단순조회/수정/삭제를 통합
@@ -209,7 +213,65 @@ class TrainerCRUD:
         else:
             print("등록된 회원이 없습니다.")
             return False
+    def do_select_id(self, select_num="2"):
+        if self.members:
+            # 단순조회/수정/삭제를 통합
+            word = {"1": "조회", "3": "수정", "4": "삭제"}[select_num]
+            select_member = input(f"{word} 할 회원 ID를 입력해주세요: ").strip()
+            is_member = False
+            detail_member = None
 
+            for member in self.members:
+                if select_member == member["user_id"]:
+                    is_member = True
+                    detail_member = member
+                    break
+           
+            if is_member:
+                print("ㅡ" * 20)
+                for key, value in detail_member.items():
+                    print(f"{key:<12}: {value:^10}")
+                print("ㅡ" * 20)
+
+                if select_num == "1":  # 전체조회"2"->개인검색"1"
+                    return detail_member
+
+                elif select_num == "3":  # 정보수정"3"
+                    is_modify = (
+                        input("수정하실 정보가 맞습니까?(Y/N): ").strip().lower()
+                    )
+
+                    if is_modify in ("y", "yes", "예", "네"):
+                        self.modify_member(detail_member)
+
+                        with open(self.member_path, mode="w", encoding="utf-8") as f:
+                            json.dump(self.members, f, ensure_ascii=False, indent=4)
+                        return True
+                    else:
+                        print("이전으로 돌아갑니다.")
+                        return False
+
+                elif select_num == "4":  # 정보삭제"4"
+                    is_delete = (input("삭제하실 정보가 맞습니까?(Y/N): ").strip().lower())
+
+                    if is_delete in ("y", "yes", "예", "네"):
+                        self.members.remove(detail_member)
+
+                        with open(self.member_path, mode="w", encoding="utf-8") as f:
+                            json.dump(self.members, f, ensure_ascii=False, indent=4)
+                        print("회원 삭제에 성공했습니다.")
+                        return True
+                    else:
+                        print("이전으로 돌아갑니다.")
+                        return False
+            
+            else:
+                print("존재하지 않는 회원입니다.")
+                return False
+            
+        else:
+            print("등록된 회원이 없습니다.")
+            return False
     # 수정 후 중복 체크
     def modify_member(self, select_member, check_member):
         print("\n회원 정보 수정을 시작합니다.\n")

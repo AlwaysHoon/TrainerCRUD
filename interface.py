@@ -7,7 +7,7 @@ from utils import align
 
 # from extra_service import ExtraServiceCRUD, extra_interface
 from extra_service import ExtraServiceCRUD
-
+from diet import DietCRUD
 
 def login_interface():
     print("========관리자 로그인========")
@@ -31,7 +31,7 @@ def login_interface():
             return True
 
 
-def admin_interface(members, machines, extra):
+def admin_interface(members, machines, extra, diets):
     while True:
         print(
             "\n+=========관리자 모드=========+\n"
@@ -45,7 +45,7 @@ def admin_interface(members, machines, extra):
 
         if select_num == "1":
             print("1. 회원 관리를 선택하셨습니다. ")
-            if not trainer_interface(members, extra):
+            if not trainer_interface(members, diets):
                 return
 
         elif select_num == "2":
@@ -64,7 +64,7 @@ def admin_interface(members, machines, extra):
             print("잘못된 접근입니다.\n")
 
 
-def trainer_interface(members):
+def trainer_interface(members, diets):
     while True:
         print(
             "\n========회원 관리 모드========\n"
@@ -85,7 +85,7 @@ def trainer_interface(members):
 
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다.\n")
-            if not search_interface(members):
+            if not search_interface(members, diets):
                 return False
 
         elif select_num == "3":
@@ -108,14 +108,15 @@ def trainer_interface(members):
             print("잘못된 접근입니다.\n")
 
 
-def search_interface(members):
+def search_interface(members, diets):
     while True:
         if not members.do_retrive():
             return True
 
         print(
             "\n=======회원 검색 모드=======\n"
-            " 1. 회원 검색\n"
+            " 1. 회원 이름으로 검색"
+            " 2. 회원 ID로 검색\n"
             " 9. 이전으로\n"
             " 0. 프로그램 종료\n"
             "============================"
@@ -123,11 +124,14 @@ def search_interface(members):
         search_num = input("번호를 선택하세요: ").strip()
 
         if search_num == "1":
-            print("1. 회원 검색을 시작합니다.")
+            print("1. 회원 이름으로 검색을 시작합니다.")
             detail_member = members.do_select_one(search_num)
-            if detail_member and (not detail_interface(detail_member)):
+            if detail_member and (not detail_interface(detail_member, diets)):
                 return False
-
+        
+        elif search_num == "2":
+            print("2. 회원 ID로 검색을 시작합니다.")
+            detail_member = members.do_select_id(search_num)
         elif search_num == "9":
             print("이전 화면으로 돌아갑니다.")
             return True
@@ -140,7 +144,7 @@ def search_interface(members):
             print("잘못된 접근입니다.\n")
 
 
-def detail_interface(member):
+def detail_interface(member, diets):
     see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
     if see_more in ("y", "yes", "네", "예"):
         while True:
@@ -149,8 +153,6 @@ def detail_interface(member):
                 " 1. 상세 기록 조회\n"
                 " 2. 운동 기록 관리\n"
                 " 3. 식단 관리\n"
-                " 4. 부가 서비스 관리\n"
-                " 5. \n"
                 " 9. 이전으로\n"
                 " 0. 프로그램 종료"
             )
@@ -170,7 +172,8 @@ def detail_interface(member):
 
             elif detail_num == "3":
                 print("\n3. 식단 관리를 선택하셨습니다.")
-                # diet
+                if not diet_interface(diets, member):
+                    return False
 
             elif detail_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
@@ -185,49 +188,52 @@ def detail_interface(member):
     else:
         return True
 
-
-def manage_machine(machines):
+def diet_interface(diets, member):
     while True:
         print(
-            "\n=======운동 관리 모드=======\n"
-            " 1. 운동 종목 등록\n"
-            " 2. 전체 운동 종목 조회\n"
-            " 3. 운동 종목 수정\n"
-            " 4. 운동 종목 삭제\n"
+            f"\n=======[ {member['name']} ] 식단 관리=======\n"
+            " 1. 식단 기록 등록\n"
+            " 2. 식단 조회\n"
+            " 3. 식단 수정\n"
+            " 4. 식단 삭제\n"
+            " 5. 일일 섭취 칼로리 합계\n"
             " 9. 이전으로\n"
-            " 0. 프로그램 종료"
+            " 0. 프로그램 종료\n"
+            "=============================="
         )
-        print("=" * 28)
-        select_num = input("번호 입력: ").strip()
+        select_num = input("번호를 입력하세요: ").strip()
+        print(" ")
+
         if select_num == "1":
-            print("1. 운동 종목 등록을 선택하셨습니다.\n")
-            machines.do_save()
+            print("1. 식단 기록 등록을 선택하셨습니다.\n")
+            diets.do_save(member)
 
         elif select_num == "2":
-            print("2. 전체 운동 종목을 조회합니다.")
-            machines.do_retrive()
+            print("2. 식단 조회를 선택하셨습니다.\n")
+            diets.do_retrieve(member)
 
         elif select_num == "3":
-            print("운동 종목 수정을 선택하셨습니다.")
-            if not machines.do_select_one(select_num):
-                return False
+            print("3. 식단 수정을 선택하셨습니다.\n")
+            diets.do_select_one(member, select_num)
 
         elif select_num == "4":
-            print("운동 종목 삭제를 선택하셨습니다.")
-            if not machines.do_select_one(select_num):
-                return False
+            print("4. 식단 삭제를 선택하셨습니다.\n")
+            diets.do_select_one(member, select_num)
+
+        elif select_num == "5":
+            print("5. 일일 섭취 칼로리 합계를 선택하셨습니다.\n")
+            diets.do_daily_kcal(member)
 
         elif select_num == "9":
-            print("이전으로 돌아갑니다.")
+            print("이전 화면으로 돌아갑니다.\n")
             return True
 
         elif select_num == "0":
-            print("프로그램을 종료합니다.")
+            print("프로그램을 종료합니다.\n")
             return False
 
         else:
             print("잘못된 접근입니다.\n")
-
 
 def extra_interface(extra):
     while True:
@@ -279,6 +285,49 @@ def extra_interface(extra):
         else:
             print("잘못된 접근입니다.\n")
 
+def manage_machine(machines):
+    while True:
+        print(
+            "\n=======운동 관리 모드=======\n"
+            " 1. 운동 종목 등록\n"
+            " 2. 전체 운동 종목 조회\n"
+            " 3. 운동 종목 수정\n"
+            " 4. 운동 종목 삭제\n"
+            " 9. 이전으로\n"
+            " 0. 프로그램 종료"
+        )
+        print("=" * 28)
+        select_num = input("번호 입력: ").strip()
+        if select_num == "1":
+            print("1. 운동 종목 등록을 선택하셨습니다.\n")
+            machines.do_save()
+
+        elif select_num == "2":
+            print("2. 전체 운동 종목을 조회합니다.")
+            machines.do_retrive()
+
+        elif select_num == "3":
+            print("운동 종목 수정을 선택하셨습니다.")
+            if not machines.do_select_one(select_num):
+                return False
+
+        elif select_num == "4":
+            print("운동 종목 삭제를 선택하셨습니다.")
+            if not machines.do_select_one(select_num):
+                return False
+
+        elif select_num == "9":
+            print("이전으로 돌아갑니다.")
+            return True
+
+        elif select_num == "0":
+            print("프로그램을 종료합니다.")
+            return False
+
+        else:
+            print("잘못된 접근입니다.\n")
+
+
 
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # C:\Users\jihun\Archive\aicon\mini_project
@@ -303,9 +352,10 @@ if __name__ == "__main__":
     machine_sys = MachineList(machine_path)
 
     extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
+    
     train_sys.extra = extra_sys  # 회원 삭제 시 락커/운동복 정리
-
-    admin_interface(train_sys, machine_sys, extra_sys)
+    diet_sys = DietCRUD(os.path.join(DATA_DIR, "members"))  # 회원별 식단 관리
+    admin_interface(train_sys, machine_sys, extra_sys, diet_sys)
 
     # trainer_interface(train_sys, extra_sys)
 

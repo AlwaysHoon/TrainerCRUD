@@ -14,7 +14,7 @@ class ExtraServiceCRUD:
     회원별 폴더 data/members/<user_id>/extra_service.json 에 저장한다.
     락커 사용 현황은 '현재 등록된 회원'들의 파일을 읽어서 계산한다.
     '''
-
+    
     def __init__(self, member_dir, member_crud):
         self.member_dir = member_dir      # 예: data/members
         self.member_crud = member_crud    # TrainerCRUD 객체 (.members 를 항상 최신으로 참조)
