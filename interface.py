@@ -85,16 +85,20 @@ def trainer_interface(members, diets):
 
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다.\n")
-            if not search_interface(members, diets):
+            if not search_interface(members, diets, select_num):
                 return False
 
         elif select_num == "3":
             print("3. 회원 정보 수정을 선택하셨습니다.\n")
-            members.do_select_one(select_num)
-
+            if not search_interface(members, diets, select_num):
+                return False
+            # members.do_select_name(select_num)
+            
         elif select_num == "4":
             print("4. 회원 삭제를 선택하셨습니다.\n")
-            members.do_select_one(select_num)
+            if not search_interface(members, diets, select_num):
+                return False
+            # members.do_select_name(select_num)
 
         elif select_num == "9":
             print("이전으로 돌아갑니다.\n")
@@ -108,30 +112,34 @@ def trainer_interface(members, diets):
             print("잘못된 접근입니다.\n")
 
 
-def search_interface(members, diets):
+def search_interface(members, diets, select_num):
     while True:
-        if not members.do_retrive():
-            return True
+        if select_num == "2":
+            if not members.do_retrive():
+                return True
 
         print(
             "\n=======회원 검색 모드=======\n"
-            " 1. 회원 이름으로 검색"
+            " 1. 회원 이름으로 검색\n"
             " 2. 회원 ID로 검색\n"
             " 9. 이전으로\n"
             " 0. 프로그램 종료\n"
             "============================"
         )
         search_num = input("번호를 선택하세요: ").strip()
-
-        if search_num == "1":
-            print("1. 회원 이름으로 검색을 시작합니다.")
-            detail_member = members.do_select_one(search_num)
+        mod = {'1': '1. 회원 이름으로 검색', '2': '2. 회원 ID로 검색'}
+        if (search_num == "1") or (search_num == "2"):
+            print(f"{mod[search_num]}을 시작합니다.")
+            detail_member = members.do_select_one(select_num, search_num)
             if detail_member and (not detail_interface(detail_member, diets)):
                 return False
         
-        elif search_num == "2":
-            print("2. 회원 ID로 검색을 시작합니다.")
-            detail_member = members.do_select_id(search_num)
+        # elif search_num == "2":
+        #     print("2. 회원 ID로 검색을 시작합니다.")
+        #     detail_member = members.do_select(select_num, search_num)
+        #     if detail_member and (not detail_interface(detail_member, diets)):
+        #         return False
+            
         elif search_num == "9":
             print("이전 화면으로 돌아갑니다.")
             return True
@@ -414,3 +422,6 @@ detail_interface(): 개인관리 CRUD
 
 """
 # if elif 로 번호를 쓴 것들 match-case로 바꿔도됨
+
+
+

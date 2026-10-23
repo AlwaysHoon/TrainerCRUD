@@ -92,19 +92,30 @@ class TrainerCRUD:
     # 회원 삭제 시 부가서비스, 식단, 운동기록의 삭제도 필요함
     # 세 json이 담긴 폴더를 통째로 삭제 추가 필요
     #이름으로 조회만 있어서 user_id로 조회도 해야함
-    def do_select_one(self, select_num="1"):
+    def do_select_one(self, select_num="1", search_num="1"):
         if self.members:
             # 단순조회/수정/삭제를 통합
-            word = {"1": "조회", "3": "수정", "4": "삭제"}[select_num]
-            select_member = input(f"{word} 할 회원 이름을 입력해주세요: ").strip()
             count = 0
             detail_member = []
+            word = {"2": "조회", "3": "수정", "4": "삭제"}[select_num]
+            
+            if search_num == "1":
+                select_member = input(f"{word} 할 회원 이름을 입력해주세요: ").strip()
+                for member in self.members:
+                    if select_member == member["name"]:
+                        count += 1
+                        detail_member.append(member)
+            
+            elif search_num == "2":
+                select_member = input(f"{word} 할 회원 ID를 입력해주세요: ").strip()
+                for member in self.members:
+                    if select_member == member["user_id"]:
+                        count = 1
+                        detail_member = member
+                        break
 
             # 동명이인 처리
-            for member in self.members:
-                if select_member == member["name"]:
-                    count += 1
-                    detail_member.append(member)
+            
 
             if count == 0:
                 print("존재하지 않는 회원입니다.")
@@ -117,7 +128,7 @@ class TrainerCRUD:
                     print(f"{key:<12}: {value:^10}")
                 print("ㅡ" * 20)
 
-                if select_num == "1":  # 전체조회"2"->개인검색"1"
+                if select_num == "2":  # 전체조회"2"->개인검색"1"
                     return detail_member[0]
 
                 elif select_num == "3":  # 정보수정"3"
@@ -213,10 +224,11 @@ class TrainerCRUD:
         else:
             print("등록된 회원이 없습니다.")
             return False
-    def do_select_id(self, select_num="2"):
+        
+    def do_select_id(self, select_num="2", search_num="2"):
         if self.members:
             # 단순조회/수정/삭제를 통합
-            word = {"1": "조회", "3": "수정", "4": "삭제"}[select_num]
+            word = {"2": "조회", "3": "수정", "4": "삭제"}[select_num]
             select_member = input(f"{word} 할 회원 ID를 입력해주세요: ").strip()
             is_member = False
             detail_member = None
@@ -233,7 +245,7 @@ class TrainerCRUD:
                     print(f"{key:<12}: {value:^10}")
                 print("ㅡ" * 20)
 
-                if select_num == "1":  # 전체조회"2"->개인검색"1"
+                if select_num == "2":  # 전체조회"2"->개인검색"1"
                     return detail_member
 
                 elif select_num == "3":  # 정보수정"3"
