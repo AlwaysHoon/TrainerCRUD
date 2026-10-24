@@ -3,7 +3,8 @@ import json
 
 
 from applications import TrainerCRUD, MachineList, ExtraServiceCRUD, WorkoutCRUD, DietCRUD
-from applications import align, progress_bar
+# from applications import align, progress_bar
+from applications import align
 
 def login_interface():
     login_count = 0
@@ -25,7 +26,7 @@ def login_interface():
         else:
             print("=" * line1)
             print("로그인에 성공했습니다.")
-            progress_bar(30, 0.003)
+            # progress_bar(30, 0.003)
 
             return True
 
@@ -92,7 +93,7 @@ def trainer_interface(members, workout, diets):
 
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다.")
-            progress_bar(30)
+            # progress_bar(30)
             if not search_interface(members, workout, diets, select_num):
                 return False
 
@@ -133,7 +134,7 @@ def search_interface(members, workout, diets, select_num):
             " 1. 회원 이름으로 검색\n"
             " 2. 회원 ID로 검색\n"
             " 9. 이전으로\n"
-            " 0. 프로그램 종료\n")
+            " 0. 프로그램 종료")
         print("=" * line3)
             
         search_num = input("번호를 선택하세요: ").strip()
@@ -219,7 +220,7 @@ def diet_interface(diets, member):
             " 4. 식단 삭제\n"
             " 5. 일일 섭취 칼로리 합계\n"
             " 9. 이전으로\n"
-            " 0. 프로그램 종료\n")
+            " 0. 프로그램 종료")
         print("=" * line5)
         
         select_num = input("번호를 입력하세요: ").strip()
@@ -269,7 +270,7 @@ def workout_interface(workout, member):
             " 3. 운동 기록 수정\n"
             " 4. 운동 기록 삭제\n"
             " 9. 이전으로\n"
-            " 0. 프로그램 종료\n")
+            " 0. 프로그램 종료")
         print("=" * line6)
         
         select_num = input("번호를 입력하세요: ").strip()
@@ -315,7 +316,7 @@ def extra_interface(extra):
             "5. 운동복 이용 여부 등록\n"
             "6. 운동복 이용 현황 조회\n"
             "9. 이전으로\n"
-            "0. 프로그램 종료\n")
+            "0. 프로그램 종료")
         print("=" * line7)
         
         select_num = input("번호를 입력하세요: ").strip()
@@ -408,25 +409,14 @@ if __name__ == "__main__":
     DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, "members.json")
     machine_path = os.path.join(DATA_DIR, "muscles.json")
-    workout_path = os.path.join(DATA_DIR, 'workouts.json')
-            
+    workout_path = os.path.join(DATA_DIR, 'workouts.json')  
+          
     os.makedirs(DATA_DIR, exist_ok=True)
 
-    if not os.path.exists(member_path):
-        with open(member_path, "w", encoding="utf-8") as f:
-            json.dump([], f, ensure_ascii=False, indent=4)
-
-    if not os.path.exists(machine_path):
-        with open(machine_path, "w", encoding="utf-8") as f:
-            json.dump([], f, ensure_ascii=False, indent=4)
-    
-    if not os.path.exists(workout_path):
-        with open(workout_path, "w", encoding="utf-8") as f:
-            json.dump([], f, ensure_ascii=False, indent=4)
-    
     train_sys = TrainerCRUD(member_path)
     machine_sys = MachineList(machine_path)
     workout = WorkoutCRUD(workout_path)
+    
     extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
     
     train_sys.extra = extra_sys

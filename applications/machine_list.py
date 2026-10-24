@@ -5,13 +5,18 @@ from datetime import datetime
 from .utils import align, wrap
 
 
-# body_list->machine_list, machine->muscle
 class MachineList:
     def __init__(self, machine_path):
         self.machine_path = machine_path
-        with open(self.machine_path, "r", encoding="utf-8") as f:
-            self.body_list = json.load(f)  # load machines.json
-
+        try:
+            with open(self.machine_path, "r", encoding="utf-8") as f:
+                self.body_list = json.load(f)
+                
+        except:
+            self.body_list = []
+            with open(machine_path, "w", encoding="utf-8") as f:
+                json.dump([], f, ensure_ascii=False, indent=4)
+                
     # 운동 부위를 메인, 서브로 운동 종목
     def do_save(self):
         machine_list = []

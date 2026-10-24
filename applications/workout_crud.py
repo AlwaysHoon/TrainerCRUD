@@ -5,18 +5,15 @@ import os
 
 class WorkoutCRUD:
     def __init__(self, workout_path):
-        # self.workout_path = Path(workout_path)
-
-        # if self.workout_path.exists():
-        #     with open(self.workout_path, "r", encoding="utf-8") as file:
-        #         self.workouts = json.load(file)
-        # else:
-        #     self.workouts = []
         self.workout_path = workout_path
+        try:
+            with open(self.workout_path, "r", encoding="utf-8") as f:
+                self.workouts = json.load(f)  # load members.json
         
-        with open(self.workout_path, "r", encoding="utf-8") as f:
-            self.workouts = json.load(f)  # load members.json
-        
+        except:
+            self.workouts = []
+            with open(workout_path, "w", encoding="utf-8") as f:
+                json.dump([], f, ensure_ascii=False, indent=4)
         
     def show_workouts(self):
         print(self.workouts)

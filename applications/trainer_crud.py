@@ -7,10 +7,19 @@ from .utils import *
 
 class TrainerCRUD:
     def __init__(self, member_path):
+        self.extra = None  # 부가 서비스 객체 (회원 삭제 시 락커/운동복 정리용)
         self.member_path = member_path
-        with open(self.member_path, "r", encoding="utf-8") as f:
-            self.members = json.load(f)  # load members.json
-
+        
+        try:
+            with open(self.member_path, "r", encoding="utf-8") as f:
+                self.members = json.load(f)
+                
+        except FileNotFoundError:
+            self.members = []
+            with open(self.member_path, "w", encoding="utf-8") as f:
+                json.dump([], f, ensure_ascii=False, indent=4)
+            
+                            
     def do_save(self):
         # 이름(한글or영어) 양식 의논
         # 동명이인의 경우 이름과 이메일이 모두 같을 때만 중복 처리
@@ -115,9 +124,6 @@ class TrainerCRUD:
                         break
             
             # 동명이인 처리
-            
-            print(detail_member[0])
-            
             if count == 0:
                 print("존재하지 않는 회원입니다.")
                 return False
@@ -152,11 +158,14 @@ class TrainerCRUD:
                     is_delete = (input("삭제하실 정보가 맞습니까?(Y/N): ").strip().lower())
 
                     if is_delete in ("y", "yes", "예", "네"):
+                        deleted_member = detail_member[0]
                         self.members.remove(detail_member[0])
 
                         with open(self.member_path, mode="w", encoding="utf-8") as f:
                             json.dump(self.members, f, ensure_ascii=False, indent=4)
                         print("회원 삭제에 성공했습니다.")
+                        if self.extra:
+                            self.extra.remove_member_data(deleted_member['user_id'])
                         return True
                     else:
                         print("이전으로 돌아갑니다.")
@@ -215,11 +224,15 @@ class TrainerCRUD:
                 elif select_num == "4":  # 정보삭제"4"
                     is_delete = (input("삭제하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower())
                     if is_delete in ("y", "yes", "예", "네"):
+                        deleted_member = detail_member[int(same_num)-1]
                         self.members.remove(detail_member[int(same_num) - 1])
 
                         with open(self.member_path, mode="w", encoding="utf-8") as f:
                             json.dump(self.members, f, ensure_ascii=False, indent=4)
-                        print("회원 삭제에 성공했습니다.")
+                        print("회원 삭제에 성공했습니다.\n")
+
+                        if self.extra:
+                            self.extra.remove_member_data(deleted_member['user_id'])
                         return True
                     else:
                         print("이전으로 돌아갑니다.")
