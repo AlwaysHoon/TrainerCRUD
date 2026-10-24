@@ -8,6 +8,7 @@ C:.
 │      ├─"user_id"
 │      │       diet.json
 │      │       extra_service.json
+│      │       workouts.json(개인별로 구분 필요)
 │      └─...
 │              
 │  .gitignore
