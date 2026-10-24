@@ -1,0 +1,31 @@
+C:.
+├─data
+│  │  members.json
+│  │  muscles.json
+│  │  workouts.json
+│  │
+│  └─members
+│      ├─"user_id"
+│      │       diet.json
+│      │       extra_service.json
+│      └─...
+│              
+│  .gitignore
+│  
+├─application
+│   │  __init__.py
+│   │  trainer_crud.py
+│   │  machine_list.py
+│   │  extra_service.py
+│   │  workout_crud.py
+│   │  diet.py
+│   └─...
+│  
+│  interface.py
+│  utils.py
+└─
+│
+│  (TrainerCRUD.png)
+│  (file_tree.txt)
+└─
+
