@@ -38,9 +38,9 @@ class TrainerCRUD:
         name = input("이름을 입력하세요: ").strip()
         email = input("이메일을 입력하세요: ").strip()
 
-        # if not validate_email(email):
-        #     print("이메일 형식이 아닙니다.")
-        #     return False
+        if not validate_email(email):
+            print("이메일 형식이 아닙니다.")
+            return False
 
         for member in self.members:
             if member["email"] == email:
@@ -69,7 +69,7 @@ class TrainerCRUD:
         with open(self.member_path, mode="w", encoding="utf-8") as f:
             json.dump(self.members, f, ensure_ascii=False, indent=4)
 
-        print(f"{user_id}: {name} 등록에 성공했습니다.")
+        print(f"{name}님 등록에 성공했습니다.(id: {user_id})\n")
         return True
 
     def do_retrive(self):
@@ -174,7 +174,7 @@ class TrainerCRUD:
             # 동명이인(2인이상 모두 탐지)
             else:
                 print("동명이인이 존재합니다.\n")
-
+                progress_bar(45,0.001)
                 print(f"{'=======동명이인 리스트=======':^40}")
                 for i, m in enumerate(detail_member):
                     print(f"+ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{i + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ+")
@@ -188,21 +188,21 @@ class TrainerCRUD:
                     if same_num.isdigit():
                         if (int(same_num) >= 1) and (int(same_num) <= len(detail_member)):
                             break
-                        if same_num == "9":
-                            print("이전으로 돌아갑니다.")
+                        elif int(same_num) == 9:
+                            print("이전으로 돌아갑니다.\n")
                             return False
                         else:
-                            print("범위 밖입니다.")
+                            print("범위 밖입니다.\n")
 
                     else:
                         print("숫자를 입력해주세요")
 
                 idx = int(same_num) - 1
 
-                print("ㅡ" * 10)
+                print("ㅡ" * 20)
                 for key, value in detail_member[idx].items():
-                    print(f"{key:<12}: {value:^10}")
-                print("ㅡ" * 10)
+                    print(f" {key:<15}: {value:^25}")
+                print("ㅡ" * 20)
 
                 if select_num == "2":  # 전체조회"2"->개인검색"1"
                     return detail_member[idx]
@@ -211,7 +211,6 @@ class TrainerCRUD:
                     is_modify = (input("수정하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower())
                     if is_modify in ("y", "yes", "예", "네"):
                         check_member = [v for i, v in enumerate(detail_member) if i != idx]
-                        print(check_member)
                         self.modify_member(detail_member[idx], check_member)
                         
                         with open(self.member_path, mode="w", encoding="utf-8") as f:
