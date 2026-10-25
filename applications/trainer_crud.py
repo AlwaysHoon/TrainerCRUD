@@ -18,38 +18,36 @@ class TrainerCRUD:
             self.members = []
             with open(self.member_path, "w", encoding="utf-8") as f:
                 json.dump([], f, ensure_ascii=False, indent=4)
-            
-                            
+    
+    # 동명이인의 경우 이름과 이메일이 모두 같을 때만 중복 처리
+    # user_id와 email은 세상에 단 하나밖에 없다는 가정       
     def do_save(self):
         # 이름(한글or영어) 양식 의논
-        # 동명이인의 경우 이름과 이메일이 모두 같을 때만 중복 처리
-        # user_id와 email은 세상에 단 하나밖에 없다는 가정
         # 분할시켜서 각 입력란에 배치해도됨 추후 논의(선택사항)
         user_id = input("아이디를 입력하세요: ").strip()  # 영어, 숫자 합쳐서 10자이내
 
         # if not validate_user(user_id):
         #     print("아이디 형식이 잘못되었습니다.")
         #     return False
-        for member in self.members:
-            if member["user_id"] == user_id:
-                print("이미 존재하는 아이디입니다.")
-                return False
+        if any(member["user_id"] == user_id for member in self.members):
+            print("이미 존재하는 아이디입니다.")
+            return
 
         name = input("이름을 입력하세요: ").strip()
         email = input("이메일을 입력하세요: ").strip()
 
         if not validate_email(email):
             print("이메일 형식이 아닙니다.")
-            return False
-
+            return
+        
         for member in self.members:
             if member["email"] == email:
                 print("이미 존재하는 이메일입니다.")
-                return False
+                return
 
             elif (member["name"] == name) and (member["email"] == email):
-                print("이메일과 이름이 중복됩니다.")
-                return False
+                print("이미 등록되어 있습니다.")
+                return
 
         # 최초 등록일, 최근 수정일
         today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
@@ -71,36 +69,58 @@ class TrainerCRUD:
 
         print(f"{name}님 등록에 성공했습니다.(id: {user_id})\n")
         return True
-
-    def do_retrive(self):
-        if self.members:
-            print(f"{'=======전체 회원 리스트=======':^86}")
-
-            for index, member in enumerate(self.members):
-                if (index % 2) == 0:
-                    l = [(key, value) for key, value in member.items()]
-                    if index == (len(self.members) - 1):
-                        print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-                        for i in range(len(l)):
-                            l_key, l_value = l[i][0], l[i][1]
-                            print(f"| {l_key:<{15 - align(l_key)}}: {l_value:^{25 - align(l_value)}} | {' ':<15}: {' ':^25} |")
-                else:
-                    r = [(key, value) for key, value in member.items()]
-                    print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-                    for i in range(len(l)):
-                        l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
-                        print(f"| {l_key:<{15 - align(l_key)}}: {l_value:^{25 - align(l_value)}} | {r_key:<{15 - align(r_key)}}: {r_value:^{25 - align(r_value)}} |")
-            print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-            return True
-
-        else:
-            print("등록된 회원이 없습니다.")
-            return False
-
     
+    def member_page(self, page, page_size=10):
+        max_page = len(self.members) //10
+        start = page * page_size
+        end = start + page_size
+        page_list = self.members[start:end]
+        self.do_retrive(page_list)
+        curser = input()
+        if (curser == "<") and (page != 0):
+            page -= 1
+            self.member_page(page)
+            
+        elif (curser == ">") and (page != max_page):
+            page += 1
+            self.member_page(page)
+            
+        elif curser == "^":
+            print("검색 실행\n")
+            return True
+        
+        elif curser == "9":
+            print("이전으로 돌아갑니다.\n")
+            return False
+        
+        else:
+            self.member_page(page)
+            
+            
+    def do_retrive(self, members):
+        print(f"{'=======전체 회원 리스트=======':^86}")
+        for index, member in enumerate(members):
+            
+            if (index % 2) == 0:
+                l = [(key, value) for key, value in member.items() if key not in ("save_time", "modify_time")]
+                if index == (len(members) - 1):
+                    print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+                    for i in range(len(l)):
+                        l_key, l_value = l[i][0], l[i][1]
+                        print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {' ':<15}:   {'':<23} |")
+            else:
+                r = [(key, value) for key, value in member.items() if key not in ("save_time", "modify_time")]
+                print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+                for i in range(len(l)):
+                    l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
+                    print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {r_key:<{15 - align(r_key)}}:   {r_value:<{23 - align(r_value)}} |")
+        print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+        print(f"{"< 이전 | ^검색 | 다음 >":^85}")
+        return True
+
+
     # 회원 삭제 시 부가서비스, 식단, 운동기록의 삭제도 필요함
     # 세 json이 담긴 폴더를 통째로 삭제 추가 필요
-    #이름으로 조회만 있어서 user_id로 조회도 해야함
     def do_select_one(self, select_num="2", search_num="1"):
         if self.members:
             # 단순조회/수정/삭제를 통합

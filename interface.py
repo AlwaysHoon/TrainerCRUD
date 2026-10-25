@@ -126,45 +126,47 @@ def trainer_interface(members, workout, diets):
         else:
             print("잘못된 접근입니다.\n")
 
-
 def search_interface(members, workout, diets, select_num):
     while True:
-        if select_num == "2":
-            if not members.do_retrive():
-                return True
-        search_mod = "=======회원 검색 모드======="
-        line3 = len(search_mod) + align(search_mod)
-        
-        print(search_mod)
-        print(
-            " 1. 회원 이름으로 검색\n"
-            " 2. 회원 ID로 검색\n"
-            " 9. 이전으로\n"
-            " 0. 프로그램 종료")
-        print("=" * line3)
+        if members:
+            if select_num == "2":
+                if not members.member_page(0):
+                    return True
+            search_mod = "=======회원 검색 모드======="
+            line3 = len(search_mod) + align(search_mod)
             
-        search_num = input("번호를 선택하세요: ").strip()
-        
-        mod = {'1': '1. 회원 이름으로 검색', '2': '2. 회원 ID로 검색'}
-        if (search_num == "1") or (search_num == "2"):
-            print(f"{mod[search_num]}을 시작합니다.")
-            detail_member = members.do_select_one(select_num, search_num)
-            if not detail_member:
+            print(search_mod)
+            print(
+                " 1. 회원 이름으로 검색\n"
+                " 2. 회원 ID로 검색\n"
+                " 9. 이전으로\n"
+                " 0. 프로그램 종료")
+            print("=" * line3)
+            
+            search_num = input("번호를 선택하세요: ").strip()
+            
+            mod = {'1': '1. 회원 이름으로 검색', '2': '2. 회원 ID로 검색'}
+            if (search_num == "1") or (search_num == "2"):
+                print(f"{mod[search_num]}을 시작합니다.")
+                detail_member = members.do_select_one(select_num, search_num)
+                if not detail_member:
+                    return True
+                if select_num == "2" and (not detail_interface(detail_member, workout, diets)):
+                    return False
+            
+            elif search_num == "9":
+                print("이전 화면으로 돌아갑니다.\n")
                 return True
-            if select_num == "2" and (not detail_interface(detail_member, workout, diets)):
+
+            elif search_num == "0":
+                print("프로그램을 종료합니다.\n")
                 return False
-        
-        elif search_num == "9":
-            print("이전 화면으로 돌아갑니다.\n")
-            return True
 
-        elif search_num == "0":
-            print("프로그램을 종료합니다.\n")
-            return False
-
+            else:
+                print("잘못된 접근입니다.\n")
         else:
-            print("잘못된 접근입니다.\n")
-
+            print("등록된 회원이 없습니다.")
+            return False
 
 def detail_interface(member, workout, diets):
     see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
