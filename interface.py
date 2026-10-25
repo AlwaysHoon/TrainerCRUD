@@ -3,7 +3,7 @@ import json
 
 
 from applications import TrainerCRUD, MachineList, ExtraServiceCRUD, WorkoutCRUD, DietCRUD
-from applications import align, progress_bar
+from applications.utils import *
 # from applications import align
 
 def login_interface():
@@ -152,10 +152,13 @@ def search_interface(members, workout, diets, select_num):
                 detail_member = members.do_select_one(select_num, search_num)
                 if not detail_member:
                     return True
+                
                 if select_num == "2" and (not detail_interface(detail_member, workout, diets)):
                     return False
+                
             elif search_num == "3":
                 continue
+            
             elif search_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
                 return True

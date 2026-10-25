@@ -22,13 +22,12 @@ class TrainerCRUD:
     # 동명이인의 경우 이름과 이메일이 모두 같을 때만 중복 처리
     # user_id와 email은 세상에 단 하나밖에 없다는 가정       
     def do_save(self):
-        # 이름(한글or영어) 양식 의논
-        # 분할시켜서 각 입력란에 배치해도됨 추후 논의(선택사항)
         user_id = input("아이디를 입력하세요: ").strip()  # 영어, 숫자 합쳐서 10자이내
 
-        # if not validate_user(user_id):
-        #     print("아이디 형식이 잘못되었습니다.")
-        #     return False
+        if not validate_user(user_id):
+            print("아이디 형식이 잘못되었습니다.")
+            return False
+        
         if any(member["user_id"] == user_id for member in self.members):
             print("이미 존재하는 아이디입니다.")
             return
@@ -77,16 +76,14 @@ class TrainerCRUD:
             start = page * page_size
             end = start + page_size
             page_list = self.members[start:end]
-            self.do_retrive(page_list)
+            self.do_retrive(page_list, page)
             
             curser = input()
             if curser == "<" and page > 0:
                 page -= 1
                 
-                
             elif curser == ">" and page < max_page:
                 page += 1
-                
                 
             elif curser == "^":
                 print("검색 실행\n")
@@ -96,30 +93,29 @@ class TrainerCRUD:
                 print("이전으로 돌아갑니다.\n")
                 return False
             
+            else:
+                print("잘못된 접근입니다.\n")
             
-                  
-            
-    def do_retrive(self, members):
+    def do_retrive(self, members, page):
         print(f"{'=======전체 회원 리스트=======':^86}")
         for index, member in enumerate(members):
             
             if (index % 2) == 0:
                 l = [(key, value) for key, value in member.items() if key not in ("save_time", "modify_time")]
                 if index == (len(members) - 1):
-                    print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+                    print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                     for i in range(len(l)):
                         l_key, l_value = l[i][0], l[i][1]
                         print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {' ':<15}:   {'':<23} |")
             else:
                 r = [(key, value) for key, value in member.items() if key not in ("save_time", "modify_time")]
-                print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+                print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                 for i in range(len(l)):
                     l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
                     print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {r_key:<{15 - align(r_key)}}:   {r_value:<{23 - align(r_value)}} |")
         print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
         print(f"{"< 이전 | ^검색 | 다음 >":^85}")
         return True
-
 
     # 회원 삭제 시 부가서비스, 식단, 운동기록의 삭제도 필요함
     # 세 json이 담긴 폴더를 통째로 삭제 추가 필요
@@ -246,7 +242,8 @@ class TrainerCRUD:
                     is_delete = (input("삭제하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower())
                     if is_delete in ("y", "yes", "예", "네"):
                         deleted_member = detail_member[int(same_num)-1]
-                        self.members.remove(detail_member[int(same_num) - 1])
+                        # self.members.remove(detail_member[int(same_num) - 1])
+                        self.members.remove(deleted_member)
 
                         with open(self.member_path, mode="w", encoding="utf-8") as f:
                             json.dump(self.members, f, ensure_ascii=False, indent=4)
