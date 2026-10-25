@@ -69,33 +69,35 @@ class TrainerCRUD:
 
         print(f"{name}님 등록에 성공했습니다.(id: {user_id})\n")
         return True
-    
-    def member_page(self, page, page_size=10):
+
+        
+    def member_page(self, page=0, page_size=10):
         max_page = len(self.members) //10
-        start = page * page_size
-        end = start + page_size
-        page_list = self.members[start:end]
-        self.do_retrive(page_list)
-        curser = input()
-        if (curser == "<") and (page != 0):
-            page -= 1
-            self.member_page(page)
+        while True:
+            start = page * page_size
+            end = start + page_size
+            page_list = self.members[start:end]
+            self.do_retrive(page_list)
             
-        elif (curser == ">") and (page != max_page):
-            page += 1
-            self.member_page(page)
+            curser = input()
+            if curser == "<" and page > 0:
+                page -= 1
+                
+                
+            elif curser == ">" and page < max_page:
+                page += 1
+                
+                
+            elif curser == "^":
+                print("검색 실행\n")
+                return True
             
-        elif curser == "^":
-            print("검색 실행\n")
-            return True
-        
-        elif curser == "9":
-            print("이전으로 돌아갑니다.\n")
-            return False
-        
-        else:
-            self.member_page(page)
+            elif curser == "9":
+                print("이전으로 돌아갑니다.\n")
+                return False
             
+            
+                  
             
     def do_retrive(self, members):
         print(f"{'=======전체 회원 리스트=======':^86}")

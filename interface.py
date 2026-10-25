@@ -139,6 +139,7 @@ def search_interface(members, workout, diets, select_num):
             print(
                 " 1. 회원 이름으로 검색\n"
                 " 2. 회원 ID로 검색\n"
+                " 3. 회원 리스트\n"
                 " 9. 이전으로\n"
                 " 0. 프로그램 종료")
             print("=" * line3)
@@ -153,7 +154,8 @@ def search_interface(members, workout, diets, select_num):
                     return True
                 if select_num == "2" and (not detail_interface(detail_member, workout, diets)):
                     return False
-            
+            elif search_num == "3":
+                continue
             elif search_num == "9":
                 print("이전 화면으로 돌아갑니다.\n")
                 return True
