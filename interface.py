@@ -38,7 +38,7 @@ def login_interface():
 
 def admin_interface(members, machines, extra, workout, diets):
     while True:
-        admin_mod = "=========관리자 모드========="
+        admin_mod = "========관리자 모드========"
         line2 = len(admin_mod) + align(admin_mod)
         
         print(admin_mod)
@@ -50,7 +50,7 @@ def admin_interface(members, machines, extra, workout, diets):
         print("=" * line2)
 
         select_num = input("번호를 입력하세요: ").strip()
-        print("")
+        print()
         
         if select_num == "1":
             print("1. 회원 관리를 선택하셨습니다.\n")
@@ -91,7 +91,7 @@ def trainer_interface(members, workout, diets):
         print("=" * line3)
         
         select_num = input("번호를 입력하세요: ").strip()
-        print("")
+        print()
 
         if select_num == "1":
             print("1. 회원 등록을 선택하셨습니다.\n")
@@ -127,12 +127,17 @@ def trainer_interface(members, workout, diets):
             print("잘못된 접근입니다.\n")
 
 def search_interface(members, workout, diets, select_num):
+    count = 0
     while True:
         if members:
-            if select_num == "2":
-                if not members.member_page(0):
+            if select_num == "2" and count == 0:
+                count += 1
+                member_list = members.member_page(0)
+                if not member_list:
                     return True
-            search_mod = "=======회원 검색 모드======="
+                if member_list == "0":
+                    return False
+            search_mod = "========회원 검색 모드========"
             line3 = len(search_mod) + align(search_mod)
             
             print(search_mod)
@@ -175,11 +180,11 @@ def search_interface(members, workout, diets, select_num):
 
 def detail_interface(member, workout, diets):
     see_more = input(f"{member['name']}님을 조회하시겠습니까?(Y/N): ").strip().lower()
-    print("")
+    print()
     
     if see_more in ("y", "yes", "네", "예"):
         while True:
-            search_name = f"===========[ {member['name']} ]==========="
+            search_name = f"========[ {member['name']} ]========"
             line4 = len(search_name) + align(search_name)
             print(search_name)
             print(
@@ -191,7 +196,7 @@ def detail_interface(member, workout, diets):
             print("=" * line4)
 
             detail_num = input("조회할 내용(번호)을 선택해주세요: ").strip()
-            print("")
+            print()
             
             if detail_num == "1":
                 print("1. 상세 기록 조회를 선택하셨습니다.")
@@ -199,7 +204,8 @@ def detail_interface(member, workout, diets):
                 for key, value in member.items():
                     print(f" {key:<15}: {value:^25}")
                 # 지금은 members.json의 내용들만 반환하지만 details.json을 추가함에 따라 변동될 예정
-                print("")
+                print()
+                
             elif detail_num == "2":
                 print("2. 운동 기록 관리를 선택하셨습니다.")
                 if not workout_interface(workout, member):
@@ -227,7 +233,7 @@ def detail_interface(member, workout, diets):
 
 def diet_interface(diets, member):
     while True:
-        diet_mod = f"=======[ {member['name']} ] 식단 관리======="
+        diet_mod = f"========[ {member['name']} ] 식단 관리========"
         line5 = len(diet_mod) + align(diet_mod)
         print(diet_mod)
         
@@ -242,7 +248,7 @@ def diet_interface(diets, member):
         print("=" * line5)
         
         select_num = input("번호를 입력하세요: ").strip()
-        print("")
+        print()
 
         if select_num == "1":
             print("1. 식단 기록 등록을 선택하셨습니다.\n")
@@ -280,7 +286,7 @@ def workout_interface(workout, member):
     # member : dict()
     
     while True:
-        workout_mod = f"\n=======[ {member['name']} ] 운동 기록 관리=======\n"
+        workout_mod = f"========[ {member['name']} ] 운동 기록 관리========"
         line6 = len(workout_mod) + align(workout_mod)
         print(workout_mod)
         print(
@@ -293,7 +299,7 @@ def workout_interface(workout, member):
         print("=" * line6)
         
         select_num = input("번호를 입력하세요: ").strip()
-        print("")
+        print()
 
         if select_num == "1":
             print("1. 운동 기록 등록을 선택하셨습니다.\n")
@@ -324,7 +330,7 @@ def workout_interface(workout, member):
             
 def extra_interface(extra):
     while True:
-        extra_mod = "=======부가 서비스 관리======="
+        extra_mod = "========부가 서비스 관리========"
         line7 = len(extra_mod) + align(extra_mod)
         
         print(extra_mod)
@@ -340,7 +346,7 @@ def extra_interface(extra):
         print("=" * line7)
         
         select_num = input("번호를 입력하세요: ").strip()
-        print("")
+        print()
 
         if select_num == "1":
             extra.do_assign_locker()
@@ -378,7 +384,7 @@ def extra_interface(extra):
 
 def manage_machine(machines):
     while True:
-        machine_mod = "=======운동 관리 모드======="
+        machine_mod = "========운동 관리 모드========"
         line8 = len(machine_mod) + align(machine_mod)
         
         print(machine_mod)
@@ -392,7 +398,7 @@ def manage_machine(machines):
         print("=" * line8)
         
         select_num = input("번호 입력: ").strip()
-        print("")
+        print()
         
         if select_num == "1":
             print("1. 운동 종목 등록을 선택하셨습니다.\n")
