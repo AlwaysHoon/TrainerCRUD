@@ -21,9 +21,9 @@ class TrainerCRUD:
             self.members = []
             with open(self.member_path, "w", encoding="utf-8") as f:
                 json.dump([], f, ensure_ascii=False, indent=4)
-    
+                
+    # user_id와 email은 중복불가
     # 동명이인의 경우 이름과 이메일이 모두 같을 때만 중복 처리
-    # user_id와 email은 세상에 단 하나밖에 없다는 가정       
     def do_save(self):
         user_id = input("아이디를 입력하세요: ").strip()  # 영어, 숫자 합쳐서 10자이내
         if not self._check_id(user_id):
@@ -55,8 +55,6 @@ class TrainerCRUD:
         print("-"*20)
         is_save = input("위 정보가 맞습니까?(Y/N)").strip().lower()
         return self._add_member(is_save, new_member)
-        
-    
             
     def member_page(self, page=0, page_size=10):
         max_page = len(self.members) //10
@@ -80,9 +78,11 @@ class TrainerCRUD:
             elif curser == "9":
                 print("이전으로 돌아갑니다.\n")
                 return False
+            
             elif curser == "0":
                 print("프로그램을 종료합니다.\n")
                 return "0"
+            
             else:
                 print("잘못된 접근입니다.\n")
            
@@ -237,11 +237,15 @@ class TrainerCRUD:
 
             else:  # str잘못입력한 경우 재진입 기회 제공
                 print("잘못된 접근입니다.")
-                is_continue = input("계속하시겠습니까?(Y/N): ").strip().lower()
-                if is_continue in self._yes:
-                    print("\n")
-                else:
-                    return
+                while True:
+                    is_continue = input("계속하시겠습니까?(Y/N): ").strip().lower()
+                    if is_continue in self._yes:
+                        print()
+                        break
+                    elif is_continue in self._no:
+                        return
+                    else:
+                        print("잘못 입력했습니다.")
             
     def _save_members(self):
         with open(self.member_path, mode="w", encoding="utf-8") as f:
@@ -258,6 +262,7 @@ class TrainerCRUD:
                     return False
                 else:
                     print("잘못 입력했습니다.\n")
+                    is_yes = input("다시 입력해주세요(Y/N): ").strip().lower()
         return decorated 
     
     def _check_id(self,user_id):
