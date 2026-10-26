@@ -2,7 +2,7 @@ import os
 import json
 from datetime import datetime
 
-from utils import align
+from .utils import align
 
 class DietCRUD:
     '''

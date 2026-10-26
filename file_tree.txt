@@ -24,7 +24,7 @@ C:.
 │  
 │  interface.py
 │  utils.py
-└─
+├─
 │
 │  (TrainerCRUD.png)
 │  (file_tree.txt)
