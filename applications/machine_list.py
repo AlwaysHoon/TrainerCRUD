@@ -179,7 +179,21 @@ class MachineList:
         else:
             print("등록된 운동이 없습니다.")
             return False
+    @_check_yn
+    def do_modify(self, muscle, idx):
+        if not self.modify_machine(muscle, idx):
+            return False
+        self._save_muscles()
+        return True
+    
+    @_check_yn
+    def do_delete(self, muscle, idx):
+        self.body_list.remove(muscle)
         
+        self._save_muscles()
+        print("운동 부위 삭제에 성공했습니다.")
+        return True
+            
     def modify_machine(self, select_muscle, idx):
         print("운동 정보 수정을 시작합니다.\n")
         # 운동 부위 수정
@@ -188,10 +202,6 @@ class MachineList:
             
             for muscle in self.body_list:
                 if muscle == select_muscle[idx]:
-                    
-                    #muscle일 때 동작, 중복처리
-                    #machines일 때 수정/추가/삭제
-                    #machine 중복처리
                     
                     if modify_key == "muscle":
                         while True:
