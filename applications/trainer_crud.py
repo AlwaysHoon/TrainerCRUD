@@ -34,7 +34,6 @@ class TrainerCRUD:
         if not self._check_email(name, email):
             return
 
-        # 최초 등록일, 최근 수정일
         today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
         save_time = str(today)
         modify_time = str(today)
@@ -248,59 +247,6 @@ class TrainerCRUD:
                     else:
                         print("잘못 입력했습니다.")
     
-        #================================================================================================================
-    def modify_member2(self, select_member, check_member):
-            print("\n회원 정보 수정을 시작합니다.\n")
-            while True:
-                modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ").strip()
-                if modify_key in select_member:
-                    for member in self.members:
-                        if member == select_member:
-                            while True:
-                                modify_value = input(f"기존 {modify_key}는 {select_member[modify_key]}입니다. 변경할 내용을 적어주세요(9:이전으로): ")
-    
-                                # 중복처리
-                                if modify_key == "email":
-                                    if modify_value == "9":
-                                        print()
-                                        return True
-                                    elif self._check_email(member["name"],modify_value):
-                                        break
-                                    
-                                elif (modify_key != "name") and (modify_value in [member[modify_key] for member in self.members]):
-                                    print(f"이미 존재하는 {modify_key}입니다.\n")
-    
-                                elif modify_key == "name":  # 동명이인은 이메일로 비교
-                                    for mem in check_member:
-                                        if member["email"] == mem["email"]:
-                                            print(f"이미 존재하는 {modify_key}입니다.\n")
-                                else:
-                                    break
-    
-                            is_modify = (input(f"정말 {modify_value}로 변경하시겠습니까?(Y/N): ").strip().lower())
-                            if is_modify in self._yes:
-                                member[modify_key] = modify_value
-                                member["modify_time"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
-                                print(f"{modify_key} 변경에 성공했습니다.")
-                                return True
-    
-                            else:
-                                print("\n이전으로 돌아갑니다.\n")
-    
-                else:  # str잘못입력한 경우 재진입 기회 제공
-                    print("잘못된 접근입니다.")
-                    while True:
-                        is_continue = input("계속하시겠습니까?(Y/N): ").strip().lower()
-                        if is_continue in self._yes:
-                            print()
-                            break
-                        elif is_continue in self._no:
-                            return
-                        else:
-                            print("잘못 입력했습니다.")
-                            
-                            
-    #================================================================================================================
     def do_sort(self, keys, rev=False):
         return self.members.sort(key=lambda x:x[keys], reverse=rev)        
     
