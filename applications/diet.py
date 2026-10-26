@@ -2,8 +2,7 @@ import os
 import json
 from datetime import datetime
 
-from .utils import align
-
+from utils import align
 
 class DietCRUD:
     '''
@@ -294,7 +293,7 @@ class DietCRUD:
 
 if __name__ == "__main__":
     # 단독 테스트용: members.json의 첫 번째 회원으로 식단 관리 실행
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     DATA_DIR = os.path.join(BASE_DIR, "data")
     member_path = os.path.join(DATA_DIR, "members.json")
 
@@ -302,7 +301,7 @@ if __name__ == "__main__":
         members = json.load(f)
 
     from interface import diet_interface  # 메뉴 함수는 interface.py에 있음
-
+    
     if members:
         diet_sys = DietCRUD(os.path.join(DATA_DIR, "members"))
         diet_interface(diet_sys, members[0])
