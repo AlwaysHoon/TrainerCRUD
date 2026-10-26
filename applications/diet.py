@@ -147,29 +147,51 @@ class DietCRUD:
         print(f"{member['name']}님 {date} {meal} 식단 {count}건({total}kcal) 등록에 성공했습니다.")
         return True
 
-    # ---------- DIET_002 회원별 식단 조회 ----------
+    # ---------- DIET_002 회원별 식단 조회 / DIET_006 일일 섭취 칼로리 합계 ----------
     def do_retrieve(self, member):
         diets = self.read_data(member["user_id"])
         if not diets:
             print(f"{member['name']}님의 등록된 식단이 없습니다.")
             return False
 
-        print(f"=======[ {member['name']} ] 식단 기록=======")
-        self.print_diets(diets)
-
-        # 날짜별 섭취 칼로리 합계
-        dates = []  # 중복 없는 날짜 목록
+        # 식단을 기록한 날짜만 모으기 (중복 없이)
+        dates = []
         for diet in diets:
             if diet["date"] not in dates:
                 dates.append(diet["date"])
 
-        for date in dates:
+        while True:
+            print(f"=======[ {member['name']} ] 식단 기록 날짜=======")
+            for index, date in enumerate(dates):
+                print(f"{index + 1}. {date}")
+            print("ㅡ" * 20)
+
+            select = input(f"조회할 날짜 번호를 선택하세요(1~{len(dates)}, o:이전으로): ").strip()
+            if select.lower() == "o":
+                print("이전으로 돌아갑니다.")
+                return True
+            if not select.isdigit():
+                print("숫자를 입력해주세요")
+                continue
+            if not (1 <= int(select) <= len(dates)):
+                print("범위 밖입니다.")
+                continue
+
+            date = dates[int(select) - 1]
+
+            # 선택한 날짜의 식단만 모으기
+            day_diets = []
             total = 0
             for diet in diets:
                 if diet["date"] == date:
+                    day_diets.append(diet)
                     total += diet["kcal"]
-            print(f"{date} 총 섭취 칼로리: {total}kcal")
-        return True
+
+            # 하루 총 섭취 칼로리를 맨 위에 출력
+            print(f"\n=======[ {member['name']} ] {date} 식단=======")
+            print(f"하루 총 섭취 칼로리: {total}kcal")
+            self.print_diets(day_diets)
+            print()
 
     # ---------- DIET_003 식단 수정 / DIET_004 식단 삭제 ----------
     def do_select_one(self, member, select_num="3"):
@@ -183,8 +205,8 @@ class DietCRUD:
         self.print_diets(diets)
 
         while True:
-            select = input(f"{word}할 식단 번호를 선택하세요(1~{len(diets)}, 9:이전으로): ").strip()
-            if select == "9":
+            select = input(f"{word}할 식단 번호를 선택하세요(1~{len(diets)}, o:이전으로): ").strip()
+            if select.lower() == "o":
                 print("이전으로 돌아갑니다.")
                 return False
             if select.isdigit():
@@ -226,8 +248,8 @@ class DietCRUD:
     def modify_diet(self, select_diet):
         print("\n식단 정보 수정을 시작합니다.\n")
         while True:
-            modify_key = input("수정할 정보를 선택해주세요?[date, meal, food, kcal](돌아가려면 9 입력): ").strip()
-            if modify_key == "9":
+            modify_key = input("수정할 정보를 선택해주세요?[date, meal, food, kcal](돌아가려면 o 입력): ").strip()
+            if modify_key.lower() == "o":
                 print("이전으로 돌아갑니다.")
                 return
 
@@ -259,34 +281,6 @@ class DietCRUD:
                 if not is_continue in ("y", "yes", "예", "네"):
                     return
 
-    # ---------- DIET_006 일일 섭취 칼로리 합계 ----------
-    def do_daily_kcal(self, member):
-        diets = self.read_data(member["user_id"])
-        if not diets:
-            print(f"{member['name']}님의 등록된 식단이 없습니다.")
-            return False
-
-        date = self.input_date()
-
-        # 입력한 날짜의 식단만 모으기
-        day_diets = []
-        for diet in diets:
-            if diet["date"] == date:
-                day_diets.append(diet)
-
-        if not day_diets:
-            print(f"{date}에 등록된 식단이 없습니다.")
-            return False
-
-        print(f"=======[ {member['name']} ] {date} 식단=======")
-        self.print_diets(day_diets)
-
-        total = 0
-        for diet in day_diets:
-            total += diet["kcal"]
-        print(f"{date} 일일 총 섭취 칼로리: {total}kcal")
-        return True
-
     # ---------- 회원 삭제 연동 ----------
     def remove_member_data(self, user_id):
         '''회원 삭제 시 호출: 식단 기록을 빈 리스트로 초기화 (개인 폴더의 다른 파일은 건드리지 않음)'''
@@ -296,7 +290,7 @@ class DietCRUD:
 
 if __name__ == "__main__":
     # 단독 테스트용: members.json의 첫 번째 회원으로 식단 관리 실행
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_DIR = os.path.join(BASE_DIR, "data")
     member_path = os.path.join(DATA_DIR, "members.json")
 

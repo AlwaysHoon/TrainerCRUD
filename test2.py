@@ -54,11 +54,11 @@ def do_retrive2(members):
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # C:\Users\jihun\Archive\aicon\mini_project
 DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
-member_path = os.path.join(DATA_DIR, "members.json")
+member_path = os.path.join(DATA_DIR, "members2.json")
 
 with open(member_path, "r", encoding="utf-8") as f:
     members = json.load(f)
-    
+
 # do_retrive2(members)
 
 # # print(len(members))
@@ -94,4 +94,12 @@ def member_page(members, page, page_size=10):
     else:
         member_page(members, page)
     
-member_page(members,0)
+# member_page(members,0)
+def save_members(member_path, members):
+    with open(member_path, mode="w", encoding="utf-8") as f:
+        json.dump(members, f, ensure_ascii=False, indent=4)
+        
+def do_sort(keys, rev=False):
+    return members.sort(key=lambda x:x[keys], reverse=rev)
+    
+    

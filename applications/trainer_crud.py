@@ -11,8 +11,8 @@ class TrainerCRUD:
     def __init__(self, member_path):
         self.extra = None  # 부가 서비스 객체 (회원 삭제 시 락커/운동복 정리용)
         self.member_path = member_path
-        self._yes = ("y","yes", "네", "예")
-        self._no = ("n", "no", "아니오")
+        self._yes = ("y","yes", "네", "예","ㅛ")
+        self._no = ("n", "no", "아니오","ㅜ")
         try:
             with open(self.member_path, "r", encoding="utf-8") as f:
                 self.members = json.load(f)
@@ -246,11 +246,14 @@ class TrainerCRUD:
                         return
                     else:
                         print("잘못 입력했습니다.")
-            
+    
+    def do_sort(self, keys, rev=False):
+        return self.members.sort(key=lambda x:x[keys], reverse=rev)        
+    
     def _save_members(self):
         with open(self.member_path, mode="w", encoding="utf-8") as f:
             json.dump(self.members, f, ensure_ascii=False, indent=4)
-            
+    
     def _check_yn(func):
         @wraps(func)
         def decorated(self, is_yes, *args, **kwargs):
