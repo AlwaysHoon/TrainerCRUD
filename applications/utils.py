@@ -55,10 +55,10 @@ def progress_bar(len, sleep=0.001):
 
         bar = "█" * filled + " " * (len - filled)
         print(f"\r|{bar}|", end="", flush=False)
-        # print(f"\r|{bar}| {progress * 100:.1f}%", end="", flush=True)
 
         time.sleep(sleep)
     print('\n')
     
 if __name__ == "__main__":
-    progress_bar(40, 0.003)
+    progress_bar(40, 0.001)
+    progress_bar(100, 0.005)
