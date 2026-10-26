@@ -99,6 +99,41 @@ class WorkoutCRUD:
                 print(f"세트 수:{record['sets']}세트")
 
         print("해당 기록 번호를 찾을 수 없습니다.")
+    
+    def delete_workout(self):
+        print("\n===== 운동 기록 삭제 =====")
+
+        try:
+            record_id = int(input("삭제할 기록 번호: "))
+        except ValueError:
+            print("기록 번호는 숫자로 입력해주세요.")
+            return
+
+        for record in self.workouts:
+            if record["record_id"] == record_id:
+
+                # 삭제할 운동 기록 보여주기
+                print("\n===== 삭제할 운동 기록 =====")
+                self.print_workout_record(record)
+
+                # 삭제 여부 확인
+                confirm = input(
+                    "\n정말 삭제하시겠습니까? (Y/N): "
+                ).strip().lower()
+
+                if confirm != "y":
+                    print("운동 기록 삭제를 취소했습니다.")
+                    return
+
+                # 기록 삭제 및 JSON 저장
+                self.workouts.remove(record)
+                self.save_workouts()
+
+                print("\n운동 기록 삭제 완료!")
+                return
+
+        print("해당 기록 번호를 찾을 수 없습니다.")
+
 
 if __name__ =="__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 

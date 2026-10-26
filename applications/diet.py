@@ -43,14 +43,15 @@ class DietCRUD:
     # 날짜 입력 (형식: 26/10/22, 그냥 Enter는 오늘 날짜)
     def input_date(self):
         while True:
-            date = input("식사 날짜를 입력하세요(예: 26/10/22, 오늘은 Enter): ").strip()
+            today = datetime.now().strftime("%y/%m/%d")
+            date = input(f"식사 날짜를 입력하세요(예: {today}, 오늘은 Enter): ").strip()
             if date == "":
                 return datetime.now().strftime("%y/%m/%d")
 
             # 1. 형식 확인: 8글자이고 3번째, 6번째 글자가 '/' 이고 나머지는 숫자
             if not (len(date) == 8 and date[2] == "/" and date[5] == "/"
                     and date[0:2].isdigit() and date[3:5].isdigit() and date[6:8].isdigit()):
-                print("날짜 형식이 잘못되었습니다. 예) 26/10/22")
+                print(f"날짜 형식이 잘못되었습니다. 예) {today}")
                 continue
 
             # 2. 실제로 있는 날짜인지 확인
@@ -72,7 +73,9 @@ class DietCRUD:
                 continue
 
             return date
-
+    
+    ##Q. 잘못 진입할 경우: 1~4 외에 다른 키를 선택할건지 입력 전에 확인을 한번 더 할건지
+    
     # 식사 구분 입력 (번호로 선택)
     def input_meal(self):
         while True:
@@ -147,6 +150,7 @@ class DietCRUD:
         print(f"{member['name']}님 {date} {meal} 식단 {count}건({total}kcal) 등록에 성공했습니다.")
         return True
 
+    ##Q. 날짜선택해서 들어가면 정렬 기능 넣을건지 아침>점심>저녁 순으로
     # ---------- DIET_002 회원별 식단 조회 / DIET_006 일일 섭취 칼로리 합계 ----------
     def do_retrieve(self, member):
         diets = self.read_data(member["user_id"])

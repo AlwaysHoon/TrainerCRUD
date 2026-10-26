@@ -107,13 +107,11 @@ def trainer_interface(members, workout, diets):
             print("3. 회원 정보 수정을 선택하셨습니다.\n")
             if not search_interface(members, workout, diets, select_num):
                 return False
-            # members.do_select_name(select_num)
             
         elif select_num == "4":
             print("4. 회원 삭제를 선택하셨습니다.\n")
             if not search_interface(members, workout, diets, select_num):
                 return False
-            # members.do_select_name(select_num)
 
         elif select_num == "9":
             print("이전으로 돌아갑니다.\n")
@@ -231,10 +229,10 @@ def detail_interface(member, workout, diets):
             return True
         else:
             print("잘못 입력했습니다.")
-
+            
 def diet_interface(diets, member):
     while True:
-        diet_mod = f"========[ {member['name']} ] 식단 관리========"
+        diet_mod = f"=======[ {member['name']} ] 식단 관리======="
         line5 = len(diet_mod) + align(diet_mod)
         print(diet_mod)
         
@@ -243,9 +241,8 @@ def diet_interface(diets, member):
             " 2. 식단 조회\n"
             " 3. 식단 수정\n"
             " 4. 식단 삭제\n"
-            " 5. 일일 섭취 칼로리 합계\n"
-            " 9. 이전으로\n"
-            " 0. 프로그램 종료")
+            " o. 이전으로\n"
+            " p. 프로그램 종료")
         print("=" * line5)
         
         select_num = input("번호를 입력하세요: ").strip()
@@ -267,33 +264,28 @@ def diet_interface(diets, member):
             print("4. 식단 삭제를 선택하셨습니다.\n")
             diets.do_select_one(member, select_num)
 
-        elif select_num == "5":
-            print("5. 일일 섭취 칼로리 합계를 선택하셨습니다.\n")
-            diets.do_daily_kcal(member)
-
-        elif select_num == "9":
+        elif select_num.lower() == "o":
             print("이전 화면으로 돌아갑니다.\n")
             return True
 
-        elif select_num == "0":
+        elif select_num.lower() == "p":
             print("프로그램을 종료합니다.\n")
             return False
 
         else:
             print("잘못된 접근입니다.\n")
             
-            
 def workout_interface(workout, member):
-    # member : dict()
     while True:
         workout_mod = f"========[ {member['name']} ] 운동 기록 관리========"
         line6 = len(workout_mod) + align(workout_mod)
         print(workout_mod)
         print(
             " 1. 운동 기록 등록\n"
-            " 2. 운동 기록 조회\n"
+            " 2. 회원별 운동 기록 조회\n"
             " 3. 운동 기록 수정\n"
             " 4. 운동 기록 삭제\n"
+            " 5. 전체 운동 기록 조회\n"
             " 9. 이전으로\n"
             " 0. 프로그램 종료")
         print("=" * line6)
@@ -306,7 +298,7 @@ def workout_interface(workout, member):
             workout.register_workout(member)
 
         elif select_num == "2":
-            print("2. 운동 기록 조회를 선택하셨습니다.\n")
+            print("2. 회원별 운동 기록 조회를 선택하셨습니다.\n")
             workout.search_workout(member)
 
         elif select_num == "3":
@@ -315,7 +307,11 @@ def workout_interface(workout, member):
 
         elif select_num == "4":
             print("4. 운동 기록 삭제를 선택하셨습니다.\n")
-
+            workout.delete_workout()
+        elif select_num == "5":
+            print("5. 전체 운동 기록 조회를 선택하셨습니다.\n")
+            workout.show_workouts()
+            
         elif select_num == "9":
             print("이전 화면으로 돌아갑니다.\n")
             return True
@@ -371,13 +367,16 @@ def extra_interface(extra):
             elif sub == "2":
                 extra.do_retrieve_uniform_one()
             else:
-                print("잘못된 접근입니다.")
+                print("잘못된 접근입니다.\n")
+                
         elif select_num == "9":
             print("이전 화면으로 돌아갑니다.\n")
             return True
+        
         elif select_num == "0":
             print("프로그램을 종료합니다.\n")
             return False
+        
         else:
             print("잘못된 접근입니다.\n")
 
