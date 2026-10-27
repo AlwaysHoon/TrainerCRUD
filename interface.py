@@ -305,7 +305,7 @@ def workout_interface(workout, member):
 
         elif select_num == "4":
             print("4. 운동 기록 삭제를 선택하셨습니다.\n")
-            workout.delete_workout()
+            workout.delete_workout(member)
         elif select_num == "5":
             print("5. 전체 운동 기록 조회를 선택하셨습니다.\n")
             workout.show_workouts()
