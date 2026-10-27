@@ -34,5 +34,56 @@
         "weight": 10.0,
         "reps": 1,
         "sets": 1
+    },
+    {
+        "record_id": 5,
+        "user_id": "aa",
+        "date": "2026-10-27",
+        "exercise": "Ab Wheel",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 10.0,
+                "reps": 3
+            },
+            {
+                "set": 2,
+                "weight": 30.0,
+                "reps": 1
+            },
+            {
+                "set": 3,
+                "weight": 30.0,
+                "reps": 3
+            }
+        ]
+    },
+    {
+        "record_id": 6,
+        "user_id": "aa",
+        "date": "2026-10-27",
+        "exercise": "Arm Pulldown",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 10.0,
+                "reps": 1
+            },
+            {
+                "set": 2,
+                "weight": 20.0,
+                "reps": 2
+            },
+            {
+                "set": 3,
+                "weight": 30.0,
+                "reps": 3
+            },
+            {
+                "set": 4,
+                "weight": 40.0,
+                "reps": 2
+            }
+        ]
     }
 ]

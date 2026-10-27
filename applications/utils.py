@@ -4,6 +4,7 @@ for interface
 import time
 import unicodedata
 import re
+import os
 
 def validate_user(user_id):
     if not isinstance(user_id, str):
@@ -58,7 +59,32 @@ def progress_bar(len, sleep=0.001):
 
         time.sleep(sleep)
     print('\n')
-    
+def delete_data(self, user_id):
+    path = self.get_path(user_id)
+    folder = self.get_folder(user_id)
+
+    try:
+        os.remove(path)
+        print("파일 삭제 완료.\n")
+
+    except FileNotFoundError:
+        print("파일이 존재하지 않습니다.\n")
+        return False
+
+    except OSError as e:
+        print(f"파일 삭제 실패: {e}\n")
+        return False
+
+    try:
+        os.rmdir(folder)
+        print("빈 폴더 삭제 완료.\n")
+
+    except OSError:
+        pass  # 폴더에 다른 파일이 남아 있다면 유지
+
+    return True
+
+
 if __name__ == "__main__":
     progress_bar(40, 0.001)
     progress_bar(100, 0.005)

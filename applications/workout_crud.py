@@ -206,11 +206,12 @@ class WorkoutCRUD:
         print(f"\n전체 운동 기록 수: {len(self.workouts)}개")
 
     
-    def register_workout(self):
+    def register_workout(self, member):
         print("\n===== 운동 기록 등록 =====")
 
         # 회원 ID와 날짜는 처음 한 번만 입력
-        user_id = input("회원 ID: ").strip()
+        # user_id = input("회원 ID: ").strip()
+        user_id = member['user_id']
         date = input("운동 날짜(YYYY-MM-DD): ").strip()
 
         if not user_id or not date:
