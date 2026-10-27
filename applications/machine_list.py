@@ -85,8 +85,7 @@ class MachineList:
             print("등록된 운동이 없습니다.\n")
             return False
         
-    def _find_same(self, key, value):
-        return [muscles for muscles in self.body_list if muscles[key].lower() == value]
+    
     
     def do_select_one(self, select_num="1"):
         if self.body_list:
@@ -287,7 +286,8 @@ class MachineList:
                         
     def sort_machine_list(self):
         pass
-    
+    def _find_same(self, key, value):
+        return [muscles for muscles in self.body_list if muscles[key].lower() == value]
     def _save_muscles(self):
         try:
             with open(self.machine_path, mode="w", encoding="utf-8") as f:

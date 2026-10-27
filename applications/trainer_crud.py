@@ -110,8 +110,7 @@ class TrainerCRUD:
         print("[돌아가기: o, 종료: p]",f"{"< 이전 | ^검색 | 다음 >":^40}")
         return True
     
-    def _find_same(self, key, value):
-        return [member for member in self.members if member[key] == value]
+    
     
     def do_select_one(self, select_num="2", search_num="1"):
         if self.members:
@@ -203,6 +202,8 @@ class TrainerCRUD:
         print("회원 정보 수정을 시작합니다.\n")
         while True:
             modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ").strip()
+            ####user_id에 대한 코드 추가 필요, id변경에 따라 식단/운동기록/부가서비스의 파일 내용도 변경되어야 함
+            ####아니면 user_id가 검색의 기준이 되므로 user_id를 변경할 수 없다로 가야할 것 같다.
             if modify_key in select_member:
                 for member in self.members:
                     if member == select_member:
@@ -253,6 +254,9 @@ class TrainerCRUD:
     
     def do_sort(self, keys, rev=False):
         return self.members.sort(key=lambda x:x[keys], reverse=rev)
+    
+    def _find_same(self, key, value):
+        return [member for member in self.members if member[key] == value]
     
     def _save_members(self):
             try:
