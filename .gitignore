@@ -35,10 +35,8 @@ wandb/
 .DS_Store
 Thumbs.db
 
-# #cnn
-# cnn/datasets/
-# cnn/checkpoints/
 
 #banned
 banned/
 test.py
+test2.py
