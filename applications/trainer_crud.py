@@ -30,6 +30,9 @@ class TrainerCRUD:
             return
 
         name = input("이름을 입력하세요: ").strip()
+        if not self._check_name(name):
+            return
+        
         email = input("이메일을 입력하세요: ").strip()
         if not self._check_email(name, email):
             return
@@ -52,6 +55,7 @@ class TrainerCRUD:
             f"이름\t: {name}\n"
             f"e-mail\t: {email}")
         print("-"*20)
+        
         is_save = input("위 정보가 맞습니까?(Y/N)").strip().lower()
         return self._add_member(is_save, new_member)
             
@@ -74,11 +78,11 @@ class TrainerCRUD:
                 print("검색 실행\n")
                 return True
             
-            elif curser == "9":
+            elif curser == "o":
                 print("이전으로 돌아갑니다.\n")
                 return False
             
-            elif curser == "0":
+            elif curser == "p":
                 print("프로그램을 종료합니다.\n")
                 return "0"
             
@@ -103,7 +107,7 @@ class TrainerCRUD:
                     l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
                     print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {r_key:<{15 - align(r_key)}}:   {r_value:<{23 - align(r_value)}} |")
         print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-        print("[돌아가기: 9, 종료: 0]",f"{"< 이전 | ^검색 | 다음 >":^40}")
+        print("[돌아가기: o, 종료: p]",f"{"< 이전 | ^검색 | 다음 >":^40}")
         return True
     
     def _find_same(self, key, value):
@@ -160,18 +164,17 @@ class TrainerCRUD:
 
                 while True:
                     same_num = input(f"조회할 번호를 선택하세요(1~{len(detail_member)}, 9:이전으로): ").strip()
-
+                    
                     if same_num.isdigit():
                         if (int(same_num) >= 1) and (int(same_num) <= len(detail_member)):
                             break
-                        elif int(same_num) == 9:
-                            print("이전으로 돌아갑니다.\n")
-                            return False
                         else:
                             print("범위 밖입니다.\n")
-
+                    elif same_num == "o":
+                        print("이전으로 돌아갑니다.\n")
+                        return False
                     else:
-                        print("숫자를 입력해주세요")
+                        print("숫자를 입력해주세요.\n")
 
                 idx = int(same_num) - 1
 
@@ -192,13 +195,12 @@ class TrainerCRUD:
                     return self.do_delete(is_delete, detail_member, idx)
                            
         else:
-            print("등록된 회원이 없습니다.")
+            print("등록된 회원이 없습니다.\n")
             return False
     
-    #save가 안됨
     # 수정 후 중복 체크
     def modify_member(self, select_member, check_member):
-        print("\n회원 정보 수정을 시작합니다.\n")
+        print("회원 정보 수정을 시작합니다.\n")
         while True:
             modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ").strip()
             if modify_key in select_member:
@@ -229,14 +231,16 @@ class TrainerCRUD:
                         if is_modify in self._yes:
                             member[modify_key] = modify_value
                             member["modify_time"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
-                            print(f"{modify_key} 변경에 성공했습니다.")
+                            print(f"{modify_key} 변경에 성공했습니다.\n")
+                            
                             return True
 
                         else:
-                            print("\n이전으로 돌아갑니다.\n")
+                            print("이전으로 돌아갑니다.\n")
 
             else:  # str잘못입력한 경우 재진입 기회 제공
-                print("잘못된 접근입니다.")
+                print("잘못된 접근입니다.\n")
+                
                 while True:
                     is_continue = input("계속하시겠습니까?(Y/N): ").strip().lower()
                     if is_continue in self._yes:
@@ -245,16 +249,77 @@ class TrainerCRUD:
                     elif is_continue in self._no:
                         return
                     else:
-                        print("잘못 입력했습니다.")
+                        print("잘못 입력했습니다.\n")
     
     def do_sort(self, keys, rev=False):
-        return self.members.sort(key=lambda x:x[keys], reverse=rev)        
+        return self.members.sort(key=lambda x:x[keys], reverse=rev)
     
     def _save_members(self):
-        with open(self.member_path, mode="w", encoding="utf-8") as f:
-            json.dump(self.members, f, ensure_ascii=False, indent=4)
+            try:
+                with open(self.member_path, mode="w", encoding="utf-8") as f:
+                    json.dump(self.members, f, ensure_ascii=False, indent=4)
+                    
+            except OSError as e:
+                print(f"파일 저장 오류: {e}\n")
+                
+            except (TypeError, ValueError) as e:
+                print(f"데이터 변환 오류: {e}\n")
+                
+            else:
+                print("저장 완료.\n")
+                return True
+    
+    def _check_id(self,user_id):
+        '''
+        검사요소
+        1. 2~10자의 영어와 숫자로 구성된 아이디
+        2. 아이디 중복
+        '''
+        if not validate_user(user_id):
+            print("아이디 형식이 잘못되었습니다.\n")
+            return False
+        
+        if any(member["user_id"] == user_id for member in self.members):
+            print("이미 존재하는 아이디입니다.\n")
+            return False
+        return True
+    
+    def  _check_name(self, name):
+        '''
+        검사요소
+        한글: 2자이상
+        영어: 성과 이름 각각 영어 2자이상
+        '''
+        if not validate_name(name):
+            print("이름 형식이 다릅니다.(2자 이상)")
+            return False
+        
+        return True
+        
+    def _check_email(self, name, email):
+        '''
+        검사요소
+        1. @ . 이 포함되어있는 이메일 형식
+        2. 이중등록 방지
+        3. 이메일 중복
+        '''
+        if not validate_email(email):
+            print("이메일 형식이 아닙니다.\n")
+            return False
+        
+        for member in self.members:
+            if (member["name"] == name) and (member["email"] == email):
+                print("이중 등록입니다.\n")
+                return False
+            
+            elif member["email"] == email:
+                print("이미 존재하는 이메일입니다.\n")
+                return False
+            
+        return True
     
     def _check_yn(func):
+        
         @wraps(func)
         def decorated(self, is_yes, *args, **kwargs):
             while True:
@@ -266,32 +331,9 @@ class TrainerCRUD:
                 else:
                     print("잘못 입력했습니다.\n")
                     is_yes = input("다시 입력해주세요(Y/N): ").strip().lower()
+                    
         return decorated 
     
-    def _check_id(self,user_id):
-        if not validate_user(user_id):
-            print("아이디 형식이 잘못되었습니다.\n")
-            return False
-        
-        if any(member["user_id"] == user_id for member in self.members):
-            print("이미 존재하는 아이디입니다.\n")
-            return False
-        return True
-    
-    def _check_email(self, name, email):
-        if not validate_email(email):
-            print("이메일 형식이 아닙니다.\n")
-            return False
-        
-        for member in self.members:
-            if member["email"] == email:
-                print("이미 존재하는 이메일입니다.\n")
-                return False
-
-            elif (member["name"] == name) and (member["email"] == email):
-                print("이미 등록되어 있습니다.\n")
-                return False
-        return True
     @_check_yn
     def _add_member(self, member):
         self.members.append(member)
@@ -315,14 +357,20 @@ class TrainerCRUD:
     @_check_yn
     def do_delete(self, member, idx):       
         deleted_member = member[idx]
-        self.members.remove(deleted_member)
-        self._save_members()
-        print("회원 삭제에 성공했습니다.\n")
+        try:
+            self.members.remove(deleted_member)
+            
+        except Exception:
+            print("회원 삭제에 실패했습니다.\n")
+            return True  
+        else:
+            self._save_members()
+            print("회원 삭제에 성공했습니다.\n")
 
-        if self.extra:
-            self.extra.remove_member_data(deleted_member['user_id'])
-        return True
-    
+            if self.extra:
+                self.extra.remove_member_data(deleted_member['user_id'])
+            return True 
+        
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
