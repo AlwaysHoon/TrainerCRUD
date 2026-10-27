@@ -63,82 +63,9 @@
             "Bulgarian Split Squat",
             "Cable Pull Through",
             "Calf Press on Leg Press",
-            "Calf Press on Seated Leg Press",
-            "aa",
-            "a",
-            "aaa",
-            "aaaa",
-            "aaaaa"
+            "Calf Press on Seated Leg Press"
         ],
         "save_time": "26/10/21 12:34:45",
         "modify_time": "26/10/21 12:34:45"
-    },
-    {
-        "muscle": "ex",
-        "machines": [
-            "aa",
-            "bb",
-            "cc"
-        ],
-        "save_time": "26/10/21 14:03:16",
-        "modify_time": "26/10/21 14:03:16"
-    },
-    {
-        "muscle": "ex2",
-        "machines": [
-            "aa",
-            "bb",
-            "cc"
-        ],
-        "save_time": "26/10/21 14:03:24",
-        "modify_time": "26/10/21 14:03:24"
-    },
-    {
-        "muscle": "가나다",
-        "machines": [
-            "가가",
-            "나나",
-            "다다",
-            "라라",
-            "가나다가나다",
-            "가나다라마바사아",
-            "가가가가"
-        ],
-        "save_time": "26/10/21 14:37:11",
-        "modify_time": "26/10/21 14:37:11"
-    },
-    {
-        "muscle": "ex3",
-        "machines": [
-            "aa",
-            "bb"
-        ],
-        "save_time": "26/10/21 15:27:33",
-        "modify_time": "26/10/21 15:27:33"
-    },
-    {
-        "muscle": "aaa",
-        "machines": [
-            "aa",
-            "bb",
-            "ccc",
-            "ee",
-            "dd",
-            "ff"
-        ],
-        "save_time": "26/10/26 15:17:15",
-        "modify_time": "26/10/27 08:58:09"
-    },
-    {
-        "muscle": "yy",
-        "machines": [
-            "y",
-            "yyyy",
-            "yyyyy",
-            "yyyyyy",
-            "yy"
-        ],
-        "save_time": "26/10/27 09:05:43",
-        "modify_time": "26/10/27 09:10:36"
     }
 ]

@@ -42,18 +42,18 @@ class TrainerCRUD:
         modify_time = str(today)
 
         new_member = {
-            "user_id": user_id,
-            "name": name,
+            "아이디": user_id,
+            "이름": name,
             "email": email,
-            "save_time": save_time,
-            "modify_time": modify_time,
+            "최초 등록일": save_time,
+            "최근 수정일": modify_time,
         }
         
         print("-"*20)
         print(
-            f"id\t: {user_id}\n"
+            f"아이디\t: {user_id}\n"
             f"이름\t: {name}\n"
-            f"e-mail\t: {email}")
+            f"email\t: {email}")
         print("-"*20)
         
         is_save = input("위 정보가 맞습니까?(Y/N)").strip().lower()
@@ -94,14 +94,14 @@ class TrainerCRUD:
         for index, member in enumerate(members):
             
             if (index % 2) == 0:
-                l = [(key, value) for key, value in member.items() if key not in ("save_time", "modify_time")]
+                l = [(key, value) for key, value in member.items() if key not in ("최초 등록일", "최근 수정일")]
                 if index == (len(members) - 1):
                     print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                     for i in range(len(l)):
                         l_key, l_value = l[i][0], l[i][1]
                         print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {' ':<15}:   {'':<23} |")
             else:
-                r = [(key, value) for key, value in member.items() if key not in ("save_time", "modify_time")]
+                r = [(key, value) for key, value in member.items() if key not in ("최초 등록일", "최근 수정일")]
                 print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                 for i in range(len(l)):
                     l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
@@ -119,11 +119,11 @@ class TrainerCRUD:
             
             if search_num == "1":
                 select_member = input(f"{word} 할 회원 이름을 입력해주세요: ").strip()
-                detail_member = self._find_same("name",select_member)
+                detail_member = self._find_same("이름",select_member)
                 
             elif search_num == "2":
                 select_member = input(f"{word} 할 회원 ID를 입력해주세요: ").strip()
-                detail_member = self._find_same("user_id", select_member)
+                detail_member = self._find_same("아이디", select_member)
                 
             count = len(detail_member)
             
@@ -215,13 +215,13 @@ class TrainerCRUD:
                                 if modify_value == "9":
                                     print()
                                     return True
-                                elif self._check_email(member["name"],modify_value):
+                                elif self._check_email(member["이름"],modify_value):
                                     break
                                 
-                            elif (modify_key != "name") and (modify_value in [member[modify_key] for member in self.members]):
+                            elif (modify_key != "이름") and (modify_value in [member[modify_key] for member in self.members]):
                                 print(f"이미 존재하는 {modify_key}입니다.\n")
 
-                            elif modify_key == "name":  # 동명이인은 이메일로 비교
+                            elif modify_key == "이름":  # 동명이인은 이메일로 비교
                                 for mem in check_member:
                                     if member["email"] == mem["email"]:
                                         print(f"이미 존재하는 {modify_key}입니다.\n")
@@ -231,7 +231,7 @@ class TrainerCRUD:
                         is_modify = (input(f"정말 {modify_value}로 변경하시겠습니까?(Y/N): ").strip().lower())
                         if is_modify in self._yes:
                             member[modify_key] = modify_value
-                            member["modify_time"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
+                            member["최근 수정일"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
                             print(f"{modify_key} 변경에 성공했습니다.\n")
                             
                             return True
@@ -283,7 +283,7 @@ class TrainerCRUD:
             print("아이디 형식이 잘못되었습니다.\n")
             return False
         
-        if any(member["user_id"] == user_id for member in self.members):
+        if any(member["아이디"] == user_id for member in self.members):
             print("이미 존재하는 아이디입니다.\n")
             return False
         return True
@@ -312,7 +312,7 @@ class TrainerCRUD:
             return False
         
         for member in self.members:
-            if (member["name"] == name) and (member["email"] == email):
+            if (member["이름"] == name) and (member["email"] == email):
                 print("이중 등록입니다.\n")
                 return False
             

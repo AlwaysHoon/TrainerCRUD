@@ -376,10 +376,11 @@ def extra_interface(extra):
                     extra.do_retrieve_uniform_one()
                     break
                 elif sub.lower() in ("o","ㅒ","ㅐ"):
-                    print("이전으로 돌아갑니다.")
+                    print("이전으로 돌아갑니다.\n")
                     break
                 else:
                     print("1, 2 또는 o 로 입력해주세요.\n")    
+                    
         elif select_num == "o":
             print("이전 화면으로 돌아갑니다.\n")
             return True
