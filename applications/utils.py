@@ -25,7 +25,8 @@ def validate_email(email):
     return re.fullmatch(pattern, email) is not None
 
 def align(word):
-    count = sum(1 for i in word if unicodedata.east_asian_width(i) in 'WF')
+    kor_word = str(word)
+    count = sum(1 for i in kor_word if unicodedata.east_asian_width(i) in 'WF')
     return count
 
 def wrap(machines, width=45):

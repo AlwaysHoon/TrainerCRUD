@@ -100,7 +100,7 @@ class ExtraServiceCRUD:
 
     def find_member(self, user_id):
         for member in self.member_crud.members:
-            if member["user_id"] == user_id:
+            if member["아이디"] == user_id:
                 return member
         return None
 
@@ -108,14 +108,14 @@ class ExtraServiceCRUD:
         '''{락커번호: (member, data)} - 현재 사용 중인 락커만'''
         used = {}
         for member in self.member_crud.members:
-            data = self.read_data(member["user_id"])
+            data = self.read_data(member["아이디"])
             if data["locker_no"] is not None:
                 used[data["locker_no"]] = (member, data)
         return used
 
     def input_member(self):
         while True:
-            user_id = input("회원 아이디를 입력하세요(뒤로가기: B): ").strip()
+            user_id = input("회원 아이디를 입력하세요(뒤로가기: o): ").strip()
             if user_id.lower() in BACK:
                 print("이전으로 돌아갑니다.")
                 return None
@@ -160,23 +160,23 @@ class ExtraServiceCRUD:
 
     def locker_info(self, member):
         '''카드에 보여줄 락커 정보'''
-        data = self.read_data(member["user_id"])
+        data = self.read_data(member["아이디"])
         locker = f"{data['locker_no']}번" if data["locker_no"] is not None else "미배정"
         reg, expire = self.get_dates(data["assign_time"], data.get("expire_time"))
-        return [("user_id", member["user_id"]),
-                ("name", member["name"]),
+        return [("아이디", member["아이디"]),
+                ("이름", member["이름"]),
                 ("락커 번호", locker),
                 ("등록일", reg or "-"),
                 ("만료일", expire or "-")]
 
     def uniform_info(self, member):
         '''카드에 보여줄 운동복 정보'''
-        data = self.read_data(member["user_id"])
+        data = self.read_data(member["아이디"])
         reg, expire = self.get_dates(data["uniform_modify_time"], data.get("uniform_expire_time"))
         if not data["use_uniform"]:
             expire = None  # 운동복을 사용하지 않으면 만료일은 없다
-        return [("user_id", member["user_id"]),
-                ("name", member["name"]),
+        return [("아이디", member["아이디"]),
+                ("이름", member["이름"]),
                 ("운동복", self.uniform_text(data["use_uniform"])),
                 ("등록일", reg or "-"),
                 ("만료일", expire or "-")]
@@ -208,10 +208,10 @@ class ExtraServiceCRUD:
 
     def match_member(self, member, word):
         '''검색어(이름 또는 아이디)가 들어있는 회원인지'''
-        return word in str(member.get("user_id", "")).lower() or word in str(member.get("name", "")).lower()
+        return word in str(member.get("아이디", "")).lower() or word in str(member.get("이름", "")).lower()
 
     def member_card_page(self, title, members, info_fn, summary=None, label_fn=None, match_fn=None,
-                         pick_fn=None, pick_help="", back_keys=("o",) + BACK, back_text="o"):
+                         pick_fn=None, pick_help="", back_keys=("o",) + BACK, back_text="o", start_page=0):
         '''
         카드 목록을 페이지(10개)별로 보여준다.
         < : 이전 페이지 / > : 다음 페이지 / ^ : 검색 / back_text(기본 9) : 돌아가기
@@ -221,7 +221,7 @@ class ExtraServiceCRUD:
         '''
         match_fn = match_fn or self.match_member
         keyword = ""
-        page = 0
+        page = start_page
         while True:
             shown = [m for m in members if match_fn(m, keyword)]
             max_page = max((len(shown) - 1) // PAGE_SIZE, 0)
@@ -290,8 +290,8 @@ class ExtraServiceCRUD:
         if member is None:
             return [("", "")] * 4
         reg, expire = self.get_dates(data["assign_time"], data.get("expire_time"))
-        return [("user_id", member["user_id"]),
-                ("name", member["name"]),
+        return [("아이디", member["아이디"]),
+                ("이름", member["이름"]),
                 ("등록일", reg or "-"),
                 ("만료일", expire or "-")]
 
@@ -369,7 +369,7 @@ class ExtraServiceCRUD:
 
         def pick(cmd):
             for m in members:
-                if m["user_id"] == cmd:
+                if m["아이디"] == cmd:
                     return m, None
             return None, "목록에 없는 회원입니다. 회원 아이디를 다시 입력해주세요."
 
@@ -380,7 +380,7 @@ class ExtraServiceCRUD:
     def pick_uniform_member(self, title):
         '''운동복 상태가 보이는 전체 회원 카드에서 회원을 선택한다.'''
         members = self.member_crud.members
-        use_count = sum(1 for m in members if self.read_data(m["user_id"])["use_uniform"])
+        use_count = sum(1 for m in members if self.read_data(m["아이디"])["use_uniform"])
         return self.pick_member(title, self.uniform_info,
                                 [f"사용 {use_count}명 / 전체 {len(members)}명"])
 
@@ -391,14 +391,30 @@ class ExtraServiceCRUD:
         return self.pick_member(title, self.locker_info,
                                 [f"락커 사용 {used_count} / 전체 {LOCKER_COUNT}  (회원 {len(members)}명)"])
 
+    def show_assigned_locker(self, locker_no):
+        '''락커를 배정한 직후, 배정된 락커가 있는 페이지의 카드 화면을 보여준다.'''
+        slots = self.locker_slots()
+
+        def info(slot):
+            rows = self.slot_info(slot)
+            if slot["no"] == locker_no:  # 방금 배정한 락커는 표시해준다
+                rows = [(k, f"{v} (방금 배정)" if k == "아이디" else v) for k, v in rows]
+            return rows
+
+        used_count = sum(1 for slot in slots if slot["member"] is not None)
+        summary = [f"사용 {used_count} / 전체 {LOCKER_COUNT} (방금 배정한 락커에는 '(방금 배정)'이 표시됩니다.)"]
+        self.member_card_page("=======락커 배정 완료=======", slots, info, summary=summary,
+                              label_fn=lambda slot: slot["no"], match_fn=self.match_slot,
+                              start_page=(locker_no - 1) // PAGE_SIZE)
+
     # ---------- 1. 락커 배정 ----------
     def do_assign_locker(self):
         member = self.pick_assign_member("=======락커 배정 (회원 선택)=======")
         if member is None:
             return False
-        data = self.read_data(member["user_id"])
+        data = self.read_data(member["아이디"])
         if data["locker_no"] is not None:
-            print(f"{member['name']}님은 이미 {data['locker_no']}번 락커를 사용 중입니다. (변경은 '락커 변경' 메뉴)")
+            print(f"{member['이름']}님은 이미 {data['locker_no']}번 락커를 사용 중입니다. (변경은 '락커 변경' 메뉴)")
             return False
 
         locker_no = self.pick_locker_number("=======락커 배정=======",
@@ -412,9 +428,10 @@ class ExtraServiceCRUD:
         data["locker_no"] = locker_no
         data["assign_time"] = self.today()      # 등록일
         data["expire_time"] = self.expire_day()  # 만료일 (등록일 + 30일)
-        self.write_data(member["user_id"], data)
-        print(f"{member['name']}님에게 {locker_no}번 락커를 배정했습니다.")
+        self.write_data(member["아이디"], data)
+        print(f"{member['이름']}님에게 {locker_no}번 락커를 배정했습니다.")
         print(f"등록일: {data['assign_time']} / 만료일: {data['expire_time']}")
+        self.show_assigned_locker(locker_no)
         return True
 
     # ---------- 2. 락커 현황 조회 ----------
@@ -425,12 +442,13 @@ class ExtraServiceCRUD:
             return False
         used = self.locker_map()
         empty = [no for no in range(1, LOCKER_COUNT + 1) if no not in used]
-        summary = [f"사용 {len(used)} / 전체 {LOCKER_COUNT} (빈 락커 {len(empty)})"]
+        summary = [f"사용 {len(used)} / 전체 {LOCKER_COUNT} (빈 락커 {len(empty)}, 카드의 No. 는 락커 번호입니다.)"]
         lines = wrap(empty, 70)
         if lines:
             summary.append("빈 락커 번호: " + lines[0])
             summary += ["              " + line for line in lines[1:]]
-        self.member_card_page("=======락커 배정 현황=======", members, self.locker_info, summary=summary)
+        self.member_card_page("=======락커 배정 현황=======", self.locker_slots(), self.slot_info, summary=summary,
+                              label_fn=lambda slot: slot["no"], match_fn=self.match_slot)
         return True
 
     # ---------- 3. 락커 변경 및 해제 ----------
@@ -439,7 +457,7 @@ class ExtraServiceCRUD:
                                          "배정된 락커가 없습니다. 먼저 락커를 배정해주세요.")
         if member is None:
             return False
-        data = self.read_data(member["user_id"])
+        data = self.read_data(member["아이디"])
 
         print(f"현재 {data['locker_no']}번 락커를 사용 중입니다.")
         new_no = self.pick_locker_number("=======락커 변경 (새 락커 선택)=======",
@@ -458,7 +476,7 @@ class ExtraServiceCRUD:
         data["locker_no"] = new_no
         data["assign_time"] = self.today()      # 등록일
         data["expire_time"] = self.expire_day()  # 만료일 (등록일 + 30일)
-        self.write_data(member["user_id"], data)
+        self.write_data(member["아이디"], data)
         print(f"{old_no}번 -> {new_no}번 락커로 변경했습니다.")
         print(f"등록일: {data['assign_time']} / 만료일: {data['expire_time']}")
         return True
@@ -467,7 +485,7 @@ class ExtraServiceCRUD:
         member = self.pick_locker_member("=======락커 해제=======", "배정된 락커가 없습니다.")
         if member is None:
             return False
-        data = self.read_data(member["user_id"])
+        data = self.read_data(member["아이디"])
 
         while True:
             check = input(f"{data['locker_no']}번 락커 사용을 해제하시겠습니까?(Y/N, 돌아가기: o): ").strip().lower()
@@ -483,7 +501,7 @@ class ExtraServiceCRUD:
         data["locker_no"] = None
         data["assign_time"] = None
         data["expire_time"] = None
-        self.save_or_delete(member["user_id"], data)
+        self.save_or_delete(member["아이디"], data)
         print(f"{released}번 락커를 해제했습니다. 다시 배정할 수 있습니다.")
         return True
 
@@ -492,11 +510,11 @@ class ExtraServiceCRUD:
         member = self.pick_uniform_member("=======운동복 이용 여부 등록=======")
         if member is None:
             return False
-        data = self.read_data(member["user_id"])
-        print(f"{member['name']}님의 현재 운동복 상태: {self.uniform_text(data['use_uniform'])}")
+        data = self.read_data(member["아이디"])
+        print(f"{member['이름']}님의 현재 운동복 상태: {self.uniform_text(data['use_uniform'])}")
 
         while True:
-            answer = input("운동복을 이용하시나요?(Y/N, 뒤로가기: B): ").strip().lower()
+            answer = input("운동복을 이용하시나요?(Y/N, 뒤로가기: o): ").strip().lower()
             if answer in YES:
                 use = True
                 break
@@ -507,14 +525,14 @@ class ExtraServiceCRUD:
                 print("이전으로 돌아갑니다.")
                 return False
             else:
-                print("Y, N 또는 B 로 입력해주세요.")
+                print("Y, N 또는 o 로 입력해주세요.")
 
         data["use_uniform"] = use
         data["uniform_modify_time"] = self.today()  # 등록일
         # 만료일 (등록일 + 30일) - 운동복을 사용할 때만 정해진다
         data["uniform_expire_time"] = self.expire_day() if use else None
-        self.save_or_delete(member["user_id"], data)
-        print(f"{member['name']}님 운동복 {self.uniform_text(use)}으로 등록했습니다.")
+        self.save_or_delete(member["아이디"], data)
+        print(f"{member['이름']}님 운동복 {self.uniform_text(use)}으로 등록했습니다.")
         if use:
             print(f"등록일: {data['uniform_modify_time']} / 만료일: {data['uniform_expire_time']}")
         return True
@@ -525,7 +543,7 @@ class ExtraServiceCRUD:
         if not members:
             print("등록된 회원이 없습니다.")
             return False
-        use_count = sum(1 for m in members if self.read_data(m["user_id"])["use_uniform"])
+        use_count = sum(1 for m in members if self.read_data(m["아이디"])["use_uniform"])
         summary = [f"사용 {use_count}명 / 전체 {len(members)}명"]
         self.member_card_page("=======운동복 이용 현황=======", members, self.uniform_info, summary=summary)
         return True
@@ -534,16 +552,16 @@ class ExtraServiceCRUD:
         member = self.input_member()
         if member is None:
             return False
-        data = self.read_data(member["user_id"])
+        data = self.read_data(member["아이디"])
         if data["use_uniform"] is None:
-            print(f"{member['name']}님은 운동복 이용 여부가 등록되지 않았습니다.")
+            print(f"{member['이름']}님은 운동복 이용 여부가 등록되지 않았습니다.")
         else:
             reg, expire = self.get_dates(data["uniform_modify_time"], data.get("uniform_expire_time"))
             if data["use_uniform"]:
-                print(f"{member['name']}님 운동복: {self.uniform_text(data['use_uniform'])} "
+                print(f"{member['이름']}님 운동복: {self.uniform_text(data['use_uniform'])} "
                       f"(등록일 {reg} / 만료일 {expire})")
             else:
-                print(f"{member['name']}님 운동복: {self.uniform_text(data['use_uniform'])} "
+                print(f"{member['이름']}님 운동복: {self.uniform_text(data['use_uniform'])} "
                       f"(등록일 {reg})")
         return True
 
