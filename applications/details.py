@@ -223,9 +223,7 @@ class DetailsCRUD:
         for key, dtype in input_keys.items():
             while True:
                 try:
-                    value = input(
-                        f"{key}를 입력하세요(기존: {existing[key]}, Enter: 유지): "
-                    ).strip()
+                    value = input(f"{key}를 입력하세요(기존: {existing[key]}, Enter: 유지): ").strip()
 
                     if not value:
                         break

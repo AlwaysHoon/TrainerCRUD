@@ -65,7 +65,7 @@ class TrainerCRUD:
             start = page * page_size
             end = start + page_size
             page_list = self.members[start:end]
-            self.do_retrive(page_list, page)
+            self.do_retrive(page_list, page, max_page)
             
             curser = input()
             if curser == "<" and page > 0:
@@ -89,7 +89,7 @@ class TrainerCRUD:
             else:
                 print("잘못된 접근입니다.\n")
            
-    def do_retrive(self, members, page):
+    def do_retrive(self, members, page, max_page):
         print(f"{'=======전체 회원 리스트=======':^86}")
         for index, member in enumerate(members):
             
@@ -107,7 +107,7 @@ class TrainerCRUD:
                     l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
                     print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {r_key:<{15 - align(r_key)}}:   {r_value:<{23 - align(r_value)}} |")
         print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-        print("[돌아가기: o, 종료: p]",f"{"< 이전 | ^검색 | 다음 >":^40}")
+        print("[돌아가기: o, 종료: p]",f"{"< 이전 | ^검색 | 다음 >":^40}",f"({page + 1}/{max_page + 1} 페이지)")
         return True
     
     

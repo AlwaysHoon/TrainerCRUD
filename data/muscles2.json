@@ -1,0 +1,71 @@
+[
+    {
+        "muscle": "Arms",
+        "machines": [
+            "Bench Dip",
+            "Bench Press",
+            "Bicep Curl"
+        ],
+        "save_time": "26/10/21 10:24:11",
+        "modify_time": "26/10/21 10:24:11"
+    },
+    {
+        "muscle": "Core",
+        "machines": [
+            "Ab Wheel",
+            "Bicycle Crunch",
+            "Cable Crunch",
+            "Cable Twist",
+            "Cross Body Crunch",
+            "Crunch"
+        ],
+        "save_time": "26/10/21 10:25:15",
+        "modify_time": "26/10/21 10:25:15"
+    },
+    {
+        "muscle": "Back",
+        "machines": [
+            "Arm Pulldown",
+            "Back Extension",
+            "Behind Lat Pull",
+            "Bent Over One Arm Row",
+            "Bent Over Row"
+        ],
+        "save_time": "26/10/21 10:26:08",
+        "modify_time": "26/10/21 10:26:08"
+    },
+    {
+        "muscle": "Chest",
+        "machines": [
+            "Bench Press",
+            "Around the World"
+        ],
+        "save_time": "26/10/21 10:26:50",
+        "modify_time": "26/10/21 10:26:50"
+    },
+    {
+        "muscle": "Shoulders",
+        "machines": [
+            "Arnold Press",
+            "Behind Overhead Press",
+            "Cable Rever Fly",
+            "Face Pull",
+            "Front Raise"
+        ],
+        "save_time": "26/10/21 10:28:43",
+        "modify_time": "26/10/21 10:28:43"
+    },
+    {
+        "muscle": "Legs",
+        "machines": [
+            "Box Jump",
+            "Box Squat",
+            "Bulgarian Split Squat",
+            "Cable Pull Through",
+            "Calf Press on Leg Press",
+            "Calf Press on Seated Leg Press"
+        ],
+        "save_time": "26/10/21 12:34:45",
+        "modify_time": "26/10/21 12:34:45"
+    }
+]
