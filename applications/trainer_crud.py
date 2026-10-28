@@ -136,7 +136,7 @@ class TrainerCRUD:
             elif count == 1:
                 print("ㅡ" * 20)
                 for key, value in detail_member[0].items():
-                    print(f"{key:<{12-align(key)}}: {value:^10}")
+                    print(f"{key:<{12-align(key)}}: {value:<10}")
                 print("ㅡ" * 20)
                 idx = 0
                 if select_num == "2":  # 전체조회"2"->개인검색"1"
@@ -253,25 +253,25 @@ class TrainerCRUD:
                         print("잘못 입력했습니다.\n")
     
     def do_sort(self, keys, rev=False):
-        return self.members.sort(key=lambda x:x[keys], reverse=rev)
+        self.members.sort(key=lambda x:x[keys], reverse=rev)
     
     def _find_same(self, key, value):
         return [member for member in self.members if member[key] == value]
     
     def _save_members(self):
-            try:
-                with open(self.member_path, mode="w", encoding="utf-8") as f:
-                    json.dump(self.members, f, ensure_ascii=False, indent=4)
-                    
-            except OSError as e:
-                print(f"파일 저장 오류: {e}\n")
+        try:
+            with open(self.member_path, mode="w", encoding="utf-8") as f:
+                json.dump(self.members, f, ensure_ascii=False, indent=4)
                 
-            except (TypeError, ValueError) as e:
-                print(f"데이터 변환 오류: {e}\n")
-                
-            else:
-                print("저장 완료.\n")
-                return True
+        except OSError as e:
+            print(f"파일 저장 오류: {e}\n")
+            
+        except (TypeError, ValueError) as e:
+            print(f"데이터 변환 오류: {e}\n")
+            
+        else:
+            print("저장 완료.\n")
+            return True
     
     def _check_id(self,user_id):
         '''

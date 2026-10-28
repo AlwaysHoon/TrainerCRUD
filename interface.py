@@ -64,7 +64,7 @@ def admin_interface(members, machines, extra, workout, diets, detail_sys):
             if not extra_interface(extra):
                 return
 
-        elif select_num == "p":
+        elif select_num in ("p", "ㅖ", "ㅔ"):
             print("프로그램을 종료합니다.")
             return
         
@@ -109,11 +109,11 @@ def trainer_interface(members, workout, diets, details):
             if not search_interface(members, workout, diets, details, select_num):
                 return False
 
-        elif select_num == "o":
+        elif select_num in ("o","ㅒ","ㅐ"):
             print("이전으로 돌아갑니다.\n")
             return True
 
-        elif select_num == "p":
+        elif select_num in ("p", "ㅖ", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -139,6 +139,7 @@ def search_interface(members, workout, diets, detail_sys, select_num):
                 " 1. 회원 이름으로 검색\n"
                 " 2. 회원 ID로 검색\n"
                 " 3. 회원 리스트\n"
+                " 4. 리스트 정렬\n"
                 " o. 이전으로\n"
                 " p. 프로그램 종료")
             print("=" * line3)
@@ -158,12 +159,29 @@ def search_interface(members, workout, diets, detail_sys, select_num):
             elif search_num == "3":
                 count = True
                 continue
-            
-            elif search_num == "o":
+            elif search_num == "4":
+                print("1.아이디, 2.이름, 3.이메일, 4.최초 등록일, 5.최근 등록일")
+                try:
+                    sort_input = int(input("원하는 정렬 번호를 입력해주세요: "))
+                except ValueError:
+                    print("숫자를 입력해주세요.\n")
+                else:
+                    sort_keys=["아이디","이름","email","최초 등록일","최근 등록일"]
+                    is_reverse = int(input("1.내림차순, 2.오름차순 선택해주세요: "))
+                    if is_reverse == 1:
+                        members.do_sort(sort_keys[sort_input-1], rev=True)
+                        # print(members.members)
+                    elif is_reverse == 2:
+                        members.do_sort(sort_keys[sort_input-1], rev=False)
+                    else:
+                        print("잘못 입력했습니다.\n")
+                                                
+                
+            elif search_num in ("o","ㅒ","ㅐ"):
                 print("이전 화면으로 돌아갑니다.\n")
                 return True
 
-            elif search_num == "p":
+            elif search_num in ("p", "ㅖ", "ㅔ"):
                 print("프로그램을 종료합니다.\n")
                 return False
 
@@ -213,11 +231,11 @@ def member_interface(member, workout, diets, details):
                     if not diet_interface(diets, member):
                         return False
 
-                elif detail_num == "o":
+                elif detail_num in ("o","ㅒ","ㅐ"):
                     print("이전 화면으로 돌아갑니다.\n")
                     return True
 
-                elif detail_num == "p":
+                elif detail_num in ("p", "ㅖ", "ㅔ"):
                     print("프로그램을 종료합니다.\n")
                     return False
 
@@ -251,22 +269,22 @@ def details_interface(details, member):
             details.do_save(member)
 
         elif select_num == "2":
-            print("2. 세부 기록 조회를 선택하셨습니다.\n")
+            print("2. 세부 기록 조회를 선택하셨습니다.")
             details.show_details(member)
 
         elif select_num == "3":
-            print("3. 세부 기록 수정을 선택하셨습니다.\n")
+            print("3. 세부 기록 수정을 선택하셨습니다.")
             details.do_modify(member)
 
         elif select_num == "4":
-            print("4. 세부 기록 삭제를 선택하셨습니다.\n")
+            print("4. 세부 기록 삭제를 선택하셨습니다.")
             details.do_delete(member)
 
-        elif select_num.lower() == "o":
+        elif select_num.lower() in ("o","ㅒ","ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
 
-        elif select_num.lower() == "p":
+        elif select_num.lower() in ("p", "ㅖ", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -307,11 +325,11 @@ def diet_interface(diets, member):
             print("4. 식단 삭제를 선택하셨습니다.\n")
             diets.do_select_one(member, select_num)
 
-        elif select_num.lower() == "o":
+        elif select_num.lower() in ("o","ㅒ","ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
 
-        elif select_num.lower() == "p":
+        elif select_num.lower() in ("p", "ㅖ", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -355,11 +373,11 @@ def workout_interface(workout, member):
             print("5. 전체 운동 기록 조회를 선택하셨습니다.\n")
             workout.show_workouts()
             
-        elif select_num == "o":
+        elif select_num in ("o","ㅒ","ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
 
-        elif select_num == "p":
+        elif select_num in ("p", "ㅖ", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -418,11 +436,11 @@ def extra_interface(extra):
                 else:
                     print("1, 2 또는 o 로 입력해주세요.\n")    
                     
-        elif select_num == "o":
+        elif select_num in ("o","ㅒ","ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
         
-        elif select_num == "p":
+        elif select_num in ("p", "ㅖ", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
         
@@ -466,21 +484,42 @@ def manage_machine(machines):
             if not machines.do_select_one(select_num):
                 return False
 
-        elif select_num == "o":
+        elif select_num in ("o","ㅒ","ㅐ"):
             print("이전으로 돌아갑니다.\n")
             return True
 
-        elif select_num == "p":
+        elif select_num in ("p", "ㅖ", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
         else:
             print("잘못된 접근입니다.\n")
 
+def start_application():
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+    DATA_DIR = os.path.join(BASE_DIR, "data")
+    member_path = os.path.join(DATA_DIR, "members.json")
+    machine_path = os.path.join(DATA_DIR, "muscles.json")
+    workout_path = os.path.join(DATA_DIR, 'workouts.json')  
+            
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    train_sys = TrainerCRUD(member_path)
+    machine_sys = MachineList(machine_path)
+    extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
+    train_sys.extra = extra_sys
+    
+    detail_sys = DetailsCRUD(os.path.join(DATA_DIR, "members"))
+    diet_sys = DietCRUD(os.path.join(DATA_DIR, "members"))
+    workout = WorkoutCRUD(workout_path)
+    
+    if login_interface():
+        admin_interface(train_sys, machine_sys, extra_sys, workout, diet_sys, detail_sys)
+    return
 
 if __name__ == "__main__":
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # C:\Users\jihun\Archive\aicon\mini_project
-    DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+    DATA_DIR = os.path.join(BASE_DIR, "data")
     member_path = os.path.join(DATA_DIR, "members.json")
     machine_path = os.path.join(DATA_DIR, "muscles.json")
     workout_path = os.path.join(DATA_DIR, 'workouts.json')  

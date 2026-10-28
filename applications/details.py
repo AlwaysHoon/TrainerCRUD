@@ -60,10 +60,7 @@ class DetailsCRUD:
         user_id = member["아이디"]
         details = self._read_data(user_id)
 
-        existing = next(
-            (d for d in details if d["아이디"] == user_id),
-            None
-        )
+        existing = next((d for d in details if d["아이디"] == user_id), None)
 
         # 기존 데이터가 존재하면 수정 여부 확인
         if existing is not None:
@@ -74,20 +71,10 @@ class DetailsCRUD:
             return self._move_modify(is_modify, member)
 
         # 신규 데이터 등록
-        age = input("나이를 입력하세요: ").strip()
-        gender = input("성별을 입력하세요: ").strip()
-        height = input("키를 입력하세요(cm): ").strip()
-        weight = input("몸무게를 입력하세요(kg): ").strip()
-        fat = input("체지방량을 입력하세요(kg): ").strip()
-        skl_muscle = input("골격근량을 입력하세요(kg): ").strip()
+        age, gender, height, weight, fat, skl_muscle = self._input_data()
         
-        bmi = round(int(weight) / (int(height) / 100) ** 2, 2)
-        
-        bmr = 10 * int(weight) + 6.25 * int(height) - 5 * int(age)
-        bmr += 5 if gender == "남" else -161
-        bmr = round(bmr, 2)
-        # 기초대사량, bmi, 골격근량, 체지방량
-        
+        bmi = self._calc_bmi(weight, height)
+        bmr = self._calc_bmr(age, gender, height, weight)
         
         today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
 
@@ -123,8 +110,76 @@ class DetailsCRUD:
                 print("-"*40)
                 for key, value in detail.items():
                     print(f"{key:<{12-align(key)}}: {value}")
-                print("-"*40)
-
+                print("-"*40,"\n")
+    
+    def _calc_bmi(self,weight, height):
+        return round(float(weight) / (float(height) / 100) ** 2, 2)
+    
+    def _calc_bmr(self, age, gender, weight, height):
+        bmr = 10 * float(weight) + 6.25 * float(height) - 5 * int(age)
+        bmr += 5 if gender == "남" else -161
+        bmr = round(bmr, 2)
+        return bmr
+    
+    def _input_data(self):
+        while True:
+            try:
+                age = int(input("나이를 입력하세요: ").strip())
+                if age <= 0:
+                    raise ValueError
+                break
+            
+            except ValueError:
+                print("0 이상의 숫자를 입력하세요.")
+        while True:
+            
+            gender = input("성별을 입력하세요(남/여): ").strip()
+            if gender in ("남","여"):
+                break
+            
+            else:
+                print("성별을 남/여 둘중에 하나로 입력하세요.")
+        while True:
+            try:
+                height = float(input("키를 입력하세요(cm): ").strip())
+                if height <= 0:
+                    raise ValueError
+                break
+            
+            except ValueError:
+                print("0이상의 숫자를 입력하세요.")
+        while True:
+            try:
+                weight = float(input("몸무게를 입력하세요(kg): ").strip())
+                if weight <= 0:
+                    raise ValueError
+                break
+            
+            except ValueError:
+                print("0 이상의 숫자를 입력하세요.")
+                
+        while True:
+            try:
+                fat = float(input("체지방량을 입력하세요(kg): ").strip())
+                if fat <= 0:
+                    raise ValueError
+                break
+            
+            except ValueError:
+                print("0 이상의 숫자를 입력하세요.")
+                
+        while True:
+            try:
+                skl_muscle = float(input("골격근량을 입력하세요(kg): ").strip())
+                if skl_muscle <= 0:
+                    raise ValueError
+                break
+            
+            except ValueError:
+                print("0 이상의 숫자를 입력하세요.")
+        
+        return  age, gender, height, weight, fat, skl_muscle
+    
     def _check_yn(func):
         
         @wraps(func)
@@ -145,10 +200,7 @@ class DetailsCRUD:
         user_id = member["아이디"]
         details = self._read_data(user_id)
 
-        existing = next(
-            (d for d in details if d["아이디"] == user_id),
-            None
-        )
+        existing = next((d for d in details if d["아이디"] == user_id), None)
 
         if existing is None:
             print("등록된 신체 정보가 없습니다.\n")
@@ -157,26 +209,50 @@ class DetailsCRUD:
         print(f"\n{member['이름']}님의 기존 정보")
         self.show_details(member)
 
-        height = input(
-            f"키를 입력하세요(cm, 기존: {existing['키']}): "
-        ).strip()
-
-        weight = input(
-            f"몸무게를 입력하세요(kg, 기존: {existing['몸무게']}): "
-        ).strip()
-
-        # 입력하지 않은 항목은 기존 값 유지
         new_details = existing.copy()
 
-        if height:
-            new_details["키"] = height
+        input_keys = {
+            "나이": int,
+            "성별": str,
+            "키": float,
+            "몸무게": float,
+            "체지방량": float,
+            "골격근량": float
+        }
 
-        if weight:
-            new_details["몸무게"] = weight
+        for key, dtype in input_keys.items():
+            while True:
+                try:
+                    value = input(
+                        f"{key}를 입력하세요(기존: {existing[key]}, Enter: 유지): "
+                    ).strip()
 
-        new_details["최근 수정일"] = datetime.now().strftime(
-            "%y/%m/%d %H:%M:%S"
-        )
+                    if not value:
+                        break
+
+                    value = dtype(value)
+
+                    if key == "성별":
+                        if value not in ("남", "여"):
+                            raise ValueError
+
+                    elif key in ("나이", "키", "몸무게"):
+                        if value <= 0:
+                            raise ValueError
+
+                    elif value < 0:
+                        raise ValueError
+
+                    new_details[key] = value
+                    break
+
+                except ValueError:
+                    print(f"올바른 {key} 값을 입력하세요.\n")
+
+        # BMI 및 기초대사량 재계산
+        new_details["BMI"] = self._calc_bmi(new_details["몸무게"], new_details["키"])
+        new_details["기초대사량"] = self._calc_bmr(new_details["나이"], new_details["성별"], new_details["몸무게"], new_details["키"])
+        new_details["최근 수정일"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
 
         print("\n수정할 정보")
         print("-" * 40)
@@ -184,9 +260,7 @@ class DetailsCRUD:
             print(f"{key:<{12-align(key)}}: {value}")
         print("-" * 40)
 
-        is_modify = input(
-            "위 정보로 수정하시겠습니까?(Y/N): "
-        ).strip().lower()
+        is_modify = input("위 정보로 수정하시겠습니까?(Y/N): ").strip().lower()
 
         return self._update_details(is_modify, member, new_details)
     
@@ -194,10 +268,7 @@ class DetailsCRUD:
         user_id = member["아이디"]
         details = self._read_data(user_id)
 
-        existing = next(
-            (d for d in details if d["아이디"] == user_id),
-            None
-        )
+        existing = next((d for d in details if d["아이디"] == user_id), None)
 
         if existing is None:
             print("삭제할 신체 정보가 없습니다.\n")
@@ -206,9 +277,7 @@ class DetailsCRUD:
         print(f"\n{member['이름']}님의 신체 정보")
         self.show_details(member)
 
-        is_delete = input(
-            "정말 해당 정보를 삭제하시겠습니까?(Y/N): "
-        ).strip().lower()
+        is_delete = input("정말 해당 정보를 삭제하시겠습니까?(Y/N): ").strip().lower()
 
         return self._remove_details(is_delete, member)
         
@@ -224,7 +293,7 @@ class DetailsCRUD:
         details.append(new_details)
         self._write_data(member["아이디"], details)
 
-        print(f"{member['이름']}님 정보 등록에 성공했습니다.")
+        print(f"{member['이름']}님 정보 등록에 성공했습니다.\n")
         return True
 
     @_check_yn
@@ -236,10 +305,10 @@ class DetailsCRUD:
                 details[i] = new_details
                 self._write_data(member["아이디"], details)
 
-                print(f"{member['이름']}님 정보 수정에 성공했습니다.")
+                print(f"{member['이름']}님 정보 수정에 성공했습니다.\n")
                 return True
 
-        print("수정할 데이터를 찾지 못했습니다.")
+        print("수정할 데이터를 찾지 못했습니다.\n")
         return False
 
     @_check_yn
@@ -253,7 +322,7 @@ class DetailsCRUD:
 
 
 if __name__ == "__main__":
-    # 단독 테스트용: members.json의 첫 번째 회원으로 식단 관리 실행
+    
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     DATA_DIR = os.path.join(BASE_DIR, "data")
     member_path = os.path.join(DATA_DIR, "members.json")
@@ -261,8 +330,6 @@ if __name__ == "__main__":
     with open(member_path, "r", encoding="utf-8") as f:
         members = json.load(f)
 
-   
-    
     if members:
         diet = DetailsCRUD(os.path.join(DATA_DIR, "members"))
         

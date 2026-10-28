@@ -103,3 +103,42 @@ def do_sort(keys, rev=False):
     return members.sort(key=lambda x:x[keys], reverse=rev)
     
     
+    
+    
+def do_modify(self, member):
+    user_id = member["아이디"]
+    details = self._read_data(user_id)
+
+    existing = next((d for d in details if d["아이디"] == user_id),None)
+
+    if existing is None:
+        print("등록된 신체 정보가 없습니다.\n")
+        return False
+
+    print(f"\n{member['이름']}님의 기존 정보")
+    self.show_details(member)
+
+    height = input(f"키를 입력하세요(cm, 기존: {existing['키']}): ").strip()
+
+    weight = input(f"몸무게를 입력하세요(kg, 기존: {existing['몸무게']}): ").strip()
+
+    # 입력하지 않은 항목은 기존 값 유지
+    new_details = existing.copy()
+
+    if height:
+        new_details["키"] = height
+
+    if weight:
+        new_details["몸무게"] = weight
+
+    new_details["최근 수정일"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
+
+    print("\n수정할 정보")
+    print("-" * 40)
+    for key, value in new_details.items():
+        print(f"{key:<{12-align(key)}}: {value}")
+    print("-" * 40)
+
+    is_modify = input("위 정보로 수정하시겠습니까?(Y/N): ").strip().lower()
+
+    return self._update_details(is_modify, member, new_details)
