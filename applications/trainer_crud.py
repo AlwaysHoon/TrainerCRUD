@@ -136,7 +136,7 @@ class TrainerCRUD:
             elif count == 1:
                 print("ㅡ" * 20)
                 for key, value in detail_member[0].items():
-                    print(f"{key:<12}: {value:^10}")
+                    print(f"{key:<{12-align(key)}}: {value:^10}")
                 print("ㅡ" * 20)
                 idx = 0
                 if select_num == "2":  # 전체조회"2"->개인검색"1"
@@ -357,7 +357,6 @@ class TrainerCRUD:
         return True
     
     # 회원 삭제 시 부가서비스, 식단, 운동기록의 삭제도 필요함
-    # 세 json이 담긴 폴더를 통째로 삭제 추가 필요
     @_check_yn
     def do_delete(self, member, idx):       
         deleted_member = member[idx]
@@ -372,7 +371,10 @@ class TrainerCRUD:
             print("회원 삭제에 성공했습니다.\n")
 
             if self.extra:
-                self.extra.remove_member_data(deleted_member['user_id'])
+                self.extra.remove_member_data(deleted_member['아이디'])
+                
+            self.diet.remove_member_data(deleted_member['아이디'])
+                
             return True 
         
 if __name__ == "__main__":

@@ -403,14 +403,6 @@ def extra_interface(extra):
             extra.do_register_uniform()
             
         elif select_num == "6":
-            # print("1. 전체 회원 조회\n2. 특정 회원 조회")
-            # sub = input("번호를 입력하세요: ").strip()
-            # if sub == "1":
-            #     extra.do_retrieve_uniform_all()
-            # elif sub == "2":
-            #     extra.do_retrieve_uniform_one()
-            # else:
-            #     print("잘못된 접근입니다.\n")
             while True:
                 print("1. 전체 회원 조회\n2. 특정 회원 조회\no. 뒤로가기")
                 sub = input("번호를 입력하세요: ").strip()
@@ -487,8 +479,6 @@ def manage_machine(machines):
 
 
 if __name__ == "__main__":
-    
-    
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
     member_path = os.path.join(DATA_DIR, "members.json")
@@ -499,16 +489,15 @@ if __name__ == "__main__":
 
     train_sys = TrainerCRUD(member_path)
     machine_sys = MachineList(machine_path)
+    extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
+    train_sys.extra = extra_sys
+    
+    detail_sys = DetailsCRUD(os.path.join(DATA_DIR, "members"))
+    diet_sys = DietCRUD(os.path.join(DATA_DIR, "members"))
     workout = WorkoutCRUD(workout_path)
     
-    extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
-    
-    train_sys.extra = extra_sys
-    diet_sys = DietCRUD(os.path.join(DATA_DIR, "members"))
-    detail_sys = DetailsCRUD(os.path.join(DATA_DIR, "members"))
     if login_interface():
         admin_interface(train_sys, machine_sys, extra_sys, workout, diet_sys, detail_sys)
-    # admin_interface(train_sys, machine_sys, extra_sys, workout, diet_sys)
 
 
 

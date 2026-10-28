@@ -9,7 +9,7 @@ class DetailsCRUD:
         self.member_dir = member_dir  # 예: data/members
         self._yes = ("y","yes", "네", "예","ㅛ")
         self._no = ("n", "no", "아니오","ㅜ")
-    # ---------- 도우미 ----------
+
     def _get_folder(self, user_id):
         return os.path.join(self.member_dir, user_id)
 
@@ -21,11 +21,10 @@ class DetailsCRUD:
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
-        # 파일이 없으면 빈 리스트
         return []
 
     def _write_data(self, user_id, details):
-        # 날짜순으로 정렬해서 저장 (같은 날짜는 입력한 순서 유지)
+        
         details.sort(key=lambda details: details["최근 수정일"])
 
         os.makedirs(self._get_folder(user_id), exist_ok=True)  # 개인 폴더가 없으면 생성
@@ -85,7 +84,7 @@ class DetailsCRUD:
         bmi = round(int(weight) / (int(height) / 100) ** 2, 2)
         
         bmr = 10 * int(weight) + 6.25 * int(height) - 5 * int(age)
-        bmr += 5 if gender == "m" else -161
+        bmr += 5 if gender == "남" else -161
         bmr = round(bmr, 2)
         # 기초대사량, bmi, 골격근량, 체지방량
         

@@ -6,9 +6,10 @@ C:.
 │  │
 │  └─members
 │      ├─"user_id"
+│      │       details.json
+│      │       workouts.json
 │      │       diet.json
 │      │       extra_service.json
-│      │       workouts.json(개인별로 구분 필요)
 │      └─...
 │              
 │  .gitignore
@@ -18,12 +19,13 @@ C:.
 │   │  trainer_crud.py
 │   │  machine_list.py
 │   │  extra_service.py
-│   │  workout_crud.py
+│   │  details.py
 │   │  diet.py
-│   └─...
+│   │  workout_crud.py
+│   │  utils.py
+│   └─
 │  
 │  interface.py
-│  utils.py
 ├─
 │
 │  (TrainerCRUD.png)
