@@ -135,9 +135,7 @@ class WorkoutCRUD:
     @staticmethod
     def ask_date():
         while True:
-            raw = input(
-                "운동 날짜(YYYY-MM-DD, q: 취소): "
-            ).strip()
+            raw = input("운동 날짜(YYYY-MM-DD, q: 취소): ").strip()
 
             if raw == "q":
                 return None
@@ -175,11 +173,11 @@ class WorkoutCRUD:
             for index in range(start, end):
                 print(f"{index + 1}. {items[index]}")
 
-            print("< 이전 | > 다음 | 0 취소")
+            print("< 이전 | > 다음 | q 취소")
 
             answer = input("번호 선택: ").strip()
 
-            if answer == "0":
+            if answer == "q":
                 return None
 
             elif answer == "<":
@@ -248,26 +246,12 @@ class WorkoutCRUD:
                     records = self.read_data(user_id) if user_id else []
                     workout_counts[user_id] = "읽기 오류" if records is None else f"{len(records)}개"
 
-        line = (
-            "+"
-            + "-" * cell_width
-            + "+"
-            + "-" * cell_width
-            + "+"
-        )
+        line = ("+" + "-" * cell_width + "+" + "-" * cell_width + "+")
 
         while True:
-            shown = [
-                member
-                for member in members
-                if keyword in str(member.get("아이디", "")).lower()
-                or keyword in str(member.get("이름", "")).lower()
-            ]
+            shown = [member for member in members if keyword in str(member.get("아이디", "")).lower() or keyword in str(member.get("이름", "")).lower()]
 
-            last_page = max(
-                (len(shown) - 1) // page_size,
-                0
-            )
+            last_page = max((len(shown) - 1) // page_size,0)
 
             page = min(page, last_page)
 
@@ -297,12 +281,7 @@ class WorkoutCRUD:
                         if j < len(pair):
                             number = start + offset + j + 1
 
-                            headings.append(
-                                self.pad(
-                                    f" No.{number:03d}",
-                                    cell_width
-                                )
-                            )
+                            headings.append(self.pad(f" No.{number:03d}",cell_width))
                         else:
                             headings.append(" " * cell_width)
 
@@ -318,14 +297,9 @@ class WorkoutCRUD:
                                 else:
                                     value = pair[j].get(key, "-")
 
-                                content = (
-                                    f" {self.pad(key, 8)} : "
-                                    f"{self.pad(value, 27)}"
-                                )
+                                content = (f" {self.pad(key, 8)} : "f"{self.pad(value, 27)}")
 
-                                columns.append(
-                                    self.pad(content, cell_width)
-                                )
+                                columns.append(self.pad(content, cell_width))
 
                             else:
                                 columns.append(" " * cell_width)
@@ -399,22 +373,12 @@ class WorkoutCRUD:
                     print("마지막 페이지입니다.")
 
             elif cmd == "^":
-                keyword = input(
-                    "검색할 이름 또는 아이디(전체 보기: 엔터): "
-                ).strip().lower()
+                keyword = input("검색할 이름 또는 아이디(전체 보기: 엔터): ").strip().lower()
 
                 page = 0
 
             else:
-                selected = next(
-                    (
-                        member
-                        for member in shown
-                        if str(member.get("아이디", "")).lower()
-                        == cmd.lower()
-                    ),
-                    None
-                )
+                selected = next((member for member in shown if str(member.get("아이디", "")).lower() == cmd.lower()), None)
 
                 if selected is not None:
                     return selected
@@ -422,7 +386,7 @@ class WorkoutCRUD:
                 print(
                     "목록에 없는 회원입니다. "
                     "회원 아이디를 다시 입력해주세요."
-                )
+                    )
 
     # ==============================
     # 운동 세트 데이터 처리
@@ -516,19 +480,9 @@ class WorkoutCRUD:
             print("운동 종목 파일 형식이 올바르지 않습니다.")
             return None
 
-        muscle_names = [
-            "Core",
-            "Back",
-            "Chest",
-            "Shoulders",
-            "Arms",
-            "Legs"
-        ]
+        muscle_names = ["Core", "Back", "Chest", "Shoulders", "Arms", "Legs"]
         
-        muscle_index = self.select_page(
-            muscle_names,
-            "운동 부위 선택"
-        )
+        muscle_index = self.select_page(muscle_names, "운동 부위 선택")
         if muscle_index is None:
             return None
 
@@ -545,16 +499,9 @@ class WorkoutCRUD:
                 if isinstance(values, list):
                     machines.extend(values)
 
-        machines = [
-            value
-            for value in machines
-            if isinstance(value, str) and value.strip()
-        ]
+        machines = [value for value in machines if isinstance(value, str) and value.strip()]
 
-        index = self.select_page(
-            machines,
-            f"{muscle} 운동 종목 선택"
-        )
+        index = self.select_page(machines, f"{muscle} 운동 종목 선택")
 
         if index is None:
             return None
@@ -599,21 +546,14 @@ class WorkoutCRUD:
             while True:
                 print(f"\n----- {len(sets) + 1}세트 -----")
 
-                weight = self.ask_number(
-                    "무게(kg)",
-                    minimum=0
-                )
+                weight = self.ask_number("무게(kg)", minimum=0)
 
                 if weight is None:
                     print("현재 운동 종목 입력을 취소했습니다.")
                     cancelled = True
                     break
 
-                reps = self.ask_number(
-                    "반복 횟수",
-                    kind="int",
-                    minimum=1
-                )
+                reps = self.ask_number("반복 횟수", kind="int", minimum=1)
 
                 if reps is None:
                     print("현재 운동 종목 입력을 취소했습니다.")
@@ -626,9 +566,7 @@ class WorkoutCRUD:
                     "reps": reps
                 })
 
-                more = self.ask_yes_no(
-                    "세트를 추가하시겠습니까? (Y/N, q: 취소): "
-                )
+                more = self.ask_yes_no("세트를 추가하시겠습니까? (Y/N, q: 취소): ")
 
                 if more is None:
                     print("현재 운동 종목 입력을 취소했습니다.")
@@ -643,9 +581,7 @@ class WorkoutCRUD:
 
                 for item in workouts:
                     try:
-                        ids.append(
-                            int(item.get("record_id", 0))
-                        )
+                        ids.append(int(item.get("record_id", 0)))
                     except (ValueError, TypeError):
                         continue
 
@@ -667,9 +603,7 @@ class WorkoutCRUD:
 
                 print(f"\n{exercise} 운동 기록 등록 완료!")
 
-            again = self.ask_yes_no(
-                "다른 운동을 등록하시겠습니까? (Y/N, 0: 취소): "
-            )
+            again = self.ask_yes_no("다른 운동을 등록하시겠습니까? (Y/N, q: 취소): ")
 
             if again is not True:
                 break
@@ -681,19 +615,9 @@ class WorkoutCRUD:
     # ==============================
 
     def select_date(self, workouts, user_id):
-        dates = sorted(
-            {
-                record.get("date")
-                for record in workouts
-                if isinstance(record.get("date"), str)
-            },
-            reverse=True
-        )
+        dates = sorted({record.get("date") for record in workouts if isinstance(record.get("date"), str)}, reverse=True)
 
-        index = self.select_page(
-            dates,
-            "운동 날짜 선택"
-        )
+        index = self.select_page(dates, "운동 날짜 선택")
 
         if index is None:
             return None
@@ -701,17 +625,12 @@ class WorkoutCRUD:
         return dates[index]
 
     def select_record(self, workouts, date, title):
-        records = [
-            record
-            for record in workouts
-            if record.get("date") == date
-        ]
+        records = [record for record in workouts if record.get("date") == date]
 
         labels = [
             f"[기록 #{record.get('record_id', '-')}] "
             f"{record.get('exercise', '-')}"
-            for record in records
-        ]
+            for record in records]
 
         index = self.select_page(labels, title)
 
@@ -747,11 +666,7 @@ class WorkoutCRUD:
         if date is None:
             return
 
-        records = [
-            record
-            for record in workouts
-            if record.get("date") == date
-        ]
+        records = [record for record in workouts if record.get("date") == date]
 
         for record in records:
             self.print_workout_record(record)
@@ -785,11 +700,7 @@ class WorkoutCRUD:
         if date is None:
             return
 
-        record = self.select_record(
-            workouts,
-            date,
-            "수정할 운동 종목 선택"
-        )
+        record = self.select_record(workouts, date, "수정할 운동 종목 선택")
 
         if record is None:
             return
@@ -802,40 +713,24 @@ class WorkoutCRUD:
             print("수정할 세트가 없습니다.")
             return
 
-        labels = [
-            f"{index}세트"
-            for index in range(1, len(sets) + 1)
-        ]
+        labels = [f"{index}세트" for index in range(1, len(sets) + 1)]
 
-        index = self.select_page(
-            labels,
-            "수정할 세트 선택"
-        )
+        index = self.select_page(labels, "수정할 세트 선택")
 
         if index is None:
             return
 
-        weight = self.ask_number(
-            "새로운 무게(kg)",
-            minimum=0
-        )
+        weight = self.ask_number("새로운 무게(kg)",minimum=0)
 
         if weight is None:
             return
 
-        reps = self.ask_number(
-            "새로운 반복 횟수",
-            kind="int",
-            minimum=1
-        )
+        reps = self.ask_number("새로운 반복 횟수",kind="int",minimum=1)
 
         if reps is None:
             return
 
-        new_sets = [
-            dict(item)
-            for item in sets
-        ]
+        new_sets = [dict(item) for item in sets]
 
         new_sets[index]["weight"] = weight
         new_sets[index]["reps"] = reps
@@ -885,30 +780,20 @@ class WorkoutCRUD:
         if date is None:
             return
 
-        record = self.select_record(
-            workouts,
-            date,
-            "삭제할 운동 종목 선택"
-        )
+        record = self.select_record(workouts, date, "삭제할 운동 종목 선택")
 
         if record is None:
             return
 
         self.print_workout_record(record)
 
-        confirm = self.ask_yes_no(
-            "정말 삭제하시겠습니까? (Y/N, q: 취소): "
-        )
+        confirm = self.ask_yes_no("정말 삭제하시겠습니까? (Y/N, q: 취소): ")
 
         if confirm is not True:
             print("삭제를 취소했습니다.")
             return
 
-        updated = [
-            item
-            for item in workouts
-            if item is not record
-        ]
+        updated = [item for item in workouts if item is not record]
 
         if self.write_data(user_id, updated):
             print("\n운동 기록 삭제 완료!")
@@ -953,10 +838,7 @@ class WorkoutCRUD:
         member_path = self.member_dir.parent / "members.json"
         members = load_members(member_path)
 
-        name_map = {
-            member["아이디"]: member["이름"]
-            for member in (members or [])
-        }
+        name_map = {member["아이디"]: member["이름"] for member in (members or [])}
 
         choices = [
             {
@@ -990,18 +872,15 @@ class WorkoutCRUD:
         if date is None:
             return
 
-        filtered = [
-            record
-            for record in records
-            if record.get("date") == date
-        ]
+        filtered = [record for record in records if record.get("date") == date]
 
         for record in filtered:
             self.print_workout_record(record)
 
         print(f"\n총 운동 종목: {len(filtered)}개")
 
-
+    def remove_member_data(self, user_id):
+        return self._delete_data(user_id)
 # ==============================
 # 회원 JSON 불러오기
 # ==============================
@@ -1025,10 +904,7 @@ def load_members(member_path):
         members = data
 
     elif isinstance(data, dict):
-        members = data.get(
-            "members",
-            data.get("회원목록", [])
-        )
+        members = data.get("members", data.get("회원목록", []))
 
     else:
         print("회원 정보 형식이 올바르지 않습니다.")
@@ -1078,17 +954,9 @@ def select_member(workout, member_path, mode=None):
         "delete": "운동 기록 삭제 (회원 선택)"
     }
 
-    title = title_map.get(
-        mode,
-        "운동 기록 관리 (회원 선택)"
-    )
+    title = title_map.get(mode,"운동 기록 관리 (회원 선택)")
 
-    return workout.select_member_card(
-        members,
-        title,
-        f"전체 회원 {len(members)}명",
-        show_workout_count=True
-    )
+    return workout.select_member_card(members, title, f"전체 회원 {len(members)}명", show_workout_count=True)
 
 
 # ==============================

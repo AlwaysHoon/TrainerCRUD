@@ -389,7 +389,7 @@ def extra_interface(extra):
         print(extra_mod)
         print(
             "1. 락커 배정\n"
-            "2. 락커 배정 현황 조회\n"
+            "2. 락커 현황 조회\n"
             "3. 락커 변경\n"
             "4. 락커 해제\n"
             "5. 운동복 이용 여부 등록\n"
@@ -420,7 +420,7 @@ def extra_interface(extra):
             while True:
                 print(
                     "1. 전체 회원 조회\n"
-                    "2. 특정 회원 조회\n"
+                    "2. 회원 아이디 조회\n"
                     "o. 뒤로가기")
                 sub = input("번호를 입력하세요: ").strip()
                 if sub == "1":
@@ -524,15 +524,19 @@ def start_application():
 
     train_sys = TrainerCRUD(member_path)
     machine_sys = MachineList(machine_path)
-    extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
-    train_sys.extra = extra_sys
-    
+    extra_sys = ExtraServiceCRUD(personal_path, train_sys)
     detail_sys = DetailsCRUD(personal_path)
     diet_sys = DietCRUD(personal_path)
-    workout = WorkoutCRUD(personal_path)
+    workout_sys = WorkoutCRUD(personal_path)
+    
+    train_sys.extra = extra_sys
+    train_sys.diet = diet_sys
+    train_sys.details = detail_sys
+    train_sys.workout = workout_sys
+    
     
     if login_interface():
-        admin_interface(train_sys, machine_sys, extra_sys, workout, diet_sys, detail_sys)
+        admin_interface(train_sys, machine_sys, extra_sys, workout_sys, diet_sys, detail_sys)
     
 
 if __name__ == "__main__":

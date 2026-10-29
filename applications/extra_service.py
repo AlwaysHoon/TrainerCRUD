@@ -6,8 +6,8 @@ from .utils import *
 LOCKER_COUNT = 30  # 전체 락커 수 (팀과 합의 후 변경)
 DATE_FORMAT = "%y/%m/%d"  # 등록일, 만료일 표시 형식
 EXPIRE_DAYS = 30  # 만료일 = 등록일 + 30일
-YES = ("y", "yes", "예", "네", "ㅛ")
-NO = ("n", "no", "아니오", "아니요", "ㅜ")
+YES = ("y", "yes", "예", "네")
+NO = ("n", "no", "아니오", "아니요")
 BACK = ("o", "ㅒ", "ㅐ")  # 이전 화면으로 돌아가기 키 
 PAGE_SIZE = 10  # 회원 카드 목록에서 한 페이지에 보여줄 회원 수 (2열 x 5행)
 
@@ -44,13 +44,14 @@ class ExtraServiceCRUD:
         with open(self._get_path(user_id), "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
-    def _delete_data(self, user_id):
+    def _delete_data(self, user_id, message="파일 삭제 완료.\n"):
         path = self._get_path(user_id)
         folder = self._get_folder(user_id)
 
         try:
             os.remove(path)
-            print("파일 삭제 완료.\n")
+            if message:
+                print(message)
 
         except FileNotFoundError:
             print("파일이 존재하지 않습니다.\n")
@@ -69,11 +70,11 @@ class ExtraServiceCRUD:
 
         return True
 
-    def _save_or_delete(self, user_id, data):
+    def _save_or_delete(self, user_id, data, message="파일 삭제 완료.\n"):
         '''락커도 운동복도 이용하지 않으면 null 로 저장하지 않고 파일을 삭제한다. (아니면 저장)'''
         if data["locker_no"] is None and not data["use_uniform"]:
             if os.path.exists(self._get_path(user_id)):
-                self._delete_data(user_id)
+                self._delete_data(user_id, message)
         else:
             self._write_data(user_id, data)
 
@@ -191,7 +192,7 @@ class ExtraServiceCRUD:
         return word in str(member.get("아이디", "")).lower() or word in str(member.get("이름", "")).lower()
 
     def _member_card_page(self, title, members, info_fn, summary=None, label_fn=None, match_fn=None,
-                         pick_fn=None, pick_help="", back_keys=("o", "ㅐ") + BACK, back_text="o", start_page=0):
+                         pick_fn=None, pick_help="", back_keys=("o",) + BACK, back_text="o", start_page=0):
         '''
         카드 목록을 페이지(10개)별로 보여준다.
         < : 이전 페이지 / > : 다음 페이지 / ^ : 검색 / back_text(기본 o) : 돌아가기
@@ -427,7 +428,7 @@ class ExtraServiceCRUD:
         if lines:
             summary.append("빈 락커 번호: " + lines[0])
             summary += ["              " + line for line in lines[1:]]
-        self._member_card_page("=======락커 배정 현황=======", self._locker_slots(), self._slot_info, summary=summary,
+        self._member_card_page("=======락커 현황=======", self._locker_slots(), self._slot_info, summary=summary,
                               label_fn=lambda slot: slot["no"], match_fn=self._match_slot)
         return True
 
@@ -481,7 +482,8 @@ class ExtraServiceCRUD:
         data["locker_no"] = None
         data["assign_time"] = None
         data["expire_time"] = None
-        self._save_or_delete(member["아이디"], data)
+        self._save_or_delete(member["아이디"], data, None)
+        print("락커 해제 완료.\n")
         print(f"{released}번 락커를 해제했습니다. 다시 배정할 수 있습니다.")
         return True
 
@@ -493,14 +495,22 @@ class ExtraServiceCRUD:
         data = self._read_data(member["아이디"])
         print(f"{member['이름']}님의 현재 운동복 상태: {self._uniform_text(data['use_uniform'])}")
 
+        using = bool(data["use_uniform"])  # 지금 운동복을 사용 중인 회원인지
+
         while True:
-            answer = input("운동복을 이용하시나요?(Y/N, 뒤로가기: o): ").strip().lower()
+            if using:
+                answer = input("현재 운동복을 사용 중 입니다. 운동복 사용을 해지하겠습니까?(Y/N, 뒤로가기: o): ").strip().lower()
+            else:
+                answer = input("운동복 사용을 등록하시겠습니까?(Y/N, 뒤로가기: o): ").strip().lower()
             if answer in YES:
-                use = True
+                use = not using  # 사용 중이면 해지(False), 아니면 사용(True)
                 break
             elif answer in NO:
-                use = False
-                break
+                if using:  # 해지하지 않으면 그대로 유지
+                    print("이전으로 돌아갑니다.")
+                else:
+                    print("운동복 등록을 취소합니다.")
+                return False
             elif answer in BACK:
                 print("이전으로 돌아갑니다.")
                 return False
@@ -511,8 +521,11 @@ class ExtraServiceCRUD:
         data["uniform_modify_time"] = self._today()  # 등록일
         # 만료일 (등록일 + 30일) - 운동복을 사용할 때만 정해진다
         data["uniform_expire_time"] = self._expire_day() if use else None
-        self._save_or_delete(member["아이디"], data)
-        print(f"{member['이름']}님 운동복 {self._uniform_text(use)}으로 등록했습니다.")
+        self._save_or_delete(member["아이디"], data, None if using else "파일 삭제 완료.\n")
+        if using:
+            print("운동복 사용을 해지했습니다.")
+            return True
+        print("운동복 등록이 완료됐습니다.")
         if use:
             print(f"등록일: {data['uniform_modify_time']} / 만료일: {data['uniform_expire_time']}")
         return True
@@ -533,16 +546,12 @@ class ExtraServiceCRUD:
         if member is None:
             return False
         data = self._read_data(member["아이디"])
-        if data["use_uniform"] is None:
-            print(f"{member['이름']}님은 운동복 이용 여부가 등록되지 않았습니다.")
+        if not data["use_uniform"]:  # 미등록(None) 또는 해지(False)
+            print(f"{member['이름']}님은 운동복 미사용 중입니다.")
         else:
             reg, expire = self._get_dates(data["uniform_modify_time"], data.get("uniform_expire_time"))
-            if data["use_uniform"]:
-                print(f"{member['이름']}님 운동복: {self._uniform_text(data['use_uniform'])} "
-                      f"(등록일 {reg} / 만료일 {expire})")
-            else:
-                print(f"{member['이름']}님 운동복: {self._uniform_text(data['use_uniform'])} "
-                      f"(등록일 {reg})")
+            print(f"{member['이름']}님 운동복: {self._uniform_text(data['use_uniform'])} "
+                  f"(등록일 {reg} / 만료일 {expire})")
         return True
 
     # ---------- 회원 삭제 연동 ----------
@@ -550,6 +559,63 @@ class ExtraServiceCRUD:
         '''회원 삭제 시 호출: 부가 서비스 정보를 빈 값으로 초기화 (개인 폴더의 다른 파일은 건드리지 않음)'''
         if os.path.exists(self._get_path(user_id)):
             self._delete_data(user_id)
+
+
+def extra_interface(extra):
+    while True:
+        print(
+            "\n=======부가 서비스 관리=======\n"
+            "1. 락커 배정\n"
+            "2. 락커 현황 조회\n"
+            "3. 락커 변경\n"
+            "4. 락커 해제\n"
+            "5. 운동복 이용 여부 등록\n"
+            "6. 운동복 이용 현황 조회\n"
+            "o. 이전으로\n"
+            "p. 프로그램 종료\n"
+            "=============================="
+        )
+        select_num = input("번호를 입력하세요: ").strip()
+        print(" ")
+
+        if select_num == "1":
+            extra.do_assign_locker()
+
+        elif select_num == "2":
+            extra.do_retrieve_lockers()
+            
+        elif select_num == "3":
+            extra.do_change_locker()
+            
+        elif select_num == "4":
+            extra.do_release_locker()
+            
+        elif select_num == "5":
+            extra.do_register_uniform()
+            
+        elif select_num == "6":
+            while True:
+                print("1. 전체 회원 조회\n2. 회원 아이디 조회\no. 뒤로가기")
+                sub = input("번호를 입력하세요: ").strip()
+                if sub == "1":
+                    extra.do_retrieve_uniform_all()
+                    break
+                elif sub == "2":
+                    extra.do_retrieve_uniform_one()
+                    break
+                elif sub.lower() in BACK:
+                    print("이전으로 돌아갑니다.")
+                    break
+                else:
+                    print("1, 2 또는 o 로 입력해주세요.\n")
+        elif select_num == "o":
+            print("이전 화면으로 돌아갑니다.")
+            return True
+        elif select_num == "p":
+            print("프로그램을 종료합니다.")
+            return False
+        else:
+            print("잘못된 접근입니다.\n")
 
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # C:\Users\jihun\Archive\aicon\mini_project
@@ -568,4 +634,4 @@ if __name__ == "__main__":
     extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
     train_sys.extra = extra_sys
     
-    # extra_interface(extra_sys)
+    extra_interface(extra_sys)

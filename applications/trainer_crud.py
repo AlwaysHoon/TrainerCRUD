@@ -10,6 +10,9 @@ from functools import wraps
 class TrainerCRUD:
     def __init__(self, member_path):
         self.extra = None  # 부가 서비스 객체 (회원 삭제 시 락커/운동복 정리용)
+        self.diet = None
+        self.details = None
+        self.workout = None
         self.member_path = member_path
         self._yes = ("y","yes", "네", "예","ㅛ")
         self._no = ("n", "no", "아니오","ㅜ")
@@ -110,8 +113,6 @@ class TrainerCRUD:
         print("[돌아가기: o, 종료: p]",f"{"< 이전 | ^검색 | 다음 >":^30}",f"({page + 1}/{max_page + 1} 페이지)")
         return True
     
-    
-    
     def do_select_one(self, select_num="2", search_num="1"):
         if self.members:
             # 단순조회/수정/삭제를 통합
@@ -197,7 +198,6 @@ class TrainerCRUD:
             print("등록된 회원이 없습니다.\n")
             return False
     
-    # 수정 후 중복 체크
     def modify_member(self, select_member, check_member):
         print("회원 정보 수정을 시작합니다.\n")
         while True:
@@ -370,9 +370,11 @@ class TrainerCRUD:
 
             if self.extra:
                 self.extra.remove_member_data(deleted_member['아이디'])
-                
-            self.diet.remove_member_data(deleted_member['아이디'])
-            self.details.remove_member_data(deleted_member['아이디'])
+            if self.diet:
+                self.diet.remove_member_data(deleted_member['아이디'])
+            if self.details:
+                self.details.remove_member_data(deleted_member['아이디'])
+            
             return True 
         
 if __name__ == "__main__":

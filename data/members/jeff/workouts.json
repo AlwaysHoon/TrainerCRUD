@@ -49,5 +49,28 @@
                 "reps": 11
             }
         ]
+    },
+    {
+        "record_id": 3,
+        "user_id": "jeff",
+        "date": "2026-10-29",
+        "exercise": "Arnold Press",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 10
+            },
+            {
+                "set": 2,
+                "weight": 20.0,
+                "reps": 10
+            },
+            {
+                "set": 3,
+                "weight": 30.0,
+                "reps": 5
+            }
+        ]
     }
 ]
