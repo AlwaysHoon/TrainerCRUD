@@ -96,11 +96,11 @@ class WorkoutCRUD:
             elif answer == "n":
                 return False
 
-            elif answer == "0":
+            elif answer == "q":
                 return None
 
             else:
-                print("Y 또는 N을 입력해주세요. (0: 취소)")
+                print("Y 또는 N을 입력해주세요. (q: 취소)")
 
     @staticmethod
     def ask_number(prompt, kind="float", minimum=0):
@@ -136,10 +136,10 @@ class WorkoutCRUD:
     def ask_date():
         while True:
             raw = input(
-                "운동 날짜(YYYY-MM-DD, 0: 취소): "
+                "운동 날짜(YYYY-MM-DD, q: 취소): "
             ).strip()
 
-            if raw == "0":
+            if raw == "q":
                 return None
 
             try:
@@ -524,12 +524,11 @@ class WorkoutCRUD:
             "Arms",
             "Legs"
         ]
-
+        
         muscle_index = self.select_page(
             muscle_names,
             "운동 부위 선택"
         )
-
         if muscle_index is None:
             return None
 
@@ -540,8 +539,8 @@ class WorkoutCRUD:
             if not isinstance(item, dict):
                 continue
 
-            if item.get("muscle") == muscle:
-                values = item.get("machines", [])
+            if item.get("운동 부위") == muscle:
+                values = item.get("운동 종류", [])
 
                 if isinstance(values, list):
                     machines.extend(values)
@@ -587,10 +586,10 @@ class WorkoutCRUD:
             return
 
         registered = 0
-
+        
         while True:
             exercise = self.select_exercise()
-
+            
             if exercise is None:
                 break
 
@@ -628,7 +627,7 @@ class WorkoutCRUD:
                 })
 
                 more = self.ask_yes_no(
-                    "세트를 추가하시겠습니까? (Y/N, 0: 취소): "
+                    "세트를 추가하시겠습니까? (Y/N, q: 취소): "
                 )
 
                 if more is None:
@@ -898,7 +897,7 @@ class WorkoutCRUD:
         self.print_workout_record(record)
 
         confirm = self.ask_yes_no(
-            "정말 삭제하시겠습니까? (Y/N, 0: 취소): "
+            "정말 삭제하시겠습니까? (Y/N, q: 취소): "
         )
 
         if confirm is not True:
