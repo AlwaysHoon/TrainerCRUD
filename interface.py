@@ -501,8 +501,10 @@ def start_application():
     DATA_DIR = os.path.join(BASE_DIR, "data")
     member_path = os.path.join(DATA_DIR, "members.json")
     machine_path = os.path.join(DATA_DIR, "muscles.json")
-    workout_path = os.path.join(DATA_DIR, 'workouts.json')  
-            
+    
+    
+    personal_path = os.path.join(DATA_DIR, "members")
+    
     os.makedirs(DATA_DIR, exist_ok=True)
 
     train_sys = TrainerCRUD(member_path)
@@ -510,9 +512,9 @@ def start_application():
     extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
     train_sys.extra = extra_sys
     
-    detail_sys = DetailsCRUD(os.path.join(DATA_DIR, "members"))
-    diet_sys = DietCRUD(os.path.join(DATA_DIR, "members"))
-    workout = WorkoutCRUD(workout_path)
+    detail_sys = DetailsCRUD(personal_path)
+    diet_sys = DietCRUD(personal_path)
+    workout = WorkoutCRUD(personal_path)
     
     if login_interface():
         admin_interface(train_sys, machine_sys, extra_sys, workout, diet_sys, detail_sys)

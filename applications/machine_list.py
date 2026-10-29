@@ -19,12 +19,12 @@ class MachineList:
             with open(machine_path, "w", encoding="utf-8") as f:
                 json.dump([], f, ensure_ascii=False, indent=4)
     
-    # 운동 부위를 메인, 서브로 운동 종목
+    # 운동 부위를 메인, 서브로 운동 종류
     def do_save(self):
         machine_list = []
         muscle = input("운동 부위을 입력하세요: ").strip()
 
-        # 운동 종목 이름만 중복처리
+        # 운동 종류 이름만 중복처리
         for body in self.body_list:
             if body["운동 부위"] == muscle:
                 print("이미 존재하는 운동 부위입니다.\n")
@@ -32,65 +32,38 @@ class MachineList:
 
         # 운동부위 연속입력
         while True:
-            machine = input("운동 종목을 입력하세요: ").strip()
+            machine = input("운동 종류을 입력하세요: ").strip()
             if machine in machine_list:
                 print("중복내용입니다.\n")
             else:
                 machine_list.append(machine)
 
-            go = input("운동 종목을 계속 입력하시겠습니까?(Y/N): ").strip().lower()
-            if go in self._yes:
-                break
-            elif go in self._no:
-                print("이전으로 돌아갑니다.")
-                return True
-            else:
-                
+            while True:
+                go = input("운동 종류을 계속 입력하시겠습니까?(Y/N): ").strip().lower()
+                if go in self._yes:
+                    break
+                elif go in self._no:
+                    # 최초 등록일, 최근 수정일
+                    today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
+                    save_time = str(today)
+                    modify_time = str(today)
             
-            
-
-        # 최초 등록일, 최근 수정일
-        today = datetime.now().strftime("%y/%m/%d %H:%M:%S")
-        save_time = str(today)
-        modify_time = str(today)
-
-        new_machine = {
-            "운동 부위": muscle,
-            "운동 종목": machine_list,
-            "최초 등록일": save_time,
-            "최근 수정일": modify_time,
-        }
-        print("-"*20)
-        print(
-            f"운동 부위\t: {muscle}\n"
-            f"운동 종목\t: {machine_list}")
-        print("-"*20)
-        is_save = input("위 정보가 맞습니까?(Y/N): ").strip().lower()
-        return self._add_muscle(is_save, new_machine)
-        # 전체 멤버 데이터베이스에 새 멤버 등록
-
-    def do_retrive2(self):
-        if self.body_list:
-            print(f"{'=====전체 운동 부위 리스트=====':^60}")
-            for index, muscle in enumerate(self.body_list.copy()):
-                print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-                for key, value in muscle.items():
-                    # 운동 부위는 리스트여서 따로 처리
-                    if key == "운동 종목":
-                        for i, line in enumerate(wrap(value)):
-                            if i == 0:
-                                print(f"| {key:<{13 - align(key)}}: {line:<{45 - align(str(line))}} |")
-                            else:
-                                print(f"| {' ':<{13 - align(key)}}: {line:<{45 - align(str(line))}} |")
-
-                    else:
-                        print(f"| {key:<{13 - align(key)}}: {value:<{45 - align(value)}} |")
-            print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-            return True
-
-        else:
-            print("등록된 운동이 없습니다.\n")
-            return False
+                    new_machine = {
+                        "운동 부위": muscle,
+                        "운동 종류": machine_list,
+                        "최초 등록일": save_time,
+                        "최근 수정일": modify_time,
+                    }
+                    print("-"*20)
+                    print(
+                        f"운동 부위\t: {muscle}\n"
+                        f"운동 종류\t: {machine_list}")
+                    print("-"*20)
+                    is_save = input("위 정보가 맞습니까?(Y/N): ").strip().lower()
+                    return self._add_muscle(is_save, new_machine)
+                    # 전체 멤버 데이터베이스에 새 멤버 등록
+                else:
+                    print("잘못 입력했습니다.")
         
     def do_retrive(self):
         if self.body_list:
@@ -119,7 +92,7 @@ class MachineList:
                 print("+","ㅡ"*30,"+")
                 for key, value in select_muscle.items():
                     
-                    if key == "운동 종목":
+                    if key == "운동 종류":
                         for i, line in enumerate(wrap(value)):
                             if i == 0:
                                 print(f"| {key:<{13 - align(key)}}: {line:<{45 - align(str(line))}} |")
@@ -132,23 +105,6 @@ class MachineList:
                 print()
             return True
             
-            # print(f"{'=====전체 운동 부위 리스트=====':^60}")
-            # for index, muscle in enumerate(self.body_list.copy()):
-            #     print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-            #     for key, value in muscle.items():
-            #         # 운동 부위는 리스트여서 따로 처리
-            #         if key == "machines":
-            #             for i, line in enumerate(wrap(value)):
-            #                 if i == 0:
-            #                     print(f"| {key:<{13 - align(key)}}: {line:<{45 - align(str(line))}} |")
-            #                 else:
-            #                     print(f"| {' ':<{13 - align(key)}}: {line:<{45 - align(str(line))}} |")
-
-            #         else:
-            #             print(f"| {key:<{13 - align(key)}}: {value:<{45 - align(value)}} |")
-            # print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-            # return True
-
         else:
             print("등록된 운동이 없습니다.\n")
             return False
@@ -156,7 +112,7 @@ class MachineList:
     def do_select_one(self, select_num="1"):
         if self.body_list:
             word = {"1": "조회", "3": "수정", "4": "삭제"}[select_num]
-            select_muscle = (input(f"{word} 할 운동 부위 이름을 입력해주세요: ").strip().lower())
+            select_muscle = (input(f"{word} 할 운동 부위 이름을 입력해주세요(돌아가려면 아무거나 입력): ").strip().lower())
               # 중복이 없기에 T/F
             detail_muscle = self._find_same("운동 부위", select_muscle)
             is_muscle = len(detail_muscle)
@@ -166,7 +122,7 @@ class MachineList:
                 idx=0
                 print("ㅡ" * 30)
                 for key, value in detail_muscle[idx].items():
-                    if key == "운동 종목":
+                    if key == "운동 종류":
                         for i, line in enumerate(wrap(value)):
                             if i == 0:
                                 print(f"{key:<{15-align(key)}}: {line:<{45 - align(str(line))}}")
@@ -202,7 +158,7 @@ class MachineList:
         print("운동 정보 수정을 시작합니다.\n")
         # 운동 부위 수정
         while True:
-            modify_key = input("수정할 정보를 선택해주세요?[운동 부위, 운동 종목, ...](돌아가려면 o 입력): ").strip()
+            modify_key = input("수정할 정보를 선택해주세요?[운동 부위, 운동 종류, ...](돌아가려면 o 입력): ").strip()
             
             for muscle in self.body_list:
                 if muscle == select_muscle[idx]:
@@ -236,16 +192,16 @@ class MachineList:
                                 return True
                             else:
                                 print("잘못 입력했습니다.\n")
-                                break
+                                
 
                     # 한 종목 안에 운동부위 중복 처리 필요
-                    elif modify_key == "운동 종목":
+                    elif modify_key == "운동 종류":
                         while True:
                             print("ㅡ" * 30)
                             print(f"[{muscle['운동 부위']:^55}]")
                             print("ㅡ" * 30)
                             for key, value in muscle.items():
-                                if key == "운동 부위":
+                                if key == "운동 종류":
                                     for i, line in enumerate(wrap(value)):
                                         if i == 0:
                                             print(f"{key:^{13 - align(key)}}: {line:<{45 - align(str(line))}}")
@@ -264,13 +220,13 @@ class MachineList:
                             choose_mod = input("모드를 선택해주세요: ").strip()
                             if choose_mod in ("1","2","3"):
                                 new_machines = []
-                                muscle_list = f"ㅡㅡㅡㅡ{muscle['운동 부위']}의 운동 부위 목록ㅡㅡㅡㅡ"
+                                muscle_list = f"ㅡㅡㅡㅡ{muscle['운동 부위']}의 운동 종류ㅡㅡㅡㅡ"
                                 line = len(muscle_list)
                                 print(muscle_list)
                                 for i, v in enumerate(muscle[modify_key]):
                                     print(f"{i + 1:3d}. {v}")
                                     new_machines.append(v)
-                                print("ㅡ" * line)  # align확인
+                                print("ㅡ" * line)
 
                             if choose_mod == "1":
                                 add_machine = input("추가할 운동 종류를 입력하세요: ").strip()
@@ -284,13 +240,14 @@ class MachineList:
 
                             elif choose_mod == "2":
                                 try:
+                                    print(len(new_machines))
                                     select_machine = int(input("변경할 운동 종류를 선택하세요(숫자): ").strip())
                                     
                                 except ValueError:
                                     print("숫자만 입력해주세요.\n")
                                     
                                 else:
-                                    if (select_machine < len(new_machines)) and (select_machine > 0):
+                                    if (select_machine <= len(new_machines)) and (select_machine > 0):
                                         print(f"{new_machines[select_machine - 1]}가 선택되었습니다.\n")
                                         rename_machine = input("변경할 단어를 입력해주세요: ").strip()
                                         if rename_machine == new_machines[select_machine - 1]:
@@ -358,8 +315,10 @@ class MachineList:
                         
     def sort_machine_list(self):
         pass
+    
     def _find_same(self, key, value):
         return [muscles for muscles in self.body_list if muscles[key].lower() == value]
+    
     def _save_muscles(self):
         try:
             with open(self.machine_path, mode="w", encoding="utf-8") as f:
@@ -394,15 +353,13 @@ class MachineList:
         self.body_list.append(muscle)
         #try?
         self._save_muscles()
-        print(f"{muscle['운동 부위']}: {muscle['운동 종목']} 등록에 성공했습니다.")
+        print(f"{muscle['운동 부위']}: {muscle['운동 종류']} 등록에 성공했습니다.")
         return True
     
     @_check_yn
     def do_modify(self, muscle, idx):
-        if not self.modify_machine(muscle, idx):
-            return False
-        # self._save_muscles()
-        return True
+        return self.modify_machine(muscle, idx)
+            
     
     @_check_yn
     def do_delete(self, muscle, idx):

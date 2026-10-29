@@ -153,7 +153,7 @@ class WorkoutCRUD:
         print(f"기록 번호: {record.get('record_id', '-')}")
         print(f"아이디: {record.get('user_id', '')}")
         print(f"운동 날짜: {record.get('date', '')}")
-        print(f"운동 종목: {record.get('exercise', '')}")
+        print(f"운동 종류: {record.get('exercise', '')}")
         print("-" * 50)
 
         set_list = self.get_set_list(record)
@@ -179,7 +179,7 @@ class WorkoutCRUD:
         print("=" * 50)
 
     # ==========================================
-    # 4. 운동 종목 선택
+    # 4. 운동 종류 선택
     # ==========================================
 
     def select_exercise(self):
@@ -194,11 +194,11 @@ class WorkoutCRUD:
                 body_list = json.load(file)
 
         except (OSError, json.JSONDecodeError) as error:
-            print(f"운동 종목 읽기 오류: {error}")
+            print(f"운동 종류 읽기 오류: {error}")
             return None
 
         if not isinstance(body_list, list):
-            print("운동 종목 데이터 형식이 올바르지 않습니다.")
+            print("운동 종류 데이터 형식이 올바르지 않습니다.")
             return None
 
         muscle_list = [
@@ -234,7 +234,7 @@ class WorkoutCRUD:
 
         exercise_index = self.select_page(
             exercise_list,
-            f"{selected_muscle} 운동 종목 선택"
+            f"{selected_muscle} 운동 종류 선택"
         )
 
         if exercise_index is None:
@@ -342,7 +342,7 @@ class WorkoutCRUD:
             if again not in ("y", "yes", "네", "예"):
                 break
 
-        print(f"\n등록된 운동 종목: {count}개")
+        print(f"\n등록된 운동 종류: {count}개")
 
     # ==========================================
     # 6. 운동 날짜 및 기록 선택
@@ -426,7 +426,7 @@ class WorkoutCRUD:
         for record in records:
             self.print_workout_record(record)
 
-        print(f"\n총 운동 종목: {len(records)}개")
+        print(f"\n총 운동 종류: {len(records)}개")
 
     # ==========================================
     # 8. 운동 기록 수정
@@ -458,7 +458,7 @@ class WorkoutCRUD:
         record = self.select_record(
             workouts,
             date,
-            "수정할 운동 종목 선택"
+            "수정할 운동 종류 선택"
         )
 
         if record is None:
@@ -553,7 +553,7 @@ class WorkoutCRUD:
         record = self.select_record(
             workouts,
             date,
-            "삭제할 운동 종목 선택"
+            "삭제할 운동 종류 선택"
         )
 
         if record is None:
@@ -637,7 +637,7 @@ class WorkoutCRUD:
         for record in records:
             self.print_workout_record(record)
 
-        print(f"\n총 운동 종목: {len(records)}개")
+        print(f"\n총 운동 종류: {len(records)}개")
 
 
 
