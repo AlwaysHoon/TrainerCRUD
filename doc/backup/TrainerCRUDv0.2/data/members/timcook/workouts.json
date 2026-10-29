@@ -1,0 +1,63 @@
+[
+    {
+        "record_id": 1,
+        "user_id": "timcook",
+        "date": "2026-10-28",
+        "exercise": "Around the World",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 3,
+                "weight": 20.0,
+                "reps": 2
+            },
+            {
+                "set": 4,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 5,
+                "weight": 20.0,
+                "reps": 20
+            }
+        ]
+    },
+    {
+        "record_id": 2,
+        "user_id": "timcook",
+        "date": "2026-10-28",
+        "exercise": "Bench Press",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 3,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 4,
+                "weight": 20.0,
+                "reps": 20
+            }
+        ]
+    }
+]

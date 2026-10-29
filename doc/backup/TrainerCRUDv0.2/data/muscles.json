@@ -1,0 +1,101 @@
+[
+    {
+        "운동 부위": "Arms",
+        "운동 종류": [
+            "Bench Dip",
+            "Bench Press",
+            "Bicep Curl",
+            "Bicep Cuel(Dumbbell)",
+            "Hammer Curl(Dumbbell)",
+            "Incline Curl(Dumbbell)",
+            "Preacher Curl(Machine)"
+        ],
+        "최초 등록일": "26/10/21 10:24:11",
+        "최근 수정일": "26/10/21 10:24:11"
+    },
+    {
+        "운동 부위": "Core",
+        "운동 종류": [
+            "Ab Wheel",
+            "Bicycle Crunch",
+            "Cable Crunch",
+            "Cable Twist",
+            "Cross Body Crunch",
+            "Crunch"
+        ],
+        "최초 등록일": "26/10/21 10:25:15",
+        "최근 수정일": "26/10/21 10:25:15"
+    },
+    {
+        "운동 부위": "Back",
+        "운동 종류": [
+            "Arm Pulldown",
+            "Back Extension",
+            "Behind Lat Pull",
+            "Bent Over One Arm Row",
+            "Bent Over Row",
+            "Pull Up",
+            "Seated Row(Cable)",
+            "T Bar Row",
+            "Lat Pulldown(Cable)",
+            "Deadlift(Barbell)"
+        ],
+        "최초 등록일": "26/10/21 10:26:08",
+        "최근 수정일": "26/10/21 10:26:08"
+    },
+    {
+        "운동 부위": "Chest",
+        "운동 종류": [
+            "Bench Press",
+            "Around the World",
+            "Cable Crossover",
+            "Chest Dip",
+            "Chest Fly",
+            "Decline Bench Press(Barbell)",
+            "Incline Bench Press(Barbell)",
+            "Incline Bench Press(Dumbbell)",
+            "Incline Chest Fly(Dumbbell)",
+            "Push Up"
+        ],
+        "최초 등록일": "26/10/21 10:26:50",
+        "최근 수정일": "26/10/21 10:26:50"
+    },
+    {
+        "운동 부위": "Shoulders",
+        "운동 종류": [
+            "Arnold Press",
+            "Behind Overhead Press",
+            "Cable Rever Fly",
+            "Face Pull",
+            "Front Raise"
+        ],
+        "최초 등록일": "26/10/21 10:28:43",
+        "최근 수정일": "26/10/21 10:28:43"
+    },
+    {
+        "운동 부위": "Legs",
+        "운동 종류": [
+            "Box Jump",
+            "Box Squat",
+            "Bulgarian Split Squat",
+            "Cable Pull Through",
+            "Calf Press on Leg Press",
+            "Calf Press on Seated Leg Press"
+        ],
+        "최초 등록일": "26/10/21 12:34:45",
+        "최근 수정일": "26/10/21 12:34:45"
+    },
+    {
+        "운동 부위": "a",
+        "운동 종류": [
+            "y",
+            "yy",
+            "yyy",
+            "yyyy",
+            "yyyyy"
+        ],
+        "최초 등록일": "26/10/29 09:02:55",
+        "최근 수정일": "26/10/29 09:02:55",
+        "modify_time": "26/10/29 09:03:59"
+    }
+]
