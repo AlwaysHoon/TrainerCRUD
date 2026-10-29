@@ -38,9 +38,9 @@ Thumbs.db
 
 #banned
 banned/
+doc/
+backup/
 
 #DOC
 .doc/
 .backup/
-doc/
-backup/
