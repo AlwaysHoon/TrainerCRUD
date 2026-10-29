@@ -1,0 +1,30 @@
+[
+    {
+        "record_id": 1,
+        "user_id": "messi39",
+        "date": "2026-10-28",
+        "exercise": "Cable Pull Through",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 10.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 10.0,
+                "reps": 10
+            },
+            {
+                "set": 3,
+                "weight": 10.0,
+                "reps": 10
+            },
+            {
+                "set": 4,
+                "weight": 10.0,
+                "reps": 10
+            }
+        ]
+    }
+]
