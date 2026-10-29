@@ -67,7 +67,7 @@ class MachineList:
         
     def do_retrive(self):
         if self.body_list:
-            num_muscle = "======== 운동 부위 ========"
+            num_muscle = "========== 운동 부위 =========="
             line = len(num_muscle) + align(num_muscle)
             print(num_muscle)
             for index, muscle in enumerate(self.body_list.copy()):
@@ -113,6 +113,14 @@ class MachineList:
     def do_select_one(self, select_num="1"):
         if self.body_list:
             word = {"3": "수정", "4": "삭제"}[select_num]
+            num_muscle = "========== 운동 부위 =========="
+            line = len(num_muscle) + align(num_muscle)
+            print(num_muscle)
+            for index, muscle in enumerate(self.body_list.copy()):
+                print(f"{index + 1:3d}. {muscle["운동 부위"]}")
+            print("  o. 돌아가기")
+            print("  p. 프로그램 종료")
+            print("=" * line)
             select_muscle = (input(f"{word} 할 운동 부위 이름을 입력해주세요(돌아가려면 아무거나 입력): ").strip().lower())
               # 중복이 없기에 T/F
             detail_muscle = self._find_same("운동 부위", select_muscle)
@@ -154,6 +162,7 @@ class MachineList:
         print("운동 정보 수정을 시작합니다.\n")
         # 운동 부위 수정
         while True:
+            
             modify_key = input("수정할 정보를 선택해주세요?[운동 부위, 운동 종류, ...](돌아가려면 o 입력): ").strip()
             
             for muscle in self.body_list:

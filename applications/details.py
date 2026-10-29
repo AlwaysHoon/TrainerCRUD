@@ -315,7 +315,6 @@ class DetailsCRUD:
     
     # ---------- 회원 삭제 연동 ----------
     def remove_member_data(self, user_id):
-        
         return self._delete_data(user_id)
 
 
