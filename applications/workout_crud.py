@@ -306,7 +306,7 @@ class WorkoutCRUD:
                     "세트를 추가하시겠습니까? (Y/N): "
                 ).strip().lower()
 
-                if more not in ("y", "yes", "네", "예"):
+                if more not in ("y", "yes", "네", "예", "ㅛ"):
                     break
 
             next_id = max(
@@ -339,7 +339,7 @@ class WorkoutCRUD:
                 "다른 운동을 등록하시겠습니까? (Y/N): "
             ).strip().lower()
 
-            if again not in ("y", "yes", "네", "예"):
+            if again not in ("y", "yes", "네", "예", "ㅛ"):
                 break
 
         print(f"\n등록된 운동 종류: {count}개")
@@ -565,7 +565,7 @@ class WorkoutCRUD:
             "정말 삭제하시겠습니까? (Y/N): "
         ).strip().lower()
 
-        if confirm not in ("y", "yes", "네", "예"):
+        if confirm not in ("y", "yes", "네", "예", "ㅛ"):
             print("삭제를 취소했습니다.")
             return
 

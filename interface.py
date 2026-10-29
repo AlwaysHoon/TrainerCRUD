@@ -6,6 +6,7 @@ from applications import TrainerCRUD, MachineList, ExtraServiceCRUD, WorkoutCRUD
 from applications.utils import *
 
 def login_interface(): #만약 관리자가 많다면 클래스로 변경 및 id/pw에 대한 데이터파일과 검증코드를 만들었을 것이다.
+    progress_bar(52, 0.003)
     login_count = 0
     admin_login = "========관리자 로그인========"
     line1 = len(admin_login) + align(admin_login)
@@ -29,7 +30,7 @@ def login_interface(): #만약 관리자가 많다면 클래스로 변경 및 id
         else:
             print("=" * line1)
             print("로그인에 성공했습니다.")
-            progress_bar(30, 0.003)
+            progress_bar(line1, 0.003)
 
             return True
 
@@ -64,7 +65,7 @@ def admin_interface(members, machines, extra, workout, diets, detail_sys):
             if not extra_interface(extra):
                 return
 
-        elif select_num in ("p", "ㅖ", "ㅔ"):
+        elif select_num in ("p", "ㅔ"):
             print("프로그램을 종료합니다.")
             return
         
@@ -95,7 +96,7 @@ def trainer_interface(members, workout, diets, details):
 
         elif select_num == "2":
             print("2. 전체 회원 조회를 선택하셨습니다.")
-            progress_bar(30)
+            progress_bar(line3)
             if not search_interface(members, workout, diets, details, select_num):
                 return False
 
@@ -109,11 +110,11 @@ def trainer_interface(members, workout, diets, details):
             if not search_interface(members, workout, diets, details, select_num):
                 return False
 
-        elif select_num in ("o","ㅒ","ㅐ"):
+        elif select_num in ("o", "ㅐ"):
             print("이전으로 돌아갑니다.\n")
             return True
 
-        elif select_num in ("p", "ㅖ", "ㅔ"):
+        elif select_num in ("p", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -159,29 +160,30 @@ def search_interface(members, workout, diets, detail_sys, select_num):
             elif search_num == "3":
                 count = True
                 continue
+            
             elif search_num == "4":
-                print("1.아이디, 2.이름, 3.이메일, 4.최초 등록일, 5.최근 등록일")
+                print("1.아이디, 2.이름, 3.이메일, 4.최초 등록일, 5.최근 수정일")
                 try:
                     sort_input = int(input("원하는 정렬 번호를 입력해주세요: "))
                 except ValueError:
                     print("숫자를 입력해주세요.\n")
                 else:
-                    sort_keys=["아이디","이름","email","최초 등록일","최근 등록일"]
+                    sort_keys=["아이디","이름","email","최초 등록일","최근 수정일"]
                     is_reverse = int(input("1.내림차순, 2.오름차순 선택해주세요: "))
                     if is_reverse == 1:
                         members.do_sort(sort_keys[sort_input-1], rev=True)
-                        # print(members.members)
+                        
                     elif is_reverse == 2:
                         members.do_sort(sort_keys[sort_input-1], rev=False)
+                        
                     else:
-                        print("잘못 입력했습니다.\n")
-                                                
+                        print("잘못 입력했습니다.\n")             
                 
-            elif search_num in ("o","ㅒ","ㅐ"):
+            elif search_num in ("o", "ㅐ"):
                 print("이전 화면으로 돌아갑니다.\n")
                 return True
 
-            elif search_num in ("p", "ㅖ", "ㅔ"):
+            elif search_num in ("p", "ㅔ"):
                 print("프로그램을 종료합니다.\n")
                 return False
 
@@ -214,9 +216,6 @@ def member_interface(member, workout, diets, details):
                 
                 if detail_num == "1":
                     print("1. 상세 기록 조회를 선택하셨습니다.")
-
-                    # for key, value in member.items():
-                    #     print(f" {key:<15}: {value:^25}")
                     if not details_interface(details, member):
                         return False
                     
@@ -224,18 +223,17 @@ def member_interface(member, workout, diets, details):
                     print("2. 운동 기록 관리를 선택하셨습니다.")
                     if not workout_interface(workout, member):
                         return False
-                    # record
 
                 elif detail_num == "3":
                     print("3. 식단 관리를 선택하셨습니다.")
                     if not diet_interface(diets, member):
                         return False
 
-                elif detail_num in ("o","ㅒ","ㅐ"):
+                elif detail_num in ("o", "ㅐ"):
                     print("이전 화면으로 돌아갑니다.\n")
                     return True
 
-                elif detail_num in ("p", "ㅖ", "ㅔ"):
+                elif detail_num in ("p", "ㅔ"):
                     print("프로그램을 종료합니다.\n")
                     return False
 
@@ -243,15 +241,15 @@ def member_interface(member, workout, diets, details):
                     print("잘못된 접근입니다.\n")
         elif see_more in ("n", "no", "아니오", "ㅜ"):
             return True
+        
         else:
             print("잘못 입력했습니다.")
       
 def details_interface(details, member):
     while True:
-        diet_mod = f"=======[ {member['이름']} ] 식단 관리======="
-        line5 = len(diet_mod) + align(diet_mod)
-        print(diet_mod)
-        
+        details_mod = f"=======[ {member['이름']} ] 세부 기록 관리======="
+        line5 = len(details_mod) + align(details_mod)
+        print(details_mod)
         print(
             " 1. 세부 기록 등록\n"
             " 2. 세부 기록 조회\n"
@@ -280,11 +278,11 @@ def details_interface(details, member):
             print("4. 세부 기록 삭제를 선택하셨습니다.")
             details.do_delete(member)
 
-        elif select_num.lower() in ("o","ㅒ","ㅐ"):
+        elif select_num.lower() in ("o", "ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
 
-        elif select_num.lower() in ("p", "ㅖ", "ㅔ"):
+        elif select_num.lower() in ("p", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -296,7 +294,6 @@ def diet_interface(diets, member):
         diet_mod = f"=======[ {member['이름']} ] 식단 관리======="
         line5 = len(diet_mod) + align(diet_mod)
         print(diet_mod)
-        
         print(
             " 1. 식단 기록 등록\n"
             " 2. 식단 조회\n"
@@ -325,11 +322,11 @@ def diet_interface(diets, member):
             print("4. 식단 삭제를 선택하셨습니다.\n")
             diets.do_select_one(member, select_num)
 
-        elif select_num.lower() in ("o","ㅒ","ㅐ"):
+        elif select_num.lower() in ("o", "ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
 
-        elif select_num.lower() in ("p", "ㅖ", "ㅔ"):
+        elif select_num.lower() in ("p", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -373,11 +370,11 @@ def workout_interface(workout, member):
             print("5. 전체 운동 기록 조회를 선택하셨습니다.\n")
             workout.show_workouts()
             
-        elif select_num in ("o","ㅒ","ㅐ"):
+        elif select_num in ("o", "ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
 
-        elif select_num in ("p", "ㅖ", "ㅔ"):
+        elif select_num in ("p", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
@@ -389,7 +386,6 @@ def extra_interface(extra):
     while True:
         extra_mod = "========부가 서비스 관리========"
         line7 = len(extra_mod) + align(extra_mod)
-        
         print(extra_mod)
         print(
             "1. 락커 배정\n"
@@ -422,7 +418,10 @@ def extra_interface(extra):
             
         elif select_num == "6":
             while True:
-                print("1. 전체 회원 조회\n2. 특정 회원 조회\no. 뒤로가기")
+                print(
+                    "1. 전체 회원 조회\n"
+                    "2. 특정 회원 조회\n"
+                    "o. 뒤로가기")
                 sub = input("번호를 입력하세요: ").strip()
                 if sub == "1":
                     extra.do_retrieve_uniform_all()
@@ -430,17 +429,17 @@ def extra_interface(extra):
                 elif sub == "2":
                     extra.do_retrieve_uniform_one()
                     break
-                elif sub.lower() in ("o","ㅒ","ㅐ"):
+                elif sub.lower() in ("o", "ㅐ"):
                     print("이전으로 돌아갑니다.\n")
                     break
                 else:
                     print("1, 2 또는 o 로 입력해주세요.\n")    
                     
-        elif select_num in ("o","ㅒ","ㅐ"):
+        elif select_num in ("o", "ㅐ"):
             print("이전 화면으로 돌아갑니다.\n")
             return True
         
-        elif select_num in ("p", "ㅖ", "ㅔ"):
+        elif select_num in ("p", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
         
@@ -452,13 +451,13 @@ def manage_machine(machines):
     while True:
         machine_mod = "========운동 관리 모드========"
         line8 = len(machine_mod) + align(machine_mod)
-        
         print(machine_mod)
         print(
             " 1. 운동 종목 등록\n"
             " 2. 전체 운동 종목 조회\n"
             " 3. 운동 종목 수정\n"
             " 4. 운동 종목 삭제\n"
+            " 5. 정렬\n"
             " o. 이전으로\n"
             " p. 프로그램 종료")
         print("=" * line8)
@@ -484,18 +483,36 @@ def manage_machine(machines):
             print("운동 종목 삭제를 선택하셨습니다.\n")
             if not machines.do_select_one(select_num):
                 return False
-
-        elif select_num in ("o","ㅒ","ㅐ"):
+        elif select_num == "5":
+            print("1.운동 부위 2.운동 종류 3.최초 등록일 4.최근 수정일")
+            try:
+                sort_input = int(input("원하는 정렬 번호를 입력해주세요: "))
+            except ValueError:
+                print("숫자를 입력해주세요.\n")
+            else:
+                sort_keys=["운동 부위", "운동 종류", "최초 등록일", "최근 수정일"]
+                is_reverse = int(input("1.내림차순, 2.오름차순 선택해주세요: "))
+                if is_reverse == 1:
+                    machines.do_sort(sort_keys[sort_input-1], rev=True)
+                    
+                elif is_reverse == 2:
+                    machines.do_sort(sort_keys[sort_input-1], rev=False)
+                    
+                else:
+                    print("잘못 입력했습니다.\n")        
+                         
+        elif select_num in ("o", "ㅐ"):
             print("이전으로 돌아갑니다.\n")
             return True
 
-        elif select_num in ("p", "ㅖ", "ㅔ"):
+        elif select_num in ("p", "ㅔ"):
             print("프로그램을 종료합니다.\n")
             return False
 
         else:
             print("잘못된 접근입니다.\n")
 
+            
 def start_application():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
     DATA_DIR = os.path.join(BASE_DIR, "data")

@@ -315,7 +315,7 @@ class DetailsCRUD:
     
     # ---------- 회원 삭제 연동 ----------
     def remove_member_data(self, user_id):
-        '''회원 삭제 시 호출: 식단 기록을 빈 리스트로 초기화 (개인 폴더의 다른 파일은 건드리지 않음)'''
+        
         return self._delete_data(user_id)
 
 

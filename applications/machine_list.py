@@ -165,7 +165,7 @@ class MachineList:
                                 print("기존 단어로 바꿀 수 없습니다.\n")
                             elif modify_value.lower() in [muscle[modify_key].lower() for muscle in self.body_list]:
                                 print(f"이미 존재하는 {modify_key}입니다.\n")
-                            elif modify_value == "o":
+                            elif modify_value in ("o", "ㅐ"):
                                 print("이전으로 돌아갑니다.\n")
                                 return True
                             else:
@@ -272,11 +272,11 @@ class MachineList:
                                     else:
                                         print("잘못 입력했습니다.")
 
-                            elif choose_mod == "o":
+                            elif choose_mod in ("o", "ㅐ"):
                                 print("이전으로 돌아갑니다.")
                                 return True
 
-                            elif choose_mod == "p":
+                            elif choose_mod in ("p", "ㅔ"):
                                 print("프로그램을 종료합니다.")
                                 return False
 
@@ -291,7 +291,7 @@ class MachineList:
                                 else:
                                     pass
                                 
-                    elif modify_key == "o":
+                    elif modify_key in ("o", "ㅐ"):
                         print("이전으로 돌아갑니다.\n")
                         return True
                     
@@ -307,7 +307,11 @@ class MachineList:
                             pass
                         
     def do_sort(self,keys, rev=False):
-        self.body_list.sort(key=lambda x:x[keys], reverse=rev)
+        if keys == "운동 종류":
+            for body in self.body_list:
+                body["운동 종류"].sort(reverse=rev)
+        else:
+            self.body_list.sort(key=lambda x:x[keys], reverse=rev)
     
     def _find_same(self, key, value):
         return [muscles for muscles in self.body_list if muscles[key].lower() == value]

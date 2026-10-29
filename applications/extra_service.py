@@ -6,8 +6,8 @@ from .utils import *
 LOCKER_COUNT = 30  # 전체 락커 수 (팀과 합의 후 변경)
 DATE_FORMAT = "%y/%m/%d"  # 등록일, 만료일 표시 형식
 EXPIRE_DAYS = 30  # 만료일 = 등록일 + 30일
-YES = ("y", "yes", "예", "네")
-NO = ("n", "no", "아니오", "아니요")
+YES = ("y", "yes", "예", "네", "ㅛ")
+NO = ("n", "no", "아니오", "아니요", "ㅜ")
 BACK = ("o", "ㅒ", "ㅐ")  # 이전 화면으로 돌아가기 키 
 PAGE_SIZE = 10  # 회원 카드 목록에서 한 페이지에 보여줄 회원 수 (2열 x 5행)
 
@@ -191,7 +191,7 @@ class ExtraServiceCRUD:
         return word in str(member.get("아이디", "")).lower() or word in str(member.get("이름", "")).lower()
 
     def _member_card_page(self, title, members, info_fn, summary=None, label_fn=None, match_fn=None,
-                         pick_fn=None, pick_help="", back_keys=("o",) + BACK, back_text="o", start_page=0):
+                         pick_fn=None, pick_help="", back_keys=("o", "ㅐ") + BACK, back_text="o", start_page=0):
         '''
         카드 목록을 페이지(10개)별로 보여준다.
         < : 이전 페이지 / > : 다음 페이지 / ^ : 검색 / back_text(기본 o) : 돌아가기
@@ -551,63 +551,6 @@ class ExtraServiceCRUD:
         if os.path.exists(self._get_path(user_id)):
             self._delete_data(user_id)
 
-
-def extra_interface(extra):
-    while True:
-        print(
-            "\n=======부가 서비스 관리=======\n"
-            "1. 락커 배정\n"
-            "2. 락커 배정 현황 조회\n"
-            "3. 락커 변경\n"
-            "4. 락커 해제\n"
-            "5. 운동복 이용 여부 등록\n"
-            "6. 운동복 이용 현황 조회\n"
-            "o. 이전으로\n"
-            "p. 프로그램 종료\n"
-            "=============================="
-        )
-        select_num = input("번호를 입력하세요: ").strip()
-        print(" ")
-
-        if select_num == "1":
-            extra.do_assign_locker()
-
-        elif select_num == "2":
-            extra.do_retrieve_lockers()
-            
-        elif select_num == "3":
-            extra.do_change_locker()
-            
-        elif select_num == "4":
-            extra.do_release_locker()
-            
-        elif select_num == "5":
-            extra.do_register_uniform()
-            
-        elif select_num == "6":
-            while True:
-                print("1. 전체 회원 조회\n2. 특정 회원 조회\no. 뒤로가기")
-                sub = input("번호를 입력하세요: ").strip()
-                if sub == "1":
-                    extra.do_retrieve_uniform_all()
-                    break
-                elif sub == "2":
-                    extra.do_retrieve_uniform_one()
-                    break
-                elif sub.lower() in BACK:
-                    print("이전으로 돌아갑니다.")
-                    break
-                else:
-                    print("1, 2 또는 o 로 입력해주세요.\n")
-        elif select_num == "o":
-            print("이전 화면으로 돌아갑니다.")
-            return True
-        elif select_num == "p":
-            print("프로그램을 종료합니다.")
-            return False
-        else:
-            print("잘못된 접근입니다.\n")
-
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # C:\Users\jihun\Archive\aicon\mini_project
     DATA_DIR = os.path.join(BASE_DIR, "data")  # C:\Users\jihun\Archive\aicon\mini_project\data
@@ -625,4 +568,4 @@ if __name__ == "__main__":
     extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
     train_sys.extra = extra_sys
     
-    extra_interface(extra_sys)
+    # extra_interface(extra_sys)

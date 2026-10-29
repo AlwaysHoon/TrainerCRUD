@@ -78,11 +78,11 @@ class TrainerCRUD:
                 print("검색 실행\n")
                 return True
             
-            elif curser == "o":
+            elif curser in ("o", "ㅐ"):
                 print("이전으로 돌아갑니다.\n")
                 return False
             
-            elif curser == "p":
+            elif curser in ("p","ㅐ"):
                 print("프로그램을 종료합니다.\n")
                 return "0"
             
@@ -90,24 +90,24 @@ class TrainerCRUD:
                 print("잘못된 접근입니다.\n")
            
     def do_retrive(self, members, page, max_page):
-        print(f"{'=======전체 회원 리스트=======':^86}")
+        print(f"{'=======전체 회원 리스트=======':^78}")
         for index, member in enumerate(members):
             
             if (index % 2) == 0:
                 l = [(key, value) for key, value in member.items() if key not in ("최초 등록일", "최근 수정일")]
                 if index == (len(members) - 1):
-                    print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+                    print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 2:03d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                     for i in range(len(l)):
                         l_key, l_value = l[i][0], l[i][1]
-                        print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {' ':<15}:   {'':<23} |")
+                        print(f"| {l_key:<{10 - align(l_key)}}:   {l_value:<{24 - align(l_value)}} | {' ':<10}:   {'':<24} |")
             else:
                 r = [(key, value) for key, value in member.items() if key not in ("최초 등록일", "최근 수정일")]
-                print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+                print(f"+-ㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index:03d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡNo.{(page * 10) + index + 1:03d}ㅡㅡㅡㅡㅡㅡㅡㅡ-+")
                 for i in range(len(l)):
                     l_key, l_value, r_key, r_value = (l[i][0], l[i][1], r[i][0], r[i][1],)
-                    print(f"| {l_key:<{15 - align(l_key)}}:   {l_value:<{23 - align(l_value)}} | {r_key:<{15 - align(r_key)}}:   {r_value:<{23 - align(r_value)}} |")
-        print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
-        print("[돌아가기: o, 종료: p]",f"{"< 이전 | ^검색 | 다음 >":^40}",f"({page + 1}/{max_page + 1} 페이지)")
+                    print(f"| {l_key:<{10 - align(l_key)}}:   {l_value:<{24 - align(l_value)}} | {r_key:<{10 - align(r_key)}}:   {r_value:<{24 - align(r_value)}} |")
+        print("+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-+")
+        print("[돌아가기: o, 종료: p]",f"{"< 이전 | ^검색 | 다음 >":^30}",f"({page + 1}/{max_page + 1} 페이지)")
         return True
     
     
@@ -162,14 +162,14 @@ class TrainerCRUD:
                 print("+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ+")
 
                 while True:
-                    same_num = input(f"조회할 번호를 선택하세요(1~{len(detail_member)}, 9:이전으로): ").strip()
+                    same_num = input(f"조회할 번호를 선택하세요(1~{len(detail_member)}, o:이전으로): ").strip()
                     
                     if same_num.isdigit():
                         if (int(same_num) >= 1) and (int(same_num) <= len(detail_member)):
                             break
                         else:
                             print("범위 밖입니다.\n")
-                    elif same_num == "o":
+                    elif same_num in ("o", "ㅐ"):
                         print("이전으로 돌아갑니다.\n")
                         return False
                     else:
@@ -206,11 +206,11 @@ class TrainerCRUD:
                 for member in self.members:
                     if member == select_member:
                         while True:
-                            modify_value = input(f"기존 {modify_key}는 {select_member[modify_key]}입니다. 변경할 내용을 적어주세요(9:이전으로): ")
+                            modify_value = input(f"기존 {modify_key}는 {select_member[modify_key]}입니다. 변경할 내용을 적어주세요(o:이전으로): ")
 
                             # 중복처리
                             if modify_key == "email":
-                                if modify_value == "9":
+                                if modify_value in("o", "ㅐ"):
                                     print()
                                     return True
                                 elif self._check_email(member["이름"],modify_value):
