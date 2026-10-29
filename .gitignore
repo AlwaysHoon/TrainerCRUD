@@ -42,3 +42,5 @@ banned/
 #DOC
 .doc/
 .backup/
+doc/
+backup/
