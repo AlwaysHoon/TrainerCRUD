@@ -201,9 +201,7 @@ class TrainerCRUD:
     def modify_member(self, select_member, check_member):
         print("회원 정보 수정을 시작합니다.\n")
         while True:
-            modify_key = input("수정할 정보를 선택해주세요?[name, email, ...]: ").strip()
-            ####user_id에 대한 코드 추가 필요, id변경에 따라 식단/운동기록/부가서비스의 파일 내용도 변경되어야 함
-            ####아니면 user_id가 검색의 기준이 되므로 user_id를 변경할 수 없다로 가야할 것 같다.
+            modify_key = input("수정할 정보를 선택해주세요?[이름, email]: ").strip()
             if modify_key in select_member:
                 for member in self.members:
                     if member == select_member:
@@ -374,7 +372,7 @@ class TrainerCRUD:
                 self.extra.remove_member_data(deleted_member['아이디'])
                 
             self.diet.remove_member_data(deleted_member['아이디'])
-                
+            self.details.remove_member_data(deleted_member['아이디'])
             return True 
         
 if __name__ == "__main__":

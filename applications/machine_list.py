@@ -75,6 +75,7 @@ class MachineList:
             print("  o. 돌아가기")
             print("  p. 프로그램 종료")
             print("=" * line)
+            
             list_index = input("원하는 운동 부위 번호를 입력해주세요: ")
             if list_index in ("o", "ㅐ"):
                 print("이전으로 돌아갑니다.\n")
@@ -97,7 +98,7 @@ class MachineList:
                             if i == 0:
                                 print(f"| {key:<{13 - align(key)}}: {line:<{45 - align(str(line))}} |")
                             else:
-                                print(f"| {' ':<{13 - align(key)}}: {line:<{45 - align(str(line))}} |")
+                                print(f"| {' ':<13}: {line:<{45 - align(str(line))}} |")
 
                     else:
                         print(f"| {key:<{13 - align(key)}}: {value:<{45 - align(value)}} |")
@@ -125,11 +126,11 @@ class MachineList:
                     if key == "운동 종류":
                         for i, line in enumerate(wrap(value)):
                             if i == 0:
-                                print(f"{key:<{15-align(key)}}: {line:<{45 - align(str(line))}}")
+                                print(f"{key:<{13-align(key)}}: {line:<{45 - align(str(line))}}")
                             else:
-                                print(f"{' ':<{15-align(key)}}: {line:<{45 - align(str(line))}}")
+                                print(f"{' ':<13}: {line:<{45 - align(str(line))}}")
                     else:
-                        print(f"{key:<{15-align(key)}}: {value:<45}")
+                        print(f"{key:<{13-align(key)}}: {value:<45}")
                 print("ㅡ" * 30)
 
                 # 수정필요
@@ -151,8 +152,6 @@ class MachineList:
         else:
             print("등록된 운동이 없습니다.\n")
             return False
-        
-    
             
     def modify_machine(self, select_muscle, idx):
         print("운동 정보 수정을 시작합니다.\n")
@@ -192,13 +191,11 @@ class MachineList:
                                 return True
                             else:
                                 print("잘못 입력했습니다.\n")
-                                
 
-                    # 한 종목 안에 운동부위 중복 처리 필요
                     elif modify_key == "운동 종류":
                         while True:
                             print("ㅡ" * 30)
-                            print(f"[{muscle['운동 부위']:^55}]")
+                            print(f"[{muscle['운동 부위']:^58}]")
                             print("ㅡ" * 30)
                             for key, value in muscle.items():
                                 if key == "운동 종류":
@@ -206,7 +203,7 @@ class MachineList:
                                         if i == 0:
                                             print(f"{key:^{13 - align(key)}}: {line:<{45 - align(str(line))}}")
                                         else:
-                                            print(f"{' ':<{13 - align(key)}}: {line:<{45 - align(str(line))}}")
+                                            print(f"{' ':<13}: {line:<{45 - align(str(line))}}")
                             
                             print("ㅡ" * 30)
                             print(
@@ -240,7 +237,6 @@ class MachineList:
 
                             elif choose_mod == "2":
                                 try:
-                                    print(len(new_machines))
                                     select_machine = int(input("변경할 운동 종류를 선택하세요(숫자): ").strip())
                                     
                                 except ValueError:
@@ -313,8 +309,8 @@ class MachineList:
                         else:
                             pass
                         
-    def sort_machine_list(self):
-        pass
+    def do_sort(self,keys, rev=False):
+        self.body_list.sort(key=lambda x:x[keys], reverse=rev)
     
     def _find_same(self, key, value):
         return [muscles for muscles in self.body_list if muscles[key].lower() == value]

@@ -180,21 +180,6 @@ class DetailsCRUD:
         
         return  age, gender, height, weight, fat, skl_muscle
     
-    def _check_yn(func):
-        
-        @wraps(func)
-        def decorated(self, is_yes, *args, **kwargs):
-            while True:
-                if is_yes in self._yes:
-                    return func(self, *args, **kwargs)
-                elif is_yes in self._no:
-                    print("이전으로 돌아갑니다.\n")
-                    return False
-                else:
-                    print("잘못 입력했습니다.\n")
-                    is_yes = input("다시 입력해주세요(Y/N): ").strip().lower()
-                    
-        return decorated 
     
     def do_modify(self, member):
         user_id = member["아이디"]
@@ -278,6 +263,21 @@ class DetailsCRUD:
         is_delete = input("정말 해당 정보를 삭제하시겠습니까?(Y/N): ").strip().lower()
 
         return self._remove_details(is_delete, member)
+    def _check_yn(func):
+            
+        @wraps(func)
+        def decorated(self, is_yes, *args, **kwargs):
+            while True:
+                if is_yes in self._yes:
+                    return func(self, *args, **kwargs)
+                elif is_yes in self._no:
+                    print("이전으로 돌아갑니다.\n")
+                    return False
+                else:
+                    print("잘못 입력했습니다.\n")
+                    is_yes = input("다시 입력해주세요(Y/N): ").strip().lower()
+                    
+        return decorated 
         
     @_check_yn
     def _move_modify(self, member):
