@@ -519,26 +519,6 @@ def start_application():
     
 
 if __name__ == "__main__":
-    # BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
-    # DATA_DIR = os.path.join(BASE_DIR, "data")
-    # member_path = os.path.join(DATA_DIR, "members.json")
-    # machine_path = os.path.join(DATA_DIR, "muscles.json")
-    # workout_path = os.path.join(DATA_DIR, 'workouts.json')  
-          
-    # os.makedirs(DATA_DIR, exist_ok=True)
-
-    # train_sys = TrainerCRUD(member_path)
-    # machine_sys = MachineList(machine_path)
-    # extra_sys = ExtraServiceCRUD(os.path.join(DATA_DIR, "members"), train_sys)
-    # train_sys.extra = extra_sys
-    
-    # detail_sys = DetailsCRUD(os.path.join(DATA_DIR, "members"))
-    # diet_sys = DietCRUD(os.path.join(DATA_DIR, "members"))
-    # workout = WorkoutCRUD(workout_path)
-    
-    # if login_interface():
-    #     admin_interface(train_sys, machine_sys, extra_sys, workout, diet_sys, detail_sys)
-
     start_application()
 
 

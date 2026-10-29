@@ -112,7 +112,7 @@ class MachineList:
     
     def do_select_one(self, select_num="1"):
         if self.body_list:
-            word = {"1": "조회", "3": "수정", "4": "삭제"}[select_num]
+            word = {"3": "수정", "4": "삭제"}[select_num]
             select_muscle = (input(f"{word} 할 운동 부위 이름을 입력해주세요(돌아가려면 아무거나 입력): ").strip().lower())
               # 중복이 없기에 T/F
             detail_muscle = self._find_same("운동 부위", select_muscle)
@@ -133,11 +133,8 @@ class MachineList:
                         print(f"{key:<{13-align(key)}}: {value:<45}")
                 print("ㅡ" * 30)
 
-                # 수정필요
-                if select_num == "1":  # 전체조회"2"->개인검색"1"
-                    return detail_muscle[idx]
-
-                elif select_num == "3":  # 정보수정"3"
+                
+                if select_num == "3":  # 정보수정"3"
                     is_modify = (input("수정하실 정보가 다음 정보가 맞습니까?(Y/N): ").strip().lower())
                     return self.do_modify(is_modify, detail_muscle, idx)
                     
@@ -178,7 +175,7 @@ class MachineList:
                             is_modify = (input(f"정말 {modify_value}로 변경하시겠습니까?(Y/N): ").strip().lower())
                             if is_modify in self._yes:
                                 muscle[modify_key] = modify_value
-                                muscle["modify_time"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
+                                muscle["최근 수정일"] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
                                 try:
                                     self._save_muscles()
                                     print(f"{modify_key} 변경에 성공했습니다.\n")

@@ -60,6 +60,7 @@ def progress_bar(len, sleep=0.001):
 
         time.sleep(sleep)
     print('\n')
+    
 def delete_data(self, user_id):
     path = self.get_path(user_id)
     folder = self.get_folder(user_id)
