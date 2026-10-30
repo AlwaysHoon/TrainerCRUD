@@ -104,14 +104,17 @@ class DetailsCRUD:
     
     def show_details(self, member):
         details = self._read_data(member["아이디"])
+        if details == []:
+            print(" 기록이 없습니다.")
+        else:
+            for detail in details:
+                if detail["아이디"] == member["아이디"]:
+                    print("-"*40)
+                    for key, value in detail.items():
+                        print(f"{key:<{12-align(key)}}: {value}")
+                    print("-"*40)
         
-        for detail in details:
-            if detail["아이디"] == member["아이디"]:
-                print("-"*40)
-                for key, value in detail.items():
-                    print(f"{key:<{12-align(key)}}: {value}")
-                print("-"*40)
-    
+            
     def _calc_bmi(self,weight, height):
         return round(float(weight) / (float(height) / 100) ** 2, 2)
     
