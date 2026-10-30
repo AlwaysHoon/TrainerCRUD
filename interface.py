@@ -12,10 +12,10 @@ def login_interface(): #만약 관리자가 많다면 클래스로 변경 및 id
     line1 = len(admin_login) + align(admin_login)
     print(admin_login)
     while True:
-        # login_id = input(" 관리자id: ").strip()
-        # login_pw = input(" 관리자pw: ").strip()
-        login_id = "admin"
-        login_pw = "0000"
+        login_id = input(" 관리자id: ").strip()
+        login_pw = input(" 관리자pw: ").strip()
+        # login_id = "admin"
+        # login_pw = "0000"
         print(f" 관리자id: {login_id}")
         print(f" 관리자pw: {login_pw}")
 
@@ -159,7 +159,6 @@ def search_interface(members, workout, diets, detail_sys, select_num):
                 
             elif search_num == "3":
                 count = True
-                
             
             elif search_num == "4":
                 print("1.아이디, 2.이름, 3.이메일, 4.최초 등록일, 5.최근 수정일")

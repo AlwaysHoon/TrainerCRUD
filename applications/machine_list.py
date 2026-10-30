@@ -54,11 +54,11 @@ class MachineList:
                         "최초 등록일": save_time,
                         "최근 수정일": modify_time,
                     }
-                    print("-"*20)
+                    print("ㅡ"*25)
                     print(
                         f"운동 부위\t: {muscle}\n"
                         f"운동 종류\t: {machine_list}")
-                    print("-"*20)
+                    print("ㅡ"*25)
                     is_save = input("위 정보가 맞습니까?(Y/N): ").strip().lower()
                     return self._add_muscle(is_save, new_machine)
                     # 전체 멤버 데이터베이스에 새 멤버 등록
@@ -117,7 +117,8 @@ class MachineList:
             line = len(num_muscle) + align(num_muscle)
             print(num_muscle)
             for index, muscle in enumerate(self.body_list.copy()):
-                print(f"{index + 1:3d}. {muscle["운동 부위"]}")
+                # print(f"{index + 1:3d}. {muscle["운동 부위"]}")
+                print(f"{muscle["운동 부위"]:^20}")
             print("  o. 돌아가기")
             print("  p. 프로그램 종료")
             print("=" * line)

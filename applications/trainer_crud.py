@@ -357,7 +357,7 @@ class TrainerCRUD:
         if tf:
             self._save_members()
         return True
-            
+    
     # 회원 삭제 시 부가서비스, 식단, 운동기록의 삭제도 필요함
     @_check_yn
     def do_delete(self, member, idx):       

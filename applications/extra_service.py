@@ -78,7 +78,6 @@ class ExtraServiceCRUD:
         else:
             self._write_data(user_id, data)
 
-
     def _today(self):
         '''오늘 날짜 (등록일)'''
         return datetime.now().strftime(DATE_FORMAT)
