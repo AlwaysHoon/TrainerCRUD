@@ -180,7 +180,6 @@ class DetailsCRUD:
         
         return  age, gender, height, weight, fat, skl_muscle
     
-    
     def do_modify(self, member):
         user_id = member["아이디"]
         details = self._read_data(user_id)
