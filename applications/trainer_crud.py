@@ -52,18 +52,20 @@ class TrainerCRUD:
             "최근 수정일": modify_time,
         }
         
-        print("-"*20)
+        print("-"*30)
         print(
             f"아이디\t: {user_id}\n"
             f"이름\t: {name}\n"
             f"email\t: {email}")
-        print("-"*20)
+        print("-"*30)
         
         is_save = input("위 정보가 맞습니까?(Y/N)").strip().lower()
         return self._add_member(is_save, new_member)
             
     def member_page(self, page=0, page_size=10):
-        max_page = len(self.members) //10
+        
+        max_page = (len(self.members)-1) //10
+        
         while True:
             start = page * page_size
             end = start + page_size
@@ -198,7 +200,7 @@ class TrainerCRUD:
             print("등록된 회원이 없습니다.\n")
             return False
     
-    def modify_member(self, select_member, check_member):
+    def modify_member(self, select_member, check_member, count):
         print("회원 정보 수정을 시작합니다.\n")
         while True:
             modify_key = input("수정할 정보를 선택해주세요?[이름, email]: ").strip()
@@ -207,7 +209,10 @@ class TrainerCRUD:
                     if member == select_member:
                         while True:
                             modify_value = input(f"기존 {modify_key}는 {select_member[modify_key]}입니다. 변경할 내용을 적어주세요(o:이전으로): ")
-
+                            
+                            if modify_value == "o":
+                                print("이전으로 돌아갑니다.\n")
+                                return False
                             # 중복처리
                             if modify_key == "email":
                                 if modify_value in("o", "ㅐ"):
@@ -216,13 +221,13 @@ class TrainerCRUD:
                                 elif self._check_email(member["이름"],modify_value):
                                     break
                                 
-                            elif (modify_key != "이름") and (modify_value in [member[modify_key] for member in self.members]):
+                            elif (modify_key != '이름') and (modify_value in [member[modify_key] for member in self.members]):
                                 print(f"이미 존재하는 {modify_key}입니다.\n")
 
-                            elif modify_key == "이름":  # 동명이인은 이메일로 비교
-                                for mem in check_member:
-                                    if member["email"] == mem["email"]:
-                                        print(f"이미 존재하는 {modify_key}입니다.\n")
+                            elif modify_key == '이름' and count > 1:  # 동명이인은 이메일로 비교
+                                # for mem in check_member:
+                                if member['email'] == check_member['email']:
+                                    print(f"이미 존재하는 {modify_key}입니다.\n")
                             else:
                                 break
 
@@ -249,6 +254,7 @@ class TrainerCRUD:
                         return
                     else:
                         print("잘못 입력했습니다.\n")
+    
     
     def do_sort(self, keys, rev=False):
         self.members.sort(key=lambda x:x[keys], reverse=rev)
@@ -281,7 +287,7 @@ class TrainerCRUD:
             print("아이디 형식이 잘못되었습니다.\n")
             return False
         
-        if any(member["아이디"] == user_id for member in self.members):
+        if any(member["아이디"].lower() == user_id.lower() for member in self.members):
             print("이미 존재하는 아이디입니다.\n")
             return False
         return True
@@ -310,11 +316,11 @@ class TrainerCRUD:
             return False
         
         for member in self.members:
-            if (member["이름"] == name) and (member["email"] == email):
+            if (member["이름"].lower() == name.lower()) and (member["email"].lower() == email.lower()):
                 print("이중 등록입니다.\n")
                 return False
             
-            elif member["email"] == email:
+            elif member["email"].lower() == email.lower():
                 print("이미 존재하는 이메일입니다.\n")
                 return False
             
@@ -340,20 +346,18 @@ class TrainerCRUD:
     def _add_member(self, member):
         self.members.append(member)
         self._save_members()
-        print(f"{member['name']}님 등록에 성공했습니다.(id: {member['user_id']})\n")
+        print(f"{member['이름']}님 등록에 성공했습니다.(id: {member['아이디']})\n")
         return True
     
     @_check_yn
     def do_modify(self, member, idx, count):
-        if count >1:
-            check_member = [v for i, v in enumerate(member) if i != idx]
-            self.modify_member(member[idx], check_member)
-        elif count == 1:
-            self.modify_member(member[idx], member[idx])
-            
-        self._save_members()
+        select_member = member[idx]
+        check_members = [m for m in self.members if m is not select_member]
+        tf = self.modify_member(select_member, check_members, count)
+        if tf:
+            self._save_members()
         return True
-    
+            
     # 회원 삭제 시 부가서비스, 식단, 운동기록의 삭제도 필요함
     @_check_yn
     def do_delete(self, member, idx):       
@@ -366,7 +370,7 @@ class TrainerCRUD:
             return True  
         else:
             self._save_members()
-            print("회원 삭제에 성공했습니다.\n")
+            print("회원 삭제에 성공했습니다.")
 
             if self.extra:
                 self.extra.remove_member_data(deleted_member['아이디'])

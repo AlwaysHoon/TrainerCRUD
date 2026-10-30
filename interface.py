@@ -125,7 +125,7 @@ def search_interface(members, workout, diets, detail_sys, select_num):
     count = True
     while True:
         if members:
-            if select_num == "2" and count:
+            if select_num == "2" or count:
                 count = False
                 member_list = members.member_page(0)
                 if not member_list:
@@ -159,7 +159,7 @@ def search_interface(members, workout, diets, detail_sys, select_num):
                 
             elif search_num == "3":
                 count = True
-                continue
+                
             
             elif search_num == "4":
                 print("1.아이디, 2.이름, 3.이메일, 4.최초 등록일, 5.최근 수정일")
@@ -204,7 +204,7 @@ def member_interface(member, workout, diets, details):
                 line4 = len(search_name) + align(search_name)
                 print(search_name)
                 print(
-                    " 1. 상세 기록 조회\n"
+                    " 1. 세부 기록 조회\n"
                     " 2. 운동 기록 관리\n"
                     " 3. 식단 관리\n"
                     " o. 이전으로\n"
@@ -215,7 +215,7 @@ def member_interface(member, workout, diets, details):
                 print()
                 
                 if detail_num == "1":
-                    print("1. 상세 기록 조회를 선택하셨습니다.")
+                    print("1. 세부 기록 조회를 선택하셨습니다.")
                     if not details_interface(details, member):
                         return False
                     
@@ -371,7 +371,7 @@ def workout_interface(workout, member):
             workout.show_workouts()
             
         elif select_num in ("o", "ㅐ"):
-            print("이전 화면으로 돌아갑니다.\n")
+            print("이전 화면으로 돌아갑니다.")
             return True
 
         elif select_num in ("p", "ㅔ"):

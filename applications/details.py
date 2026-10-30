@@ -110,7 +110,7 @@ class DetailsCRUD:
                 print("-"*40)
                 for key, value in detail.items():
                     print(f"{key:<{12-align(key)}}: {value}")
-                print("-"*40,"\n")
+                print("-"*40)
     
     def _calc_bmi(self,weight, height):
         return round(float(weight) / (float(height) / 100) ** 2, 2)

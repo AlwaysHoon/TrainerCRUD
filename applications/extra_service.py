@@ -54,7 +54,7 @@ class ExtraServiceCRUD:
                 print(message)
 
         except FileNotFoundError:
-            print("파일이 존재하지 않습니다.\n")
+            print("Extra 파일이 존재하지 않습니다.\n")
             return False
 
         except OSError as e:
@@ -119,7 +119,6 @@ class ExtraServiceCRUD:
                 print("등록되지 않은 회원입니다. 다시 입력해주세요.")
                 continue
             return member
-
 
     def _uniform_text(self, use):
         if use is None:
