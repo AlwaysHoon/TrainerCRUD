@@ -26,5 +26,23 @@
                 "reps": 10
             }
         ]
+    },
+    {
+        "record_id": 2,
+        "user_id": "messi39",
+        "date": "2026-10-30",
+        "exercise": "Ab Wheel",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 10.0,
+                "reps": 2
+            },
+            {
+                "set": 2,
+                "weight": 20.0,
+                "reps": 3
+            }
+        ]
     }
 ]

@@ -1,7 +1,7 @@
 {
-    "locker_no": null,
-    "assign_time": null,
-    "expire_time": null,
+    "locker_no": 5,
+    "assign_time": "26/10/30",
+    "expire_time": "26/11/29",
     "use_uniform": true,
     "uniform_modify_time": "26/10/28",
     "uniform_expire_time": "26/11/27"

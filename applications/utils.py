@@ -6,6 +6,7 @@ import unicodedata
 import re
 import os
 
+
 def validate_user(user_id):
     if not isinstance(user_id, str):
         return False
